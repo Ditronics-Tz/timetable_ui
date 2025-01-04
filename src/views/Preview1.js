@@ -173,17 +173,7 @@ function Preview1() {
                   <th>Friday</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>07:00 - 08:00</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                {/* Add more rows as needed */}
-              </tbody>
+              
             </table>
           </div>
         </div>
