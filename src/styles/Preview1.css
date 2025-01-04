@@ -1,5 +1,12 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
 .preview-container {
-  padding: 20px;
+  flex: 1;
+  margin-left: 220px; /* Match sidebar width */
+  padding: 24px;
   background-color: #f5f5f5;
 }
 
@@ -7,106 +14,149 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
 }
 
 .generate-btn {
   background-color: #ff3b30;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 12px 24px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.generate-btn:hover {
+  background-color: #e62e27;
 }
 
 .stats-container {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 24px;
   background-color: #faf3e7;
-  padding: 20px;
+  border-radius: 8px;
 }
 
 .stat-box {
   background-color: white;
-  padding: 20px;
-  border-radius: 5px;
+  padding: 24px;
+  border-radius: 8px;
   text-align: center;
-  min-width: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.stat-box h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 12px;
+  text-transform: uppercase;
 }
 
 .stat-number {
-  font-size: 2em;
-  color: #31708f;
+  font-size: 36px;
+  color: #1e4976;
   font-weight: bold;
 }
 
 .control-panel {
   background-color: white;
-  padding: 20px;
-  margin-bottom: 30px;
-  border-radius: 5px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.control-panel h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .controls {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.control-group {
-  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
 .control-group label {
   display: block;
-  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 8px;
 }
 
 .control-group select {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 14px;
 }
 
 .timetable-section {
   background-color: white;
-  padding: 20px;
-  border-radius: 5px;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.timetable-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
 }
 
 .timetable table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.timetable th, .timetable td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
+  border: 1px solid #e0e0e0;
 }
 
 .timetable th {
   background-color: #f8f9fa;
-}
-
-h1, h2, h3 {
-  margin: 0;
+  padding: 12px;
+  font-weight: 600;
   color: #333;
+  border: 1px solid #e0e0e0;
+  text-align: center;
 }
 
-h1 {
-  font-size: 24px;
+.timetable td {
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  text-align: center;
+  color: #666;
 }
 
-h2 {
-  font-size: 20px;
-  margin-bottom: 15px;
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .stats-container,
+  .controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-h3 {
-  font-size: 16px;
-  margin-bottom: 10px;
+@media (max-width: 768px) {
+  .stats-container,
+  .controls {
+    grid-template-columns: 1fr;
+  }
 }
