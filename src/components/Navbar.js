@@ -1,54 +1,64 @@
 import React from 'react';
 import '../styles/Navbar.css';
+import userGearIcon from '../assets/user-gear.png';
+import dashboardIcon from '../assets/dashboard.png';
+import timetableIcon from '../assets/timetable.png';
+import departmentIcon from '../assets/department.png';
+import coursesIcon from '../assets/courses.png';
+import roomsIcon from '../assets/rooms.png';
+import modulesIcon from '../assets/modules.png';
+import allocationIcon from '../assets/allocation.png';
+import staffIcon from '../assets/staff.png';
+import settingsIcon from '../assets/settings.png';
 
 function Navbar() {
   return (
     <div className="sidebar">
       <div className="logo-section">
         <div className="logo-circle">
-          <img src="/admin-icon.png" alt="Admin" />
+          <img src={userGearIcon} alt="Admin" className="admin-icon" />
         </div>
         <h2>ADMIN</h2>
       </div>
       
       <nav className="nav-menu">
         <a href="#" className="nav-item">
-          <i className="icon-dashboard"></i>
+          <img src={dashboardIcon} alt="Dashboard" className="nav-icon" />
           <span>Dashboard</span>
         </a>
         <a href="#" className="nav-item active">
-          <i className="icon-timetable"></i>
+          <img src={timetableIcon} alt="Timetable" className="nav-icon" />
           <span>Timetable</span>
         </a>
         <a href="#" className="nav-item">
-          <i className="icon-department"></i>
+          <img src={departmentIcon} alt="Department" className="nav-icon" />
           <span>Department</span>
         </a>
         <a href="#" className="nav-item">
-          <i className="icon-courses"></i>
+          <img src={coursesIcon} alt="Courses" className="nav-icon" />
           <span>Courses</span>
         </a>
         <a href="#" className="nav-item">
-          <i className="icon-rooms"></i>
+          <img src={roomsIcon} alt="Rooms" className="nav-icon" />
           <span>Rooms</span>
         </a>
         <a href="#" className="nav-item">
-          <i className="icon-modules"></i>
+          <img src={modulesIcon} alt="Modules" className="nav-icon" />
           <span>Modules</span>
         </a>
         <a href="#" className="nav-item">
-          <i className="icon-allocation"></i>
+          <img src={allocationIcon} alt="Module Allocation" className="nav-icon" />
           <span>Module Allocation</span>
         </a>
         <a href="#" className="nav-item">
-          <i className="icon-staff"></i>
+          <img src={staffIcon} alt="Staff" className="nav-icon" />
           <span>Staff</span>
         </a>
       </nav>
 
       <div className="settings-section">
         <a href="#" className="nav-item">
-          <i className="icon-settings"></i>
+          <img src={settingsIcon} alt="Settings" className="nav-icon" />
           <span>Settings</span>
         </a>
       </div>
