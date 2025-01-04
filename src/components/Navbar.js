@@ -10,8 +10,18 @@ import modulesIcon from '../assets/modules.png';
 import allocationIcon from '../assets/allocation.png';
 import staffIcon from '../assets/staff.png';
 import settingsIcon from '../assets/settings.png';
+import previewIcon from '../assets/preview.png';
 
 function Navbar() {
+  const [activePage, setActivePage] = React.useState(() => {
+    const path = window.location.pathname.slice(1);
+    return path || 'dashboard';
+  });
+
+  const handleNavClick = (page) => {
+    setActivePage(page);
+  };
+
   return (
     <div className="sidebar">
       <div className="logo-section">
@@ -22,14 +32,33 @@ function Navbar() {
       </div>
       
       <nav className="nav-menu">
-        <a href="#" className="nav-item">
+        <a 
+          href="/dashboard" 
+          className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`}
+          onClick={() => handleNavClick('dashboard')}
+        >
           <img src={dashboardIcon} alt="Dashboard" className="nav-icon" />
           <span>Dashboard</span>
         </a>
-        <a href="#" className="nav-item active">
+        
+        <a 
+          href="/timetable" 
+          className={`nav-item ${activePage === 'timetable' ? 'active' : ''}`}
+          onClick={() => handleNavClick('timetable')}
+        >
           <img src={timetableIcon} alt="Timetable" className="nav-icon" />
           <span>Timetable</span>
         </a>
+        
+        <a 
+          href="/preview" 
+          className={`nav-item ${activePage === 'preview' ? 'active' : ''}`}
+          onClick={() => handleNavClick('preview')}
+        >
+          <img src={previewIcon} alt="Preview" className="nav-icon" />
+          <span>Preview</span>
+        </a>
+        
         <a href="#" className="nav-item">
           <img src={departmentIcon} alt="Department" className="nav-icon" />
           <span>Department</span>
