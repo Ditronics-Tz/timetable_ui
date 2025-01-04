@@ -35,7 +35,6 @@ function Navbar() {
         <a 
           href="/dashboard" 
           className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`}
-          onClick={() => handleNavClick('dashboard')}
         >
           <img src={dashboardIcon} alt="Dashboard" className="nav-icon" />
           <span>Dashboard</span>
@@ -44,7 +43,6 @@ function Navbar() {
         <a 
           href="/timetable" 
           className={`nav-item ${activePage === 'timetable' ? 'active' : ''}`}
-          onClick={() => handleNavClick('timetable')}
         >
           <img src={timetableIcon} alt="Timetable" className="nav-icon" />
           <span>Timetable</span>
