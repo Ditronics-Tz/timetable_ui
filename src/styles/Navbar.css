@@ -1,45 +1,53 @@
 .sidebar {
-  width: 220px;
+  width: 240px;
   height: 100vh;
   background-color: #1e4976;
   color: white;
   position: fixed;
   left: 0;
   top: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .logo-section {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 8px;
 }
 
 .logo-circle {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .admin-icon {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   filter: brightness(0) saturate(100%) invert(27%) sepia(28%) saturate(1202%) hue-rotate(182deg) brightness(95%) contrast(89%);
 }
 
-/* Admin text styling */
 .logo-section h2 {
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 600;
   color: white;
+  letter-spacing: 0.5px;
 }
 
 .nav-menu {
-  padding: 10px 0;
+  padding: 8px 0;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .nav-item {
@@ -48,12 +56,18 @@
   padding: 12px 24px;
   color: white;
   text-decoration: none;
-  gap: 12px;
-  font-size: 16px;
+  gap: 16px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .nav-item.active {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.12);
   border-left: 3px solid #ff3b30;
   padding-left: 21px;
 }
@@ -61,12 +75,7 @@
 .nav-icon {
   width: 20px;
   height: 20px;
-}
-
-.settings-section {
-  margin-top: auto;
-  padding: 20px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0.9;
 }
 
 .nav-item-dropdown {
@@ -81,9 +90,10 @@
 }
 
 .dropdown-arrow {
-  margin-left: 8px;
-  font-size: 12px;
-  transition: transform 0.3s ease;
+  margin-left: auto;
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  opacity: 0.8;
 }
 
 .dropdown-arrow.expanded {
@@ -93,27 +103,53 @@
 .dropdown-menu {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.05);
+  transition: max-height 0.3s ease-in-out;
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .nav-item-dropdown.expanded .dropdown-menu {
-  max-height: 200px;
+  max-height: 500px;
 }
 
 .dropdown-item {
-  display: block;
-  padding: 10px 20px 10px 50px;
-  color: white;
+  display: flex;
+  padding: 10px 24px 10px 60px;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-size: 14px;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
 }
 
 .dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
 }
 
 .dropdown-item.active {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.settings-section {
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+/* Custom scrollbar for nav-menu */
+.nav-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.nav-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Preview1.css';
 import Navbar from '../components/Navbar';
+import searchIcon from '../assets/search.png';
+import downloadIcon from '../assets/download.png';
 
 function Preview1() {
   // State for statistics
@@ -98,7 +100,7 @@ function Preview1() {
         </div>
 
         <div className="control-panel">
-          <h2>TIMETABLE GENERATOR CONTROL</h2>
+          <h2>TIMETABLE GENERATOR PREVIEW</h2>
           <div className="controls">
             <div className="control-group">
               <label>Academic Year</label>
@@ -156,32 +158,31 @@ function Preview1() {
                 ))}
               </select>
             </div>
+            <div className="search-button-container">
+              <button className="search-button" onClick={() => {/* Add your search logic here */}}>
+                <img src={searchIcon} alt="" />
+                Search Timetable
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="timetable-section">
-          <h2>TIMETABLE PREVIEW</h2>
-          <div className="timetable">
-            <table>
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th>Monday</th>
-                  <th>Tuesday</th>
-                  <th>Wednesday</th>
-                  <th>Thursday</th>
-                  <th>Friday</th>
-                </tr>
-              </thead>
-              
-            </table>
+        <div className="timetable-preview">
+          <div className="timetable-header">
+            <h2>TIMETABLE PREVIEW</h2>
+            <button className="download-btn" onClick={handleDownload}>
+              <img src={downloadIcon} alt="" />
+              Download Timetable
+            </button>
           </div>
-        </div>
-
-        <div className="download-section">
-          <button className="download-btn" onClick={handleDownload}>
-            Download Timetable
-          </button>
+          <div className="timetable-days">
+            <span>Time</span>
+            <span>Monday</span>
+            <span>Tuesday</span>
+            <span>Wednesday</span>
+            <span>Thursday</span>
+            <span>Friday</span>
+          </div>
         </div>
       </div>
     </div>
