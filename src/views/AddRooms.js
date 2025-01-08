@@ -25,10 +25,42 @@ const AddRooms = () => {
     }));
   };
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === "text/csv") {
+      // Handle CSV file upload
+      console.log("CSV file selected:", file);
+    } else {
+      alert("Please upload a valid CSV file");
+    }
+  };
+
   return (
     <div className="add-room-container">
       <h1>Add New Room</h1>
       
+      <div className="upload-section">
+        <h2>Bulk Upload Rooms</h2>
+        <p>Upload multiple rooms using a CSV file</p>
+        <div className="csv-upload">
+          <input
+            type="file"
+            accept=".csv"
+            id="csvFile"
+            onChange={handleFileUpload}
+            className="file-input"
+          />
+          <label htmlFor="csvFile" className="file-label">
+            Choose CSV File
+          </label>
+          <a href="#" className="template-link">Download CSV Template</a>
+        </div>
+      </div>
+
+      <div className="separator">
+        <span>Or add room manually</span>
+      </div>
+
       <form className="add-room-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label>
