@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Preview1.css';
-import Navbar from '../components/Navbar';
 import searchIcon from '../assets/search.png';
 import downloadIcon from '../assets/download.png';
 
@@ -78,7 +77,6 @@ function Preview1() {
 
   return (
     <div className="app-container">
-      <Navbar />
       <div className="preview-container">
         <div className="header">
           <h1>SACAS TIMETABLE GENERATOR</h1>

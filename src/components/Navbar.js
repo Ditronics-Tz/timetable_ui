@@ -12,6 +12,7 @@ import staffIcon from '../assets/staff.png';
 import settingsIcon from '../assets/settings.png';
 import previewIcon from '../assets/preview.png';
 import moduleAllocationIcon from '../assets/allocation.png';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [activePage, setActivePage] = React.useState(() => {
@@ -56,14 +57,14 @@ function Navbar() {
           <span>Timetable</span>
         </a>
         
-        <a 
-          href="/preview" 
+        <Link 
+          to="/preview" 
           className={`nav-item ${activePage === 'preview' ? 'active' : ''}`}
           onClick={() => handleNavClick('preview')}
         >
           <img src={previewIcon} alt="Preview" className="nav-icon" />
           <span>Preview</span>
-        </a>
+        </Link>
         
         <div className={`nav-item-dropdown ${isRoomsExpanded ? 'expanded' : ''}`}>
           <div 
@@ -76,12 +77,13 @@ function Navbar() {
           </div>
           
           <div className="dropdown-menu">
-            <a 
-              href="/rooms/add" 
+            <Link 
+              to="/rooms/add" 
               className={`dropdown-item ${activePage === 'rooms/add' ? 'active' : ''}`}
+              onClick={() => handleNavClick('rooms/add')}
             >
               Add Rooms
-            </a>
+            </Link>
             <a 
               href="/rooms/view" 
               className={`dropdown-item ${activePage === 'rooms/view' ? 'active' : ''}`}
