@@ -1,14 +1,14 @@
 .app-container {
   display: flex;
   min-height: 100vh;
-  background-color: #f5f5f5;
 }
 
 .preview-container {
   flex: 1;
-  margin-left: 240px; /* Updated to match new navbar width */
-  padding: 32px;
-  background-color: #f5f5f5;
+  margin-left: 250px; /* Width of the sidebar */
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
 }
 
 .header {
@@ -45,45 +45,7 @@
   background-color: #e62e27;
 }
 
-.stats-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 32px;
-  padding: 24px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
 
-.stat-box {
-  background-color: #f8f9fa;
-  padding: 24px;
-  border-radius: 8px;
-  text-align: center;
-  border: 1px solid rgba(30, 73, 118, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.stat-box:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.stat-box h3 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1e4976;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.stat-number {
-  font-size: 36px;
-  color: #1e4976;
-  font-weight: bold;
-}
 
 .control-panel {
   background-color: white;
@@ -246,7 +208,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  padding: 0 20px;
 }
 
 .timetable-header h2 {
@@ -271,37 +234,284 @@
 }
 
 .download-btn {
-  padding: 8px 16px;
-  background-color: #f8f9fa;
-  color: #333;
-  border: 1px solid #e0e0e0;
+  background-color: #2563eb;
+  color: white;
+  border: none;
   border-radius: 4px;
+  padding: 10px 20px;
   font-size: 14px;
-  font-weight: normal;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
+}
+
+.download-btn:hover {
+  background-color: #1d4ed8;
 }
 
 .download-btn img {
   width: 16px;
   height: 16px;
-  opacity: 0.7;
+  filter: brightness(0) invert(1); /* Makes the icon white */
 }
 
-.download-btn:hover {
-  background-color: #f0f0f0;
-  border-color: #d0d0d0;
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.download-btn:hover img {
-  opacity: 1;
+.stat-card {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: white;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.download-btn:active {
-  background-color: #e9ecef;
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-title {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+.timetable-form {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  color: #1f2937;
+  transition: all 0.2s;
+}
+
+.search-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.search-input {
+  width: 250px;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-icon {
+  position: absolute;
+  right: -40px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  background-color: #2563eb;
+}
+
+.timetable-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.timetable-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.timetable-header h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000;
+}
+
+.download-btn {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.timetable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.timetable th {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: bold;
+}
+
+.timetable td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Generator section styles */
+.generator-section {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+/* Form styles */
+.form-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background-color: white;
+}
+
+/* Search group styles */
+.search-group {
+  flex: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.search-group input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.search-button {
+  background-color: #2563eb;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.search-button img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+/* Preview section styles */
+.preview-section {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.preview-header h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.download-button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Table styles */
+.timetable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.timetable th {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid #e2e8f0;
+  font-weight: 600;
+}
+
+.timetable td {
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
 }
