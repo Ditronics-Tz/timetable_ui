@@ -1,76 +1,49 @@
 import React, { useState } from 'react';
 import '../styles/ViewRoom.css';
-import searchIcon from '../assets/search.png';
 import Navbar from '../components/Navbar';
 
 const ViewRooms = () => {
-  // Sample data - replace with actual API call
-  const [rooms] = useState([
-    {
-      id: 1,
-      room_name: 'Lab 101',
-      room_type: 'Laboratory',
-      capacity: 30,
-      building_name: 'Engineering Block',
-      room_no: '101',
-      room_description: 'Computer Laboratory'
-    },
-    // Add more sample rooms as needed
-  ]);
-
+  const [rooms, setRooms] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('');
+  const [filterType, setFilterType] = useState('All Types');
 
-  const filteredRooms = rooms.filter(room => {
-    const matchesSearch = room.room_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         room.building_name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = filterType === '' || room.room_type === filterType;
-    return matchesSearch && matchesType;
-  });
-
-  const handleDelete = (id) => {
-    // Handle delete logic
-    console.log('Delete room:', id);
-  };
-
-  const handleEdit = (id) => {
-    // Handle edit logic
-    console.log('Edit room:', id);
+  const stats = {
+    totalRooms: 0,
+    availableNow: 0,
+    totalCapacity: 0,
+    maintenance: 0
   };
 
   return (
     <div className="app-container">
       <Navbar />
       <div className="view-rooms-container">
-        <div className="header-section">
-          <h1>View Rooms</h1>
-          <div className="controls">
-            <div className="search-bar">
-              <input
-                type="text"
-                placeholder="Search rooms..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button className="search-button">
-                <img src={searchIcon} alt="Search" />
-              </button>
-            </div>
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="filter-select"
-            >
-              <option value="">All Types</option>
-              <option value="Lecture Hall">Lecture Hall</option>
-              <option value="Laboratory">Laboratory</option>
-              <option value="Conference Room">Conference Room</option>
-              <option value="Other">Other</option>
-            </select>
+        <h1>View Rooms</h1>
+        <p className="subtitle">Manage and organize your educational spaces</p>
+
+        <div className="search-section">
+          <div className="search-input">
+            <input
+              type="text"
+              placeholder="Search rooms..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="type-select"
+          >
+            <option>All Types</option>
+            <option>Laboratory</option>
+            <option>Computer Lab</option>
+            <option>Lecture Hall</option>
+          </select>
         </div>
 
-        <div className="rooms-table">
+        <div className="room-directory">
+          <h2>Room Directory</h2>
           <table>
             <thead>
               <tr>
@@ -84,32 +57,41 @@ const ViewRooms = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredRooms.map(room => (
+              {rooms.map(room => (
                 <tr key={room.id}>
                   <td>{room.room_name}</td>
-                  <td>{room.room_type}</td>
-                  <td>{room.capacity}</td>
+                  <td><span className="room-type-badge">{room.room_type}</span></td>
+                  <td><span className="capacity-badge">{room.capacity}</span></td>
                   <td>{room.building_name}</td>
                   <td>{room.room_no}</td>
                   <td>{room.room_description}</td>
                   <td className="actions">
-                    <button 
-                      className="edit-button"
-                      onClick={() => handleEdit(room.id)}
-                    >
-                      Edit
-                    </button>
-                    <button 
-                      className="delete-button"
-                      onClick={() => handleDelete(room.id)}
-                    >
-                      Delete
-                    </button>
+                    <button className="edit-button">Edit</button>
+                    <button className="delete-button">Delete</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="stats-grid">
+          <div className="stat-card">
+            <h3>Total Rooms</h3>
+            <p>{stats.totalRooms}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Available Now</h3>
+            <p>{stats.availableNow}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Total Capacity</h3>
+            <p>{stats.totalCapacity}</p>
+          </div>
+          <div className="stat-card">
+            <h3>Maintenance</h3>
+            <p>{stats.maintenance}</p>
+          </div>
         </div>
       </div>
     </div>

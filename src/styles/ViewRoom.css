@@ -5,91 +5,98 @@
 
 .view-rooms-container {
   flex: 1;
-  padding: 24px;
-  margin-left: 250px; /* Match navbar width */
-  background-color: #f8fafc;
-  min-height: 100vh;
+  padding: 32px;
+  margin-left: 250px;
+  background-color: #f8f9ff;
 }
 
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
+h1 {
+  color: #000000;
+  font-size: 32px;
+  margin-bottom: 8px;
 }
 
-.header-section h1 {
-  font-size: 24px;
-  font-weight: 600;
-  color: #1a202c;
+.subtitle {
+  color: #64748b;
+  font-size: 16px;
+  margin-bottom: 32px;
 }
 
-.controls {
+.search-section {
   display: flex;
   gap: 16px;
-  align-items: center;
+  margin-bottom: 32px;
 }
 
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.search-input {
+  flex: 1;
+  position: relative;
 }
 
-.search-bar input {
-  padding: 8px 16px;
+.search-input input {
+  width: 100%;
+  padding: 12px 16px;
   border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  width: 250px;
-}
-
-.search-button {
-  background-color: #2563eb;
-  border: none;
-  border-radius: 4px;
-  padding: 8px;
-  cursor: pointer;
-}
-
-.search-button img {
-  width: 20px;
-  height: 20px;
-  filter: brightness(0) invert(1);
-}
-
-.filter-select {
-  padding: 8px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 16px;
   background-color: white;
 }
 
-.rooms-table {
-  background: white;
+.type-select {
+  padding: 12px 24px;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  background-color: white;
+  min-width: 150px;
+}
+
+.room-directory {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.room-directory h2 {
+  color: white;
+  background: #2563eb;
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin: -24px -24px 24px -24px;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid #e2e8f0;
+  border-collapse: separate;
+  border-spacing: 0 8px;
 }
 
 th {
-  background-color: #f8fafc;
-  font-weight: 600;
-  color: #4a5568;
+  color: #2563eb;
+  font-weight: 500;
+  text-align: left;
+  padding: 16px;
 }
 
-tr:hover {
-  background-color: #f8fafc;
+td {
+  padding: 16px;
+  background: white;
+}
+
+.room-type-badge {
+  background: #2563eb;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+.capacity-badge {
+  background: #e2e8f0;
+  color: #64748b;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
 }
 
 .actions {
@@ -97,28 +104,45 @@ tr:hover {
   gap: 8px;
 }
 
-.edit-button, .delete-button {
-  padding: 6px 12px;
-  border: none;
+.edit-button {
+  background: white;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  padding: 4px 16px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-}
-
-.edit-button {
-  background-color: #2563eb;
-  color: white;
 }
 
 .delete-button {
-  background-color: #dc2626;
+  background: #2563eb;
   color: white;
+  border: none;
+  padding: 4px 16px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.edit-button:hover {
-  background-color: #1d4ed8;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
 }
 
-.delete-button:hover {
-  background-color: #b91c1c;
+.stat-card {
+  background: #2563eb;
+  color: white;
+  padding: 24px;
+  border-radius: 16px;
+  text-align: left;
+}
+
+.stat-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.stat-card p {
+  font-size: 32px;
+  font-weight: bold;
 }
