@@ -6,7 +6,7 @@ import { StatsCard } from '../components/stats-card';
 
 function Preview1() {
   // State for statistics
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     departments: 0,
     faculties: 0,
     programs: 0
@@ -54,7 +54,6 @@ function Preview1() {
   };
 
   const handleDownload = () => {
-    // Implement download functionality here
     console.log('Downloading timetable...');
   };
 
@@ -117,20 +116,18 @@ function Preview1() {
               </select>
             </div>
             
-            <div className="search-group">
-              <input type="text" placeholder="Search Timetable" />
-              <button className="search-button">
-                <img src={searchIcon} alt="Search" />
-              </button>
-            </div>
+            <button className="search-button">
+              <img src={searchIcon} alt="Search" />
+            </button>
           </div>
         </div>
 
         <div className="preview-section">
           <div className="preview-header">
             <h2>TIMETABLE PREVIEW</h2>
-            <button className="download-button">
-              Download Timetable ↓
+            <button className="download-button" onClick={handleDownload}>
+              Download Timetable
+              <img src={downloadIcon} alt="Download" />
             </button>
           </div>
           
