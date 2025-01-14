@@ -84,12 +84,12 @@ function Navbar() {
             >
               Add Rooms
             </Link>
-            <a 
-              href="/rooms/view" 
+            <Link 
+              to="/rooms/view" 
               className={`dropdown-item ${activePage === 'rooms/view' ? 'active' : ''}`}
             >
               View Rooms
-            </a>
+            </Link>
             <a 
               href="/rooms/manage" 
               className={`dropdown-item ${activePage === 'rooms/manage' ? 'active' : ''}`}
