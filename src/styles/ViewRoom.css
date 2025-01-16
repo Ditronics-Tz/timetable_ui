@@ -59,7 +59,7 @@ h1 {
 
 .room-directory h2 {
   color: white;
-  background: #2563eb;
+  background: #000000;
   padding: 16px 24px;
   border-radius: 8px;
   margin: -24px -24px 24px -24px;
@@ -72,7 +72,7 @@ table {
 }
 
 th {
-  color: #2563eb;
+  color: #000000;
   font-weight: 500;
   text-align: left;
   padding: 16px;
@@ -84,7 +84,7 @@ td {
 }
 
 .room-type-badge {
-  background: #2563eb;
+  background: #000000;
   color: white;
   padding: 4px 12px;
   border-radius: 16px;
@@ -106,15 +106,15 @@ td {
 
 .edit-button {
   background: white;
-  color: #2563eb;
-  border: 1px solid #2563eb;
+  color: #000000;
+  border: 1px solid #000000;
   padding: 4px 16px;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .delete-button {
-  background: #2563eb;
+  background: #000000;
   color: white;
   border: none;
   padding: 4px 16px;
@@ -129,7 +129,7 @@ td {
 }
 
 .stat-card {
-  background: #2563eb;
+  background: #000000;
   color: white;
   padding: 24px;
   border-radius: 16px;
