@@ -1,14 +1,13 @@
 .sidebar {
   width: 240px;
   height: 100vh;
-  background-color: #1e4976;
-  color: white;
+  background-color: #15192C;
+  color: #8A94A6;
   position: fixed;
   left: 0;
   top: 0;
   display: flex;
   flex-direction: column;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .logo-section {
@@ -21,27 +20,23 @@
 }
 
 .logo-circle {
-  width: 44px;
-  height: 44px;
-  background: white;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .admin-icon {
-  width: 26px;
-  height: 26px;
-  filter: brightness(0) saturate(100%) invert(27%) sepia(28%) saturate(1202%) hue-rotate(182deg) brightness(95%) contrast(89%);
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) saturate(100%) invert(100%);
 }
 
 .logo-section h2 {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 500;
   color: white;
-  letter-spacing: 0.5px;
 }
 
 .nav-menu {
@@ -54,28 +49,34 @@
   display: flex;
   align-items: center;
   padding: 12px 24px;
-  color: white;
+  color: #8A94A6;
   text-decoration: none;
-  gap: 16px;
+  gap: 12px;
   font-size: 15px;
   transition: all 0.2s ease;
   position: relative;
 }
 
 .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  color: white;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .nav-item.active {
-  background-color: rgba(255, 255, 255, 0.12);
-  border-left: 3px solid #ff3b30;
-  padding-left: 21px;
+  background-color: #1E2235;
+  color: white;
 }
 
 .nav-icon {
   width: 20px;
   height: 20px;
   opacity: 0.9;
+  filter: brightness(0) saturate(100%) invert(60%);
+}
+
+.nav-item:hover .nav-icon,
+.nav-item.active .nav-icon {
+  filter: brightness(0) saturate(100%) invert(100%);
 }
 
 .nav-item-dropdown {
@@ -104,7 +105,7 @@
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease-in-out;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: #1E2235;
 }
 
 .nav-item-dropdown.expanded .dropdown-menu {
@@ -113,32 +114,26 @@
 
 .dropdown-item {
   display: flex;
-  padding: 10px 24px 10px 60px;
-  color: rgba(255, 255, 255, 0.85);
+  padding: 10px 24px 10px 56px;
+  color: #8A94A6;
   text-decoration: none;
   font-size: 14px;
   transition: all 0.2s ease;
 }
 
 .dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
   color: white;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .dropdown-item.active {
-  background-color: rgba(255, 255, 255, 0.12);
   color: white;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
-.settings-section {
-  padding: 16px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: auto;
-}
-
-/* Custom scrollbar for nav-menu */
+/* Custom scrollbar */
 .nav-menu::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .nav-menu::-webkit-scrollbar-track {
@@ -146,10 +141,10 @@
 }
 
 .nav-menu::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
 }
 
 .nav-menu::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
 }
