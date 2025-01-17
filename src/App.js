@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Dashboard from './views/Dashboard';
 import Navbar from './components/Navbar';
 import Preview1 from './views/Preview1';
 import AddRooms from './views/AddRooms';
@@ -14,6 +15,7 @@ function App() {
         <Navbar />
         <div className="main-content">
           <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/preview" element={<Preview1 />} />
             <Route path="/rooms/add" element={<AddRooms />} />
             <Route path="/rooms/view" element={<ViewRooms />} />

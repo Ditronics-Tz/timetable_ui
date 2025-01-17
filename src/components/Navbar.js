@@ -12,14 +12,21 @@ import staffIcon from '../assets/staff.png';
 import settingsIcon from '../assets/settings.png';
 import previewIcon from '../assets/preview.png';
 import moduleAllocationIcon from '../assets/allocation.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { 
+  LayoutDashboard, // For dashboard icon
+  Building2, // For rooms
+  Calendar, // For schedule
+  Settings, // For settings
+  LogOut // For logout
+} from 'lucide-react';
 
 function Navbar() {
-  const [activePage, setActivePage] = React.useState(() => {
-    const path = window.location.pathname.slice(1);
-    return path || 'dashboard';
-  });
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activePage = location.pathname.substring(1);
 
+  // Add state for expanded menus
   const [isRoomsExpanded, setIsRoomsExpanded] = useState(false);
   const [isModulesExpanded, setIsModulesExpanded] = useState(false);
   const [isCoursesExpanded, setIsCoursesExpanded] = useState(false);
@@ -27,8 +34,8 @@ function Navbar() {
   const [isStaffExpanded, setIsStaffExpanded] = useState(false);
   const [isModuleAllocationExpanded, setIsModuleAllocationExpanded] = useState(false);
 
-  const handleNavClick = (page) => {
-    setActivePage(page);
+  const handleNavigation = (path) => {
+    navigate(path);
   };
 
   return (
@@ -41,13 +48,13 @@ function Navbar() {
       </div>
       
       <nav className="nav-menu">
-        <a 
-          href="/dashboard" 
+        <button 
+          onClick={() => handleNavigation('/dashboard')} 
           className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`}
         >
-          <img src={dashboardIcon} alt="Dashboard" className="nav-icon" />
+          <LayoutDashboard className="nav-icon" size={20} />
           <span>Dashboard</span>
-        </a>
+        </button>
         
         <a 
           href="/timetable" 
@@ -60,7 +67,7 @@ function Navbar() {
         <Link 
           to="/preview" 
           className={`nav-item ${activePage === 'preview' ? 'active' : ''}`}
-          onClick={() => handleNavClick('preview')}
+          onClick={() => handleNavigation('/preview')}
         >
           <img src={previewIcon} alt="Preview" className="nav-icon" />
           <span>Preview</span>
@@ -80,7 +87,7 @@ function Navbar() {
             <Link 
               to="/rooms/add" 
               className={`dropdown-item ${activePage === 'rooms/add' ? 'active' : ''}`}
-              onClick={() => handleNavClick('rooms/add')}
+              onClick={() => handleNavigation('/rooms/add')}
             >
               Add Rooms
             </Link>
