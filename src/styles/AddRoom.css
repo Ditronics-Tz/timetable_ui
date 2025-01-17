@@ -37,6 +37,9 @@
   color: #000000;
   font-weight: 500;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .form-group input,
@@ -203,4 +206,9 @@
   width: 24px;
   height: 24px;
   margin-bottom: 0.5rem;
+  color: #6b7280;
+}
+
+.input-icon {
+  color: #6b7280;
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Upload, Users, Building, Hash } from 'lucide-react';
 import '../styles/AddRoom.css';
 
 const AddRooms = () => {
@@ -41,7 +42,7 @@ const AddRooms = () => {
       <p>Enter the room details below or use bulk upload.</p>
       
       <div className="upload-section">
-        <svg className="upload-icon" /* Add upload icon SVG here */ />
+        <Upload className="upload-icon" size={24} />
         <input
           type="file"
           accept=".csv"
@@ -99,7 +100,10 @@ const AddRooms = () => {
 
         <div className="form-row">
           <div className="form-group">
-            <label>Capacity</label>
+            <label>
+              <Users size={16} className="input-icon" />
+              Capacity
+            </label>
             <input
               type="number"
               name="capacity"
@@ -110,7 +114,10 @@ const AddRooms = () => {
           </div>
 
           <div className="form-group">
-            <label>Building Name</label>
+            <label>
+              <Building size={16} className="input-icon" />
+              Building Name
+            </label>
             <input
               type="text"
               name="building_name"
@@ -122,7 +129,10 @@ const AddRooms = () => {
         </div>
 
         <div className="form-group">
-          <label>Room Number</label>
+          <label>
+            <Hash size={16} className="input-icon" />
+            Room Number
+          </label>
           <input
             type="text"
             name="room_no"
