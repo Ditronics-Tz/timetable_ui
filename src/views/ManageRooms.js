@@ -2,6 +2,7 @@
 
 import React from "react";
 import Navbar from "../components/Navbar";
+import Layout from "../components/Layout";
 import { flexRender, useReactTable, getCoreRowModel, getPaginationRowModel, getSortedRowModel, getFilteredRowModel } from "@tanstack/react-table"
 import { ArrowUpDown, Plus, MoreHorizontal, Calendar, Download, Upload } from 'lucide-react'
 import { Switch } from "../components/ui/switch"
@@ -102,9 +103,9 @@ export default function RoomManagement() {
   })
 
   return (
-    <div>
+    <div className="app-container">
       <Navbar />
-      <div className="container">
+      <div className="view-rooms-container">
         <div className="header">
           <h1>Manage Rooms</h1>
           <p className="subtitle">Manage and organize your rooms efficiently.</p>

@@ -38,88 +38,79 @@ const AddRooms = () => {
   return (
     <div className="add-room-container">
       <h1>Add New Room</h1>
+      <p>Enter the room details below or use bulk upload.</p>
       
       <div className="upload-section">
-        <h2>Bulk Upload Rooms</h2>
+        <svg className="upload-icon" /* Add upload icon SVG here */ />
+        <input
+          type="file"
+          accept=".csv"
+          id="csvFile"
+          onChange={handleFileUpload}
+          className="file-input"
+        />
+        <label htmlFor="csvFile" className="file-label">
+          Choose CSV File
+        </label>
         <p>Upload multiple rooms using a CSV file</p>
-        <div className="csv-upload">
-          <input
-            type="file"
-            accept=".csv"
-            id="csvFile"
-            onChange={handleFileUpload}
-            className="file-input"
-          />
-          <label htmlFor="csvFile" className="file-label">
-            Choose CSV File
-          </label>
-          <a href="#" className="template-link">Download CSV Template</a>
-        </div>
+        <a href="#" className="template-link">Download CSV Template</a>
       </div>
 
       <div className="separator">
-        <span>Or add room manually</span>
+        <span>OR ADD SINGLE ROOM</span>
       </div>
 
       <form className="add-room-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>
-            Room Name
-            <input
-              type="text"
-              name="room_name"
-              value={roomData.room_name}
-              onChange={handleChange}
-              placeholder="Enter room name"
-            />
-          </label>
+          <label>Room Name</label>
+          <input
+            type="text"
+            name="room_name"
+            value={roomData.room_name}
+            onChange={handleChange}
+            placeholder="Enter room name"
+          />
         </div>
 
         <div className="form-group">
-          <label>
-            Room Type
-            <select
-              name="room_type"
-              value={roomData.room_type}
-              onChange={handleChange}
-            >
-              <option value="">Select room type</option>
-              <option value="lecture">Lecture Hall</option>
-              <option value="lab">Laboratory</option>
-              <option value="conference">Conference Room</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
+          <label>Room Type</label>
+          <select
+            name="room_type"
+            value={roomData.room_type}
+            onChange={handleChange}
+          >
+            <option value="">Lecture Hall</option>
+            <option value="lecture">Lecture Hall</option>
+            <option value="lab">Laboratory</option>
+            <option value="conference">Conference Room</option>
+            <option value="other">Other</option>
+          </select>
         </div>
 
         <div className="form-group">
-          <label>
-            Room Description
-            <textarea
-              name="room_description"
-              value={roomData.room_description}
-              onChange={handleChange}
-              placeholder="Enter room description"
-            />
-          </label>
+          <label>Room Description</label>
+          <textarea
+            name="room_description"
+            value={roomData.room_description}
+            onChange={handleChange}
+            placeholder="Enter room description"
+          />
         </div>
 
-        <div className="form-group">
-          <label>
-            Capacity
+        <div className="form-row">
+          <div className="form-group">
+            <label>Capacity</label>
             <input
               type="number"
               name="capacity"
               value={roomData.capacity}
               onChange={handleChange}
-              placeholder="Enter room capacity"
+              placeholder="0"
             />
-          </label>
-        </div>
+          </div>
 
-        <div className="form-group">
-          <label>
-            Building Name
+          <div className="form-group">
+            <label>Building Name</label>
             <input
               type="text"
               name="building_name"
@@ -127,20 +118,18 @@ const AddRooms = () => {
               onChange={handleChange}
               placeholder="Enter building name"
             />
-          </label>
+          </div>
         </div>
 
         <div className="form-group">
-          <label>
-            Room Number
-            <input
-              type="text"
-              name="room_no"
-              value={roomData.room_no}
-              onChange={handleChange}
-              placeholder="Enter room number"
-            />
-          </label>
+          <label>Room Number</label>
+          <input
+            type="text"
+            name="room_no"
+            value={roomData.room_no}
+            onChange={handleChange}
+            placeholder="Enter room number"
+          />
         </div>
 
         <button type="submit" className="submit-button">

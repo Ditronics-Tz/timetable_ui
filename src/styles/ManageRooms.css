@@ -72,13 +72,10 @@
 }
 
 .container {
-  padding: 24px;
-  margin-left: 260px;
-  width: calc(100% - 260px);
-  min-height: 100vh;
-  background-color: #f8f9fa;
-  position: relative;
-  box-sizing: border-box;
+  flex: 1;
+  padding: 32px;
+  margin-left: 250px;
+  background-color: #f8f9ff;
 }
 
 /* Add styles for the main content wrapper */
@@ -251,4 +248,34 @@ td {
 /* Add this to prevent horizontal scrollbar */
 body {
   overflow-x: hidden;
+}
+
+/* Add styles for the navbar/sidebar */
+.navbar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 260px;
+  height: 100vh;
+  background-color: #1a1f36;
+  z-index: 1000;
+}
+
+/* Remove any conflicting navbar styles if they exist */
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* This is how your ViewRooms.js handles the layout */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.view-rooms-container {
+  flex: 1;
+  padding: 32px;
+  margin-left: 250px;
+  background-color: #f8f9ff;
 }
