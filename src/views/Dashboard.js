@@ -9,38 +9,13 @@ import Navbar from '../components/Navbar'
 import 'react-calendar/dist/Calendar.css'
 import '../styles/Calendar.css'
 
-const usageData = [
-  { day: 'Mon', usage: 12 },
-  { day: 'Tue', usage: 15 },
-  { day: 'Wed', usage: 18 },
-  { day: 'Thu', usage: 14 },
-  { day: 'Fri', usage: 17 }
-]
+// Empty usage data
+const usageData = []
 
-const activities = [
-  {
-    id: 1,
-    title: 'Room 301 Schedule Updated',
-    description: 'Changed Tuesday morning slot',
-    time: '2 hours ago',
-    icon: Clock,
-  },
-  {
-    id: 2,
-    title: 'New Class Added',
-    description: 'Introduction to Computer Science',
-    time: '4 hours ago',
-    icon: BookOpen,
-  },
-  {
-    id: 3,
-    title: 'Room Maintenance',
-    description: 'Room 205 under maintenance',
-    time: '1 day ago',
-    icon: Building2,
-  },
-]
+// Empty activities
+const activities = []
 
+// Quick actions remain as they are navigation items
 const quickActions = [
   { label: 'Create New Timetable', icon: Clock },
   { label: 'Manage Rooms', icon: Building2 },
@@ -64,30 +39,30 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <StatsCard
               title="Total Rooms"
-              value="128"
-              change="+2 from last month"
+              value="0"
+              change="0 from last month"
               icon={<Building2 className="w-5 h-5" />}
             />
             <StatsCard
               title="Active Courses"
-              value="245"
-              change="+24.2% from last semester"
+              value="0"
+              change="0% from last semester"
               icon={<GraduationCap className="w-5 h-5" />}
-              changeColor="text-green-500"
+              changeColor="text-gray-500"
             />
             <StatsCard
               title="Total Students"
-              value="3,427"
-              change="+1.12% from last year"
+              value="0"
+              change="0% from last year"
               icon={<Users className="w-5 h-5" />}
-              changeColor="text-green-500"
+              changeColor="text-gray-500"
             />
             <StatsCard
               title="Room Utilization"
-              value="82%"
-              change="-4% from last week"
+              value="0%"
+              change="0% from last week"
               icon={<BarChart2 className="w-5 h-5" />}
-              changeColor="text-red-500"
+              changeColor="text-gray-500"
             />
           </div>
 
@@ -151,6 +126,9 @@ export default function Dashboard() {
                     </div>
                   </div>
                 ))}
+                {activities.length === 0 && (
+                  <p className="text-gray-500 text-center">No recent activities</p>
+                )}
               </div>
             </Card>
 
