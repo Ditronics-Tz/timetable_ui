@@ -1,1 +1,49 @@
-yarn add prop-types
+forms  to be  created  
+
+# Program information to be entered:
+- Program Name (required)
+- Department (required, select from existing departments)
+- NTA Level (optional)
+
+# Module information to be entered:
+- Module Code (required)
+- Module Name (required)
+- Module Type (optional)
+- Year (optional)
+- Semester (optional)
+- NTA Level (optional)
+- Credit Value (defaults to 10)
+
+
+
+# Class-Module allocation information to be entered:
+- Class (required, select from existing classes)
+- Module (required, select from existing modules)
+- Staff (required, select from existing staff)
+- Program (required, select from existing programs)
+
+# Class information to be entered:
+- Program (required, select from existing programs)
+- Class Name (required)
+- Class Capacity (required)
+- Academic Year (required)
+- Class Stream (required)
+
+# Room information to be entered:
+- Room Name (required)
+- Room Description (optional)
+- Room Type (required)
+- Capacity (required)
+- Building Name (required)
+- Room Number (required)
+
+
+# Staff information to be entered:
+- Staff Name (required)
+- RFID ID (optional)
+- Email (optional)
+- Phone Number (optional)
+- Staff Type (required)
+- Staff Title (optional)
+- Department (required, select from existing departments)
+- User Account (optional, link to Django User)
