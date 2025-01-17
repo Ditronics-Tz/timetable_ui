@@ -1,4 +1,15 @@
 import React, { useState } from 'react';
+import {
+  Search, // For search input
+  Filter, // For filter dropdown
+  Building2, // For total rooms
+  CheckCircle2, // For available rooms
+  Users, // For total capacity
+  Wrench, // For maintenance
+  PencilLine, // For edit button
+  Trash2, // For delete button
+  Plus // For add button
+} from 'lucide-react';
 import '../styles/ViewRoom.css';
 import Navbar from '../components/Navbar';
 
@@ -23,6 +34,7 @@ const ViewRooms = () => {
 
         <div className="search-section">
           <div className="search-input">
+            <Search className="search-icon" size={20} />
             <input
               type="text"
               placeholder="Search rooms..."
@@ -30,16 +42,19 @@ const ViewRooms = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="type-select"
-          >
-            <option>All Types</option>
-            <option>Laboratory</option>
-            <option>Computer Lab</option>
-            <option>Lecture Hall</option>
-          </select>
+          <div className="filter-wrapper">
+            <Filter className="filter-icon" size={20} />
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="type-select"
+            >
+              <option>All Types</option>
+              <option>Laboratory</option>
+              <option>Computer Lab</option>
+              <option>Lecture Hall</option>
+            </select>
+          </div>
         </div>
 
         <div className="room-directory">
@@ -66,8 +81,14 @@ const ViewRooms = () => {
                   <td>{room.room_no}</td>
                   <td>{room.room_description}</td>
                   <td className="actions">
-                    <button className="edit-button">Edit</button>
-                    <button className="delete-button">Delete</button>
+                    <button className="edit-button">
+                      <PencilLine size={16} />
+                      Edit
+                    </button>
+                    <button className="delete-button">
+                      <Trash2 size={16} />
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -77,20 +98,32 @@ const ViewRooms = () => {
 
         <div className="stats-grid">
           <div className="stat-card">
-            <h3>Total Rooms</h3>
-            <p>{stats.totalRooms}</p>
+            <Building2 className="stat-icon" size={24} />
+            <div className="stat-content">
+              <h3>Total Rooms</h3>
+              <p>{stats.totalRooms}</p>
+            </div>
           </div>
           <div className="stat-card">
-            <h3>Available Now</h3>
-            <p>{stats.availableNow}</p>
+            <CheckCircle2 className="stat-icon" size={24} />
+            <div className="stat-content">
+              <h3>Available Now</h3>
+              <p>{stats.availableNow}</p>
+            </div>
           </div>
           <div className="stat-card">
-            <h3>Total Capacity</h3>
-            <p>{stats.totalCapacity}</p>
+            <Users className="stat-icon" size={24} />
+            <div className="stat-content">
+              <h3>Total Capacity</h3>
+              <p>{stats.totalCapacity}</p>
+            </div>
           </div>
           <div className="stat-card">
-            <h3>Maintenance</h3>
-            <p>{stats.maintenance}</p>
+            <Wrench className="stat-icon" size={24} />
+            <div className="stat-content">
+              <h3>Maintenance</h3>
+              <p>{stats.maintenance}</p>
+            </div>
           </div>
         </div>
       </div>

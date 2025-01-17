@@ -11,7 +11,7 @@
 }
 
 h1 {
-  color: #000000;
+  color: #28282B;
   font-size: 32px;
   margin-bottom: 8px;
 }
@@ -24,8 +24,8 @@ h1 {
 
 .search-section {
   display: flex;
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
 .search-input {
@@ -33,21 +33,40 @@ h1 {
   position: relative;
 }
 
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
 .search-input input {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 16px;
-  background-color: white;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.filter-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-icon {
+  position: absolute;
+  left: 12px;
+  color: #6b7280;
 }
 
 .type-select {
-  padding: 12px 24px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 14px;
   background-color: white;
-  min-width: 150px;
 }
 
 .room-directory {
@@ -59,7 +78,7 @@ h1 {
 
 .room-directory h2 {
   color: white;
-  background: #000000;
+  background: #28282B;
   padding: 16px 24px;
   border-radius: 8px;
   margin: -24px -24px 24px -24px;
@@ -72,7 +91,7 @@ table {
 }
 
 th {
-  color: #000000;
+  color: #28282B;
   font-weight: 500;
   text-align: left;
   padding: 16px;
@@ -84,7 +103,7 @@ td {
 }
 
 .room-type-badge {
-  background: #000000;
+  background: #28282B;
   color: white;
   padding: 4px 12px;
   border-radius: 16px;
@@ -106,15 +125,15 @@ td {
 
 .edit-button {
   background: white;
-  color: #000000;
-  border: 1px solid #000000;
+  color: #28282B;
+  border: 1px solid #28282B;
   padding: 4px 16px;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .delete-button {
-  background: #000000;
+  background: #28282B;
   color: white;
   border: none;
   padding: 4px 16px;
@@ -125,24 +144,49 @@ td {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .stat-card {
-  background: #000000;
+  background: #28282B;
+  padding: 1.5rem;
+  border-radius: 12px;
   color: white;
-  padding: 24px;
-  border-radius: 16px;
-  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
-.stat-card h3 {
-  font-size: 18px;
-  margin-bottom: 8px;
-  font-weight: 500;
+.stat-icon {
+  color: white;
+  opacity: 0.9;
 }
 
-.stat-card p {
-  font-size: 32px;
-  font-weight: bold;
+.stat-content {
+  flex-grow: 1;
+}
+
+.stat-content h3 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.stat-content p {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .search-section {
+    flex-direction: column;
+  }
 }

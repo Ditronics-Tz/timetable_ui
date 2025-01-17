@@ -80,7 +80,7 @@
 }
 
 .search-button {
-  background-color: #2563eb;
+  background-color: #28282B;
   border: none;
   border-radius: 4px;
   padding: 8px;
@@ -94,7 +94,7 @@
 }
 
 .search-button:hover {
-  background-color: #1d4ed8;
+  background-color: #1a1a1a;
 }
 
 .search-button img {
@@ -256,16 +256,31 @@
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #2563eb, #1e40af);
+  background: #28282B;
   border-radius: 12px;
   padding: 1.5rem;
   color: white;
   transition: transform 0.2s;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
+}
+
+.stat-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: white;
+  opacity: 0.9;
+}
+
+.stat-content {
+  flex-grow: 1;
 }
 
 .stat-title {
@@ -273,12 +288,12 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   opacity: 0.9;
+  margin-bottom: 0.5rem;
 }
 
 .stat-value {
   font-size: 2.5rem;
   font-weight: 700;
-  margin-top: 0.5rem;
 }
 
 .timetable-form {
@@ -416,7 +431,9 @@
 }
 
 .form-group label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: #4a5568;
   margin-bottom: 8px;
 }
@@ -469,26 +486,21 @@
 }
 
 .download-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: #2563eb;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #28282B;
   color: white;
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s;
 }
 
-.download-button img {
-  width: 16px;
-  height: 16px;
-  filter: brightness(0) invert(1); /* Makes the icon white */
+.download-button:hover {
+  background-color: #1a1a1a;
 }
 
 /* Table styles */
@@ -507,4 +519,17 @@
 .timetable td {
   padding: 12px;
   border-bottom: 1px solid #e2e8f0;
+}
+
+/* Style for input icons */
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.input-icon {
+  color: #28282B;
 }

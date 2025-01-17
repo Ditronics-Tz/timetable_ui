@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { 
+  Building2, // For departments
+  GraduationCap, // For faculties
+  BookOpen, // For programs
+  Calendar, // For academic year
+  BookMarked, // For semester
+  Building, // For department selection
+  FileSpreadsheet, // For timetable type
+  Search, // For search button
+  Download // For download button
+} from 'lucide-react';
 import '../styles/Preview1.css';
-import searchIcon from '../assets/search.png';
-import downloadIcon from '../assets/download.png';
-import { StatsCard } from '../components/stats-card';
 
 function Preview1() {
   // State for statistics
@@ -65,9 +73,29 @@ function Preview1() {
         </div>
 
         <div className="stats-container">
-          <StatsCard title="DEPARTMENTS" count={stats.departments} />
-          <StatsCard title="FACULTIES" count={stats.faculties} />
-          <StatsCard title="PROGRAMS" count={stats.programs} />
+          <div className="stat-card">
+            <Building2 className="stat-icon" />
+            <div className="stat-content">
+              <div className="stat-title">DEPARTMENTS</div>
+              <div className="stat-value">{stats.departments}</div>
+            </div>
+          </div>
+          
+          <div className="stat-card">
+            <GraduationCap className="stat-icon" />
+            <div className="stat-content">
+              <div className="stat-title">FACULTIES</div>
+              <div className="stat-value">{stats.faculties}</div>
+            </div>
+          </div>
+          
+          <div className="stat-card">
+            <BookOpen className="stat-icon" />
+            <div className="stat-content">
+              <div className="stat-title">PROGRAMS</div>
+              <div className="stat-value">{stats.programs}</div>
+            </div>
+          </div>
         </div>
 
         <div className="generator-section">
@@ -75,7 +103,10 @@ function Preview1() {
           
           <div className="form-row">
             <div className="form-group">
-              <label>Academic Year</label>
+              <label>
+                <Calendar size={16} className="input-icon" />
+                Academic Year
+              </label>
               <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
                 <option value="">Select Year</option>
                 {academicYears.map(year => (
@@ -85,7 +116,10 @@ function Preview1() {
             </div>
 
             <div className="form-group">
-              <label>Semester</label>
+              <label>
+                <BookMarked size={16} className="input-icon" />
+                Semester
+              </label>
               <select value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)}>
                 <option value="">Select Semester</option>
                 {semesters.map(semester => (
@@ -95,7 +129,10 @@ function Preview1() {
             </div>
 
             <div className="form-group">
-              <label>Department</label>
+              <label>
+                <Building size={16} className="input-icon" />
+                Department
+              </label>
               <select value={selectedDepartment} onChange={(e) => setSelectedDepartment(e.target.value)}>
                 <option value="">Select Department</option>
                 {departments.map(dept => (
@@ -107,7 +144,10 @@ function Preview1() {
 
           <div className="form-row">
             <div className="form-group">
-              <label>Timetable Type</label>
+              <label>
+                <FileSpreadsheet size={16} className="input-icon" />
+                Timetable Type
+              </label>
               <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
                 <option value="">Select Type</option>
                 {timetableTypes.map(type => (
@@ -117,7 +157,7 @@ function Preview1() {
             </div>
             
             <button className="search-button">
-              <img src={searchIcon} alt="Search" />
+              <Search size={20} color="white" />
             </button>
           </div>
         </div>
@@ -125,9 +165,9 @@ function Preview1() {
         <div className="preview-section">
           <div className="preview-header">
             <h2>TIMETABLE PREVIEW</h2>
-            <button className="download-button" onClick={handleDownload}>
+            <button className="download-button">
               Download Timetable
-              <img src={downloadIcon} alt="Download" />
+              <Download size={16} color="white" />
             </button>
           </div>
           
