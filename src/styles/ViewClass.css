@@ -1,0 +1,141 @@
+.view-class-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-left: 250px; /* Adjust based on your navbar width */
+  width: calc(100% - 250px);
+}
+
+.view-class-card {
+  padding: 2rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Filter section styles */
+.filter-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Search input styles */
+.search-wrapper {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+/* Table styles */
+.table-container {
+  overflow-x: auto;
+  margin-top: 1.5rem;
+}
+
+/* Pagination styles */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+/* Button styles */
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Slider styles */
+.slider-container {
+  padding: 0.5rem 0;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Status indicator styles */
+.status-text {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Empty state styles */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .filter-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .view-class-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .filter-section {
+    grid-template-columns: 1fr;
+  }
+
+  .view-class-card {
+    padding: 1rem;
+  }
+}
+
+/* Header section styles */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Filter actions styles */
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Table cell styles */
+.table-cell {
+  white-space: nowrap;
+  padding: 0.75rem 1rem;
+}
+
+/* Hover effects */
+.action-button:hover {
+  background-color: #f3f4f6;
+}
+
+.table-row:hover {
+  background-color: #f9fafb;
+}
