@@ -26,6 +26,7 @@ function App() {
             <Route path="/classes/add" element={<AddClass />} />
             <Route path="/classes/view" element={<ViewClass />} />
             <Route path="/classes/manage" element={<ManageClass />} />
+            <Route path="/manage-classes" element={<ManageClass />} />
             {/* Other routes */}
           </Routes>
         </div>

@@ -19,7 +19,8 @@ import {
   Calendar, // For schedule
   Settings, // For settings
   LogOut, // For logout
-  GraduationCap // Add this import for classes icon
+  GraduationCap, // Add this import for classes icon
+  Folders
 } from 'lucide-react';
 
 function Navbar() {
@@ -281,10 +282,13 @@ function Navbar() {
             >
               View Classes
             </Link>
-            <Link 
-              to="/classes/manage" 
-              className={`dropdown-item ${activePage === 'classes/manage' ? 'active' : ''}`}
+            <Link
+              to="/manage-classes"
+              className={`flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg transition-colors ${
+                location.pathname === '/manage-classes' ? 'bg-gray-100 text-black' : ''
+              }`}
             >
+              <Folders size={20} />
               Manage Classes
             </Link>
           </div>

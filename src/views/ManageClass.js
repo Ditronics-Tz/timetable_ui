@@ -21,15 +21,8 @@ import {
 } from "../components/ui/dropdown-menu"
 import '../styles/ManageClass.css'
 
-// Sample class data
-const initialClasses = [
-  { id: 1, name: 'Introduction to Programming', program: 'Computer Science', capacity: 30, academicYear: '2023-2024', status: 'Active', stream: 'A' },
-  { id: 2, name: 'Business Ethics', program: 'Business Administration', capacity: 40, academicYear: '2023-2024', status: 'Inactive', stream: 'B' },
-  { id: 3, name: 'Digital Design', program: 'Arts & Design', capacity: 25, academicYear: '2023-2024', status: 'Active', stream: 'C' },
-]
-
 export default function ClassManagement() {
-  const [classes, setClasses] = useState(initialClasses)
+  const [classes, setClasses] = useState([])
   const [selectedClasses, setSelectedClasses] = useState([])
   const [dateRange, setDateRange] = useState({
     from: new Date(),
@@ -150,51 +143,59 @@ export default function ClassManagement() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {classes.map((cls) => (
-                  <TableRow key={cls.id}>
-                    <TableCell>
-                      <Checkbox 
-                        checked={selectedClasses.includes(cls.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedClasses([...selectedClasses, cls.id])
-                          } else {
-                            setSelectedClasses(selectedClasses.filter(id => id !== cls.id))
-                          }
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">{cls.name}</TableCell>
-                    <TableCell>{cls.program}</TableCell>
-                    <TableCell>{cls.capacity}</TableCell>
-                    <TableCell>{cls.academicYear}</TableCell>
-                    <TableCell>{cls.stream}</TableCell>
-                    <TableCell>
-                      <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                        ${cls.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {cls.status}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(cls.id)}>
-                            Copy class ID
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => handleDelete(cls.id)}>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                {classes.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                      No classes found. Click "Add Class" to create a new class.
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  classes.map((cls) => (
+                    <TableRow key={cls.id}>
+                      <TableCell>
+                        <Checkbox 
+                          checked={selectedClasses.includes(cls.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedClasses([...selectedClasses, cls.id])
+                            } else {
+                              setSelectedClasses(selectedClasses.filter(id => id !== cls.id))
+                            }
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">{cls.name}</TableCell>
+                      <TableCell>{cls.program}</TableCell>
+                      <TableCell>{cls.capacity}</TableCell>
+                      <TableCell>{cls.academicYear}</TableCell>
+                      <TableCell>{cls.stream}</TableCell>
+                      <TableCell>
+                        <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                          ${cls.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                          {cls.status}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(cls.id)}>
+                              Copy class ID
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleDelete(cls.id)}>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
@@ -218,7 +219,12 @@ export default function ClassManagement() {
               <Button variant="outline" className="flex items-center gap-2">
                 Bulk Update
               </Button>
-              <Button variant="destructive" className="flex items-center gap-2" onClick={handleBulkDelete} disabled={selectedClasses.length === 0}>
+              <Button 
+                variant="destructive" 
+                className="flex items-center gap-2" 
+                onClick={handleBulkDelete} 
+                disabled={selectedClasses.length === 0}
+              >
                 <Trash2 className="h-4 w-4" />
                 Bulk Delete
               </Button>
