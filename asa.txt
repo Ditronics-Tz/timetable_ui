@@ -29,13 +29,7 @@ forms  to be  created
 - Academic Year (required)
 - Class Stream (required)
 
-# Room information to be entered:
-- Room Name (required)
-- Room Description (optional)
-- Room Type (required)
-- Capacity (required)
-- Building Name (required)
-- Room Number (required)
+
 
 
 # Staff information to be entered:

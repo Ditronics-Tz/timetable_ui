@@ -18,7 +18,8 @@ import {
   Building2, // For rooms
   Calendar, // For schedule
   Settings, // For settings
-  LogOut // For logout
+  LogOut, // For logout
+  GraduationCap // Add this import for classes icon
 } from 'lucide-react';
 
 function Navbar() {
@@ -33,6 +34,7 @@ function Navbar() {
   const [isDepartmentsExpanded, setIsDepartmentsExpanded] = useState(false);
   const [isStaffExpanded, setIsStaffExpanded] = useState(false);
   const [isModuleAllocationExpanded, setIsModuleAllocationExpanded] = useState(false);
+  const [isClassesExpanded, setIsClassesExpanded] = useState(false);
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -253,6 +255,38 @@ function Navbar() {
             <a href="/module-allocation/manage" className={`dropdown-item ${activePage === 'module-allocation/manage' ? 'active' : ''}`}>
               Manage Allocations
             </a>
+          </div>
+        </div>
+
+        <div className={`nav-item-dropdown ${isClassesExpanded ? 'expanded' : ''}`}>
+          <div 
+            className={`nav-item ${activePage.startsWith('classes') ? 'active' : ''}`}
+            onClick={() => setIsClassesExpanded(!isClassesExpanded)}
+          >
+            <GraduationCap className="nav-icon" size={20} />
+            <span>Classes</span>
+            <span className={`dropdown-arrow ${isClassesExpanded ? 'expanded' : ''}`}>▼</span>
+          </div>
+          
+          <div className="dropdown-menu">
+            <Link 
+              to="/classes/add" 
+              className={`dropdown-item ${activePage === 'classes/add' ? 'active' : ''}`}
+            >
+              Add Class
+            </Link>
+            <Link 
+              to="/classes/view" 
+              className={`dropdown-item ${activePage === 'classes/view' ? 'active' : ''}`}
+            >
+              View Classes
+            </Link>
+            <Link 
+              to="/classes/manage" 
+              className={`dropdown-item ${activePage === 'classes/manage' ? 'active' : ''}`}
+            >
+              Manage Classes
+            </Link>
           </div>
         </div>
 
