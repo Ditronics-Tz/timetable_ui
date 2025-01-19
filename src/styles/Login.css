@@ -1,0 +1,129 @@
+/* Background and container styles */
+.min-h-screen {
+  background-image: linear-gradient(to bottom right, #1a1a1a, #000000);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+/* Card animations and effects */
+.card-container {
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Input field effects */
+.input-field {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Button hover effects */
+.signin-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.signin-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.signin-button:active {
+  transform: translateY(0);
+}
+
+/* Logo animation */
+.logo-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Form field animations */
+.form-field-enter {
+  animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom checkbox styles */
+.custom-checkbox {
+  transition: background-color 0.2s ease;
+}
+
+.custom-checkbox:checked {
+  background-color: #000;
+  border-color: #000;
+}
+
+/* Register link hover effect */
+.register-link {
+  transition: all 0.3s ease;
+}
+
+.register-link:hover {
+  background-color: #f3f4f6;
+  transform: translateX(2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .card-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+/* Loading state for button */
+.button-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.button-loading::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

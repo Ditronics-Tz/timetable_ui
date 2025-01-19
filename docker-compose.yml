@@ -1,0 +1,15 @@
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'    # Public HTTP Port
+      - '443:443'  # Public HTTPS Port
+      - '81:81'    # Admin Web Port
+      - '21:21'    # FTP
+    environment:
+      DB_SQLITE_FILE: "/data/database.sqlite"
+      DISABLE_IPV6: 'false'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
