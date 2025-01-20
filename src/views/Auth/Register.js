@@ -56,7 +56,7 @@ export default function Register() {
     e.preventDefault()
     console.log('Registration data:', formData)
     // Temporarily navigate to preview page after registration
-    navigate('/preview')
+    navigate('/dashboard')
   }
 
   return (
@@ -81,7 +81,7 @@ export default function Register() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          Register to start creating your timetables
+          Register to start using SACAS  Timetable System 
         </motion.div>
       </div>
 
