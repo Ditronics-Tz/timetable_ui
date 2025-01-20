@@ -30,7 +30,7 @@ export default function Login() {
     e.preventDefault()
     console.log('Login data:', formData)
     // Temporarily navigate to preview page after login
-    navigate('/preview')
+    navigate('/dashboard')
   }
 
   return (
