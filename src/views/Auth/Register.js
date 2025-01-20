@@ -2,15 +2,17 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Progress } from "@/components/ui/progress"
-import Link from 'next/link'
+import { Card } from "../../components/ui/card"
+import { Input } from "../../components/ui/input"
+import { Button } from "../../components/ui/button"
+import { Label } from "../../components/ui/label"
+import { Progress } from "../../components/ui/progress"
+import { Link, useNavigate } from 'react-router-dom'
 import { Building2, BadgeIcon as IdCard, User, Mail, Phone, Lock, Eye, EyeOff, ChevronRight } from 'lucide-react'
+import '../../styles/Register.css'
 
 export default function Register() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     institute: '',
     staffId: '',
@@ -53,6 +55,8 @@ export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log('Registration data:', formData)
+    // Temporarily navigate to preview page after registration
+    navigate('/preview')
   }
 
   return (
@@ -280,7 +284,7 @@ export default function Register() {
 
             <div className="mt-6">
               <Link 
-                href="/login" 
+                to="/login" 
                 className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300"
               >
                 Sign in

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './views/Dashboard';
 import Navbar from './components/Navbar';
 import Preview1 from './views/Preview1';
@@ -11,14 +11,16 @@ import AddClass from './views/AddClass';
 import ViewClass from './views/ViewClass';
 import ManageClass from './views/ManageClass';
 import Login from './views/Auth/Login';
+import Register from './views/Auth/Register';
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Login route as the default landing page */}
+        {/* Auth routes */}
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Main app routes */}
         <Route path="/*" element={

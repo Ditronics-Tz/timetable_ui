@@ -1,0 +1,97 @@
+.min-h-screen {
+  min-height: 100vh;
+  background-image: linear-gradient(to bottom right, #111827, #000000);
+}
+
+/* Card animations */
+.card-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.card-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Password strength colors */
+.strength-weak { background-color: #EF4444; }
+.strength-fair { background-color: #F97316; }
+.strength-good { background-color: #EAB308; }
+.strength-strong { background-color: #22C55E; }
+
+/* Form input focus states */
+.input-focus-ring {
+  --tw-ring-color: rgba(17, 24, 39, 0.2);
+}
+
+/* Button hover effects */
+.hover-button-effect:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .sm\:px-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .sm\:w-full {
+    width: 100%;
+  }
+}
+
+/* Animation keyframes for the title */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title-animation {
+  animation: fadeInDown 0.5s ease-out;
+}
+
+/* Form validation styles */
+.input-error {
+  border-color: #EF4444;
+}
+
+.error-message {
+  color: #EF4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Card backdrop blur effect */
+.backdrop-blur-card {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}

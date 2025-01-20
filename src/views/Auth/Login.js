@@ -7,11 +7,12 @@ import { Input } from "../../components/ui/input"
 import { Button } from "../../components/ui/button"
 import { Checkbox } from "../../components/ui/checkbox"
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import '../../styles/Login.css'
 
 export default function Login() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -28,6 +29,8 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log('Login data:', formData)
+    // Temporarily navigate to preview page after login
+    navigate('/preview')
   }
 
   return (
