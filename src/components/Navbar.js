@@ -271,6 +271,34 @@ function Navbar() {
             </Link>
           </div>
         </div>
+
+        <div className={`nav-item-dropdown ${isClassesExpanded ? 'expanded' : ''}`}>
+          <div 
+            className="nav-item"
+            onClick={() => setIsClassesExpanded(!isClassesExpanded)}
+          >
+            <img src={coursesIcon} alt="Classes" className="nav-icon" />
+            <span>Classes</span>
+            <span className={`dropdown-arrow ${isClassesExpanded ? 'expanded' : ''}`}>▼</span>
+          </div>
+          
+          <div className="dropdown-menu">
+            <Link to="/classes/add" className="dropdown-item">
+              Add Class
+            </Link>
+            <Link to="/classes/view" className="dropdown-item">
+              View Classes
+            </Link>
+            <Link to="/classes/manage" className="dropdown-item">
+              Manage Classes
+            </Link>
+          </div>
+        </div>
+
+        <Link to="/settings" className="nav-item">
+          <img src={settingsIcon} alt="Settings" className="nav-icon" />
+          <span>Settings</span>
+        </Link>
       </nav>
     </div>
   );

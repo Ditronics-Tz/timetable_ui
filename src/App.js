@@ -16,6 +16,7 @@ import AddModule from './views/AddModule';
 import ViewModules from './views/ViewModules';
 import ManageModule from './views/ManageModule';
 
+
 function App() {
   return (
     <Router>
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/modules/add" element={<AddModule />} />
                 <Route path="/modules/view" element={<ViewModules />} />
                 <Route path="/modules/manage" element={<ManageModule />} />
+     
               </Routes>
             </div>
           </div>
