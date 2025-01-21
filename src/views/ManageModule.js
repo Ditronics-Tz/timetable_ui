@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Card } from "../components/ui/card"
+import { Input } from "../components/ui/input"
+import { Button } from "../components/ui/button"
+import { Checkbox } from "../components/ui/checkbox"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table"
 import {
   Search,
   Filter,
@@ -28,7 +28,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "../components/ui/dropdown-menu"
 
 // Sample module data
 const initialModules = [

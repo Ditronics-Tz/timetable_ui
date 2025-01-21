@@ -1,12 +1,22 @@
 "use client"
 
 import { useState } from "react"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search, Filter, Download, Eye, Layers, Calendar, Award, Code, BookOpen } from "lucide-react"
+import { Card } from "../components/ui/card"
+import { Input } from "../components/ui/input"
+import { Button } from "../components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table"
+import { 
+  Search, 
+  Filter, 
+  Download, 
+  Eye, 
+  Layers, 
+  Calendar, 
+  Award, 
+  Code, 
+  BookOpen 
+} from 'lucide-react'
 
 // Sample module data
 const initialModules = [
