@@ -29,7 +29,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
+
 import '../styles/ManageModule.css';
+
 
 // Sample module data
 const initialModules = [
@@ -98,6 +100,7 @@ export default function ManageModules() {
   )
 
   return (
+
     <div className="manage-modules-container">
       <Card className="manage-modules-card">
         <div className="filters-container">
@@ -230,6 +233,7 @@ export default function ManageModules() {
                 Bulk Delete
               </Button>
             </div>
+
           </div>
         </div>
       </Card>

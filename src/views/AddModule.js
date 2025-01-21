@@ -5,8 +5,10 @@ import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { Label } from "../components/ui/label"
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 import { Upload, Download, Code, BookOpen, GraduationCap, Calendar, Layers, Award, FileSpreadsheet } from "lucide-react"
+
 import '../styles/AddModule.css'
 
 export default function AddModule() {
@@ -37,6 +39,7 @@ export default function AddModule() {
   }
 
   return (
+
     <div className="add-modules-container">
       <Card className="add-modules-card">
         <div className="mb-6">
@@ -46,6 +49,7 @@ export default function AddModule() {
           </div>
           <p className="text-gray-500 text-sm mt-2">Enter the module details below or use bulk upload.</p>
         </div>
+
 
         <div className="border-2 border-dashed rounded-lg p-8 mb-8">
           <div className="flex flex-col items-center justify-center text-center">
