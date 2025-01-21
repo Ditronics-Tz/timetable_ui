@@ -120,24 +120,24 @@ function Navbar() {
           </div>
           
           <div className="dropdown-menu">
-            <a 
-              href="/modules/add" 
+            <Link 
+              to="/modules/add" 
               className={`dropdown-item ${activePage === 'modules/add' ? 'active' : ''}`}
             >
               Add Module
-            </a>
-            <a 
-              href="/modules/view" 
+            </Link>
+            <Link 
+              to="/modules/view" 
               className={`dropdown-item ${activePage === 'modules/view' ? 'active' : ''}`}
             >
               View Modules
-            </a>
-            <a 
-              href="/modules/manage" 
+            </Link>
+            <Link 
+              to="/modules/manage" 
               className={`dropdown-item ${activePage === 'modules/manage' ? 'active' : ''}`}
             >
               Manage Modules
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -246,64 +246,31 @@ function Navbar() {
             <span>Module Allocation</span>
             <span className={`dropdown-arrow ${isModuleAllocationExpanded ? 'expanded' : ''}`}>▼</span>
           </div>
-          <div className="dropdown-menu">
-            <a href="/module-allocation/add" className={`dropdown-item ${activePage === 'module-allocation/add' ? 'active' : ''}`}>
-              Add Allocation
-            </a>
-            <a href="/module-allocation/view" className={`dropdown-item ${activePage === 'module-allocation/view' ? 'active' : ''}`}>
-              View Allocations
-            </a>
-            <a href="/module-allocation/manage" className={`dropdown-item ${activePage === 'module-allocation/manage' ? 'active' : ''}`}>
-              Manage Allocations
-            </a>
-          </div>
-        </div>
-
-        <div className={`nav-item-dropdown ${isClassesExpanded ? 'expanded' : ''}`}>
-          <div 
-            className={`nav-item ${activePage.startsWith('classes') ? 'active' : ''}`}
-            onClick={() => setIsClassesExpanded(!isClassesExpanded)}
-          >
-            <GraduationCap className="nav-icon" size={20} />
-            <span>Classes</span>
-            <span className={`dropdown-arrow ${isClassesExpanded ? 'expanded' : ''}`}>▼</span>
-          </div>
           
           <div className="dropdown-menu">
             <Link 
-              to="/classes/add" 
-              className={`dropdown-item ${activePage === 'classes/add' ? 'active' : ''}`}
+              to="/module-allocation/add" 
+              className={`dropdown-item ${activePage === 'module-allocation/add' ? 'active' : ''}`}
             >
-              Add Class
+              Add Module Allocation
             </Link>
             <Link 
-              to="/classes/view" 
-              className={`dropdown-item ${activePage === 'classes/view' ? 'active' : ''}`}
+              to="/module-allocation/view" 
+              className={`dropdown-item ${activePage === 'module-allocation/view' ? 'active' : ''}`}
             >
-              View Classes
+              View Module Allocations
             </Link>
-            <Link
-              to="/manage-classes"
-              className={`flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg transition-colors ${
-                location.pathname === '/manage-classes' ? 'bg-gray-100 text-black' : ''
-              }`}
+            <Link 
+              to="/module-allocation/manage" 
+              className={`dropdown-item ${activePage === 'module-allocation/manage' ? 'active' : ''}`}
             >
-              <Folders size={20} />
-              Manage Classes
+              Manage Module Allocations
             </Link>
           </div>
         </div>
-
       </nav>
-
-      <div className="settings-section">
-        <a href="#" className="nav-item">
-          <img src={settingsIcon} alt="Settings" className="nav-icon" />
-          <span>Settings</span>
-        </a>
-      </div>
     </div>
   );
 }
 
-export default Navbar; 
+export default Navbar;
