@@ -43,6 +43,7 @@ function App() {
                 <Route path="/modules/add" element={<AddModule />} />
                 <Route path="/modules/view" element={<ViewModule />} />
                 <Route path="/modules/manage" element={<ManageModule />} />
+
               </Routes>
             </div>
           </div>
