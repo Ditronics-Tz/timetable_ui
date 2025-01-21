@@ -13,9 +13,8 @@ import ManageClass from './views/ManageClass';
 import Login from './views/Auth/Login';
 import Register from './views/Auth/Register';
 import AddModule from './views/AddModule';
-import ViewModules from './views/ViewModules';
+import ViewModule from './views/ViewModule';
 import ManageModule from './views/ManageModule';
-
 
 function App() {
   return (
@@ -42,9 +41,9 @@ function App() {
                 <Route path="/classes/manage" element={<ManageClass />} />
                 <Route path="/manage-classes" element={<ManageClass />} />
                 <Route path="/modules/add" element={<AddModule />} />
-                <Route path="/modules/view" element={<ViewModules />} />
+                <Route path="/modules/view" element={<ViewModule />} />
                 <Route path="/modules/manage" element={<ManageModule />} />
-     
+
               </Routes>
             </div>
           </div>
