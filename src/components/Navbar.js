@@ -122,19 +122,22 @@ function Navbar() {
           <div className="dropdown-menu">
             <Link 
               to="/modules/add" 
-              className={`dropdown-item ${activePage === 'modules/add' ? 'active' : ''}`}
+              className="dropdown-item"
+              onClick={() => setIsModulesExpanded(!isModulesExpanded)}
             >
               Add Module
             </Link>
             <Link 
               to="/modules/view" 
-              className={`dropdown-item ${activePage === 'modules/view' ? 'active' : ''}`}
+              className="dropdown-item"
+              onClick={() => setIsModulesExpanded(!isModulesExpanded)}
             >
               View Modules
             </Link>
             <Link 
               to="/modules/manage" 
-              className={`dropdown-item ${activePage === 'modules/manage' ? 'active' : ''}`}
+              className="dropdown-item"
+              onClick={() => setIsModulesExpanded(!isModulesExpanded)}
             >
               Manage Modules
             </Link>
