@@ -7,6 +7,7 @@ import { Button } from "../components/ui/button"
 import { Label } from "../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 import { Upload, Download, Code, BookOpen, GraduationCap, Calendar, Layers, Award, FileSpreadsheet } from "lucide-react"
+import '../styles/AddModule.css'
 
 export default function AddModule() {
   const [formData, setFormData] = useState({
@@ -36,16 +37,16 @@ export default function AddModule() {
   }
 
   return (
-    <div className="max-w-[800px] mx-auto p-6">
-      <div className="mb-6">
-        <div className="flex items-center gap-2">
-          <Layers className="h-6 w-6" />
-          <h1 className="text-2xl font-semibold">Add New Module</h1>
+    <div className="add-modules-container">
+      <Card className="add-modules-card">
+        <div className="mb-6">
+          <div className="flex items-center gap-2">
+            <Layers className="h-6 w-6" />
+            <h1 className="text-2xl font-semibold">Add New Module</h1>
+          </div>
+          <p className="text-gray-500 text-sm mt-2">Enter the module details below or use bulk upload.</p>
         </div>
-        <p className="text-gray-500 text-sm mt-2">Enter the module details below or use bulk upload.</p>
-      </div>
 
-      <Card className="p-6">
         <div className="border-2 border-dashed rounded-lg p-8 mb-8">
           <div className="flex flex-col items-center justify-center text-center">
             <FileSpreadsheet className="h-12 w-12 text-gray-400 mb-4" />
