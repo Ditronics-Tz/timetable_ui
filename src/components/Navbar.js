@@ -14,8 +14,11 @@ import {
   UserCog,
   FolderKanban,
   School,
-  FileSpreadsheet
+  FileSpreadsheet,
+  ChevronDown
 } from 'lucide-react';
+
+const coursesIcon = GraduationCap;
 
 function Navbar() {
   const location = useLocation();
