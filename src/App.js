@@ -15,6 +15,9 @@ import Register from './views/Auth/Register';
 import AddModule from './views/AddModule';
 import ViewModule from './views/ViewModule';
 import ManageModule from './views/ManageModule';
+import ViewStaff from "./views/ViewStaff"
+import ManageStaff from "./views/ManageStaff"
+import AddStaff from "./views/AddStaff"
 
 function App() {
   return (
@@ -43,7 +46,9 @@ function App() {
                 <Route path="/modules/add" element={<AddModule />} />
                 <Route path="/modules/view" element={<ViewModule />} />
                 <Route path="/modules/manage" element={<ManageModule />} />
-
+                <Route path="/staff/view" element={<ViewStaff />} />
+                <Route path="/staff/manage" element={<ManageStaff />} />
+                <Route path="/staff/add" element={<AddStaff />} />
               </Routes>
             </div>
           </div>

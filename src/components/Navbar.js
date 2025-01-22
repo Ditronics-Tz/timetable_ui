@@ -111,25 +111,19 @@ function Navbar() {
           <div className="dropdown-menu">
             <Link 
               to="/modules/add" 
-
               className={`dropdown-item ${activePage === 'modules/add' ? 'active' : ''}`}
-
-
             >
               Add Module
             </Link>
             <Link 
               to="/modules/view" 
-
               className={`dropdown-item ${activePage === 'modules/view' ? 'active' : ''}`}
             >
               View Modules
             </Link>
             <Link 
               to="/modules/manage" 
-
               className={`dropdown-item ${activePage === 'modules/manage' ? 'active' : ''}`}
-
             >
               Manage Modules
             </Link>
@@ -247,52 +241,50 @@ function Navbar() {
               to="/module-allocation/add" 
               className={`dropdown-item ${activePage === 'module-allocation/add' ? 'active' : ''}`}
             >
-
               Add Allocation
-
             </Link>
             <Link 
               to="/module-allocation/view" 
               className={`dropdown-item ${activePage === 'module-allocation/view' ? 'active' : ''}`}
             >
-
               View Allocations
-
             </Link>
             <Link 
               to="/module-allocation/manage" 
               className={`dropdown-item ${activePage === 'module-allocation/manage' ? 'active' : ''}`}
             >
-
               Manage Allocations
-
             </Link>
           </div>
         </div>
 
         <div className={`nav-item-dropdown ${isClassesExpanded ? 'expanded' : ''}`}>
           <div 
-            className="nav-item"
+            className={`nav-item ${activePage.startsWith('classes') ? 'active' : ''}`}
             onClick={() => setIsClassesExpanded(!isClassesExpanded)}
           >
-            <img src={coursesIcon} alt="Classes" className="nav-icon" />
+            <GraduationCap className="nav-icon" size={20} />
             <span>Classes</span>
             <span className={`dropdown-arrow ${isClassesExpanded ? 'expanded' : ''}`}>▼</span>
           </div>
           
           <div className="dropdown-menu">
-            <Link to="/classes/add" className="dropdown-item">
+            <Link 
+              to="/classes/add" 
+              className={`dropdown-item ${activePage === 'classes/add' ? 'active' : ''}`}
+            >
               Add Class
             </Link>
-            <Link to="/classes/view" className="dropdown-item">
+            <Link 
+              to="/classes/view" 
+              className={`dropdown-item ${activePage === 'classes/view' ? 'active' : ''}`}
+            >
               View Classes
             </Link>
-
             <Link 
               to="/classes/manage" 
               className={`dropdown-item ${activePage === 'classes/manage' ? 'active' : ''}`}
             >
-
               Manage Classes
             </Link>
           </div>
