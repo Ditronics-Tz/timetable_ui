@@ -13,13 +13,10 @@ import {
   ScrollText,
   UserCog,
   FolderKanban,
-  School,
   FileSpreadsheet,
   ChevronDown,
   Folder
 } from 'lucide-react';
-
-const coursesIcon = GraduationCap;
 
 function Navbar() {
   const location = useLocation();
@@ -27,7 +24,6 @@ function Navbar() {
 
   const [isRoomsExpanded, setIsRoomsExpanded] = useState(false);
   const [isModulesExpanded, setIsModulesExpanded] = useState(false);
-  const [isCoursesExpanded, setIsCoursesExpanded] = useState(false);
   const [isDepartmentsExpanded, setIsDepartmentsExpanded] = useState(false);
   const [isStaffExpanded, setIsStaffExpanded] = useState(false);
   const [isModuleAllocationExpanded, setIsModuleAllocationExpanded] = useState(false);
@@ -132,34 +128,92 @@ function Navbar() {
           </div>
         </div>
 
-        <div className={`nav-item-dropdown ${isCoursesExpanded ? 'expanded' : ''}`}>
+        <div className={`nav-item-dropdown ${isProgramsExpanded ? 'expanded' : ''}`}>
           <div 
-            className={`nav-item ${activePage.startsWith('courses') ? 'active' : ''}`}
-            onClick={() => setIsCoursesExpanded(!isCoursesExpanded)}
+            className={`nav-item ${activePage.startsWith('programs') ? 'active' : ''}`}
+            onClick={() => setIsProgramsExpanded(!isProgramsExpanded)}
           >
-            <School className="nav-icon" size={20} />
-            <span>Courses</span>
-            <span className={`dropdown-arrow ${isCoursesExpanded ? 'expanded' : ''}`}>▼</span>
+            <Folder className="nav-icon" size={20} />
+            <span>Programs</span>
+            <span className={`dropdown-arrow ${isProgramsExpanded ? 'expanded' : ''}`}>▼</span>
           </div>
           
           <div className="dropdown-menu">
             <Link 
-              to="/courses/add" 
-              className={`dropdown-item ${activePage === 'courses/add' ? 'active' : ''}`}
+              to="/programs/add" 
+              className={`dropdown-item ${activePage === 'programs/add' ? 'active' : ''}`}
             >
-              Add Course
+              Add Program
             </Link>
             <Link 
-              to="/courses/view" 
-              className={`dropdown-item ${activePage === 'courses/view' ? 'active' : ''}`}
+              to="/programs/view" 
+              className={`dropdown-item ${activePage === 'programs/view' ? 'active' : ''}`}
             >
-              View Courses
+              View Programs
             </Link>
             <Link 
-              to="/courses/manage" 
-              className={`dropdown-item ${activePage === 'courses/manage' ? 'active' : ''}`}
+              to="/programs/manage" 
+              className={`dropdown-item ${activePage === 'programs/manage' ? 'active' : ''}`}
             >
-              Manage Courses
+              Manage Programs
+            </Link>
+          </div>
+        </div>
+
+        <div className={`nav-item-dropdown ${isModuleAllocationExpanded ? 'expanded' : ''}`}>
+          <div 
+            className={`nav-item ${activePage.startsWith('module-allocation') ? 'active' : ''}`}
+            onClick={() => setIsModuleAllocationExpanded(!isModuleAllocationExpanded)}
+          >
+            <FolderKanban className="nav-icon" size={20} />
+            <span>Module Allocation</span>
+            <span className={`dropdown-arrow ${isModuleAllocationExpanded ? 'expanded' : ''}`}>▼</span>
+          </div>
+          
+          <div className="dropdown-menu">
+            <Link 
+              to="/module-allocation/allocate" 
+              className={`dropdown-item ${activePage === 'module-allocation/allocate' ? 'active' : ''}`}
+            >
+              Allocate Modules
+            </Link>
+            <Link 
+              to="/module-allocation/view" 
+              className={`dropdown-item ${activePage === 'module-allocation/view' ? 'active' : ''}`}
+            >
+              View Allocations
+            </Link>
+          </div>
+        </div>
+
+        <div className={`nav-item-dropdown ${isClassesExpanded ? 'expanded' : ''}`}>
+          <div 
+            className={`nav-item ${activePage.startsWith('classes') ? 'active' : ''}`}
+            onClick={() => setIsClassesExpanded(!isClassesExpanded)}
+          >
+            <GraduationCap className="nav-icon" size={20} />
+            <span>Classes</span>
+            <span className={`dropdown-arrow ${isClassesExpanded ? 'expanded' : ''}`}>▼</span>
+          </div>
+          
+          <div className="dropdown-menu">
+            <Link 
+              to="/classes/add" 
+              className={`dropdown-item ${activePage === 'classes/add' ? 'active' : ''}`}
+            >
+              Add Class
+            </Link>
+            <Link 
+              to="/classes/view" 
+              className={`dropdown-item ${activePage === 'classes/view' ? 'active' : ''}`}
+            >
+              View Classes
+            </Link>
+            <Link 
+              to="/classes/manage" 
+              className={`dropdown-item ${activePage === 'classes/manage' ? 'active' : ''}`}
+            >
+              Manage Classes
             </Link>
           </div>
         </div>
@@ -228,111 +282,11 @@ function Navbar() {
           </div>
         </div>
 
-        <div className={`nav-item-dropdown ${isModuleAllocationExpanded ? 'expanded' : ''}`}>
-          <div 
-            className={`nav-item ${activePage.startsWith('module-allocation') ? 'active' : ''}`}
-            onClick={() => setIsModuleAllocationExpanded(!isModuleAllocationExpanded)}
-          >
-            <FolderKanban className="nav-icon" size={20} />
-            <span>Module Allocation</span>
-            <span className={`dropdown-arrow ${isModuleAllocationExpanded ? 'expanded' : ''}`}>▼</span>
-          </div>
-          
-          <div className="dropdown-menu">
-            <Link 
-              to="/module-allocation/add" 
-              className={`dropdown-item ${activePage === 'module-allocation/add' ? 'active' : ''}`}
-            >
-              Add Allocation
-            </Link>
-            <Link 
-              to="/module-allocation/view" 
-              className={`dropdown-item ${activePage === 'module-allocation/view' ? 'active' : ''}`}
-            >
-              View Allocations
-            </Link>
-            <Link 
-              to="/module-allocation/manage" 
-              className={`dropdown-item ${activePage === 'module-allocation/manage' ? 'active' : ''}`}
-            >
-              Manage Allocations
-            </Link>
-          </div>
-        </div>
-
-        <div className={`nav-item-dropdown ${isClassesExpanded ? 'expanded' : ''}`}>
-          <div 
-            className={`nav-item ${activePage.startsWith('classes') ? 'active' : ''}`}
-            onClick={() => setIsClassesExpanded(!isClassesExpanded)}
-          >
-            <GraduationCap className="nav-icon" size={20} />
-            <span>Classes</span>
-            <span className={`dropdown-arrow ${isClassesExpanded ? 'expanded' : ''}`}>▼</span>
-          </div>
-          
-          <div className="dropdown-menu">
-            <Link 
-              to="/classes/add" 
-              className={`dropdown-item ${activePage === 'classes/add' ? 'active' : ''}`}
-            >
-              Add Class
-            </Link>
-            <Link 
-              to="/classes/view" 
-              className={`dropdown-item ${activePage === 'classes/view' ? 'active' : ''}`}
-            >
-              View Classes
-            </Link>
-            <Link 
-              to="/classes/manage" 
-              className={`dropdown-item ${activePage === 'classes/manage' ? 'active' : ''}`}
-            >
-              Manage Classes
-            </Link>
-          </div>
-        </div>
-
-        <div className={`nav-item-dropdown ${isProgramsExpanded ? 'expanded' : ''}`}>
-          <div 
-            className={`nav-item ${activePage.startsWith('programs') ? 'active' : ''}`}
-            onClick={() => setIsProgramsExpanded(!isProgramsExpanded)}
-          >
-            <Folder className="nav-icon" size={20} />
-            <span>Programs</span>
-            <span className={`dropdown-arrow ${isProgramsExpanded ? 'expanded' : ''}`}>▼</span>
-          </div>
-          
-          <div className="dropdown-menu">
-            <Link 
-              to="/programs/add" 
-              className={`dropdown-item ${activePage === 'programs/add' ? 'active' : ''}`}
-            >
-              Add Program
-            </Link>
-            <Link 
-              to="/programs/view" 
-              className={`dropdown-item ${activePage === 'programs/view' ? 'active' : ''}`}
-            >
-              View Programs
-            </Link>
-            <Link 
-              to="/programs/manage" 
-              className={`dropdown-item ${activePage === 'programs/manage' ? 'active' : ''}`}
-            >
-              Manage Programs
-            </Link>
-          </div>
-        </div>
-
-      </nav>
-
-      <div className="settings-section">
-        <Link to="/settings" className="nav-item">
+        <Link to="/settings" className={`nav-item ${activePage === 'settings' ? 'active' : ''}`}>
           <Settings className="nav-icon" size={20} />
           <span>Settings</span>
         </Link>
-      </div>
-
+      </nav>
     </div>
   );
 }
