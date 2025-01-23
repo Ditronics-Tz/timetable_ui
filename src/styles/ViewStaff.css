@@ -1,0 +1,67 @@
+.view-staff-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-left: 250px; /* Matches the sidebar width */
+  width: calc(100% - 250px); /* Accounts for sidebar */
+}
+
+.view-staff-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.view-staff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.view-staff-search {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.view-staff-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.view-staff-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Search input specific styling */
+.search-container {
+  position: relative;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+/* Table specific styling */
+.staff-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}

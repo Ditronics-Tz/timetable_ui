@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
+import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table"
@@ -9,50 +9,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import { Badge } from "../components/ui/badge"
 import { Search, Eye } from "lucide-react"
+import '../styles/ViewStaff.css'
 
-// Sample staff data
-const staffData = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-    department: "Computer Science",
-    staffType: "Academic",
-    phone: "+1234567890",
-    office: "Room 101",
-    imageUrl: "/placeholder.svg",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    department: "Mathematics",
-    staffType: "Administrative",
-    phone: "+1987654321",
-    office: "Room 202",
-    imageUrl: "/placeholder.svg",
-  },
-  {
-    id: 3,
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    department: "Physics",
-    staffType: "Technical",
-    phone: "+1122334455",
-    office: "Room 303",
-    imageUrl: "/placeholder.svg",
-  },
-]
+
 
 export default function StaffView() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [staffList, setStaffList] = useState([])
   const [selectedStaff, setSelectedStaff] = useState(null)
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value)
   }
 
-  const filteredStaff = staffData.filter(
+  const filteredStaff = staffList.filter(
     (staff) =>
       staff.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       staff.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -60,26 +30,27 @@ export default function StaffView() {
   )
 
   return (
-    <div className="container mx-auto p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">View Staff</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-6">
-            <div className="relative">
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Search staff by name, email, or department..."
-                value={searchTerm}
-                onChange={handleSearch}
-                className="pl-8"
-              />
-            </div>
+    <div className="view-staff-container">
+      <Card className="view-staff-card">
+        <div className="view-staff-header">
+          <h2 className="text-2xl font-bold">View Staff</h2>
+        </div>
+        
+        <div className="view-staff-search">
+          <div className="search-container">
+            <Search className="search-icon" />
+            <Input
+              type="text"
+              placeholder="Search staff by name, email, or department..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="pl-10"
+            />
           </div>
+        </div>
 
-          <Table>
+        <div className="view-staff-table-container">
+          <Table className="staff-table">
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
@@ -154,7 +125,19 @@ export default function StaffView() {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
+
+          {filteredStaff.length === 0 && (
+            <div className="empty-state">
+              No staff members found matching your search criteria.
+            </div>
+          )}
+        </div>
+
+        <div className="view-staff-footer">
+          <p className="text-sm text-gray-500">
+            Showing {filteredStaff.length} of {staffList.length} staff members
+          </p>
+        </div>
       </Card>
     </div>
   )
