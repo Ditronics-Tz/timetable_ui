@@ -1,18 +1,6 @@
-forms  to be  created  
+ 
 
-# Program information to be entered:
-- Program Name (required)
-- Department (required, select from existing departments)
-- NTA Level (optional)
 
-# Module information to be entered:
-- Module Code (required)
-- Module Name (required)
-- Module Type (optional)
-- Year (optional)
-- Semester (optional)
-- NTA Level (optional)
-- Credit Value (defaults to 10)
 
 
 
@@ -22,5 +10,12 @@ forms  to be  created
 - Staff (required, select from existing staff)
 - Program (required, select from existing programs)
 
+class Department(models.Model):
+    dept_id = models.AutoField(primary_key=True)
+    dept_name = models.CharField(max_length=255)
+    dept_descr = models.TextField(blank=True, null=True)
+    hod = models.CharField(max_length=255, blank=True, null=True)
+    hod_phone = models.CharField(max_length=20, blank=True, null=True)
+    hod_email = models.EmailField(blank=True, null=True)
 
 
