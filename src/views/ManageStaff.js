@@ -16,12 +16,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu"
+import { Checkbox } from "../components/ui/checkbox"
+import '../styles/ManageStaff.css'
 
 // Sample staff data
 const initialStaffData = [
-  { id: 1, name: "John Doe", email: "john@example.com", department: "Computer Science", staffType: "Academic" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", department: "Mathematics", staffType: "Administrative" },
-  { id: 3, name: "Bob Johnson", email: "bob@example.com", department: "Physics", staffType: "Technical" },
+ 
 ]
 
 export default function ManageStaff() {
@@ -108,132 +108,154 @@ export default function ManageStaff() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Manage Staff</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0 md:space-x-4">
-            <div className="flex-1 w-full md:w-auto">
-              <div className="relative">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="Search staff..."
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="pl-8"
+    <div className="manage-staff-container">
+      <div className="manage-staff-header">
+        <div className="manage-staff-filters">
+          <div className="manage-staff-search">
+            <Search className="search-icon" />
+            <Input
+              type="text"
+              placeholder="Search staff..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="pl-10"
+            />
+          </div>
+
+          <Select value={selectedDepartment} onValueChange={handleDepartmentFilter}>
+            <SelectTrigger className="w-[180px]">
+              <span>Select Department</span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Departments</SelectItem>
+              <SelectItem value="Computer Science">Computer Science</SelectItem>
+              <SelectItem value="Mathematics">Mathematics</SelectItem>
+              <SelectItem value="Physics">Physics</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={selectedStaffType} onValueChange={handleStaffTypeFilter}>
+            <SelectTrigger className="w-[180px]">
+              <span>Select Staff Type</span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="Academic">Academic</SelectItem>
+              <SelectItem value="Administrative">Administrative</SelectItem>
+              <SelectItem value="Technical">Technical</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="manage-staff-actions">
+          <Button variant="outline" className="flex items-center gap-2">
+            <Upload className="h-4 w-4" />
+            Bulk Upload
+          </Button>
+          <Button variant="outline" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
+          <Button variant="default" className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Add Staff
+          </Button>
+        </div>
+      </div>
+
+      <div className="manage-staff-table-container">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-12">
+                <Checkbox
+                  checked={selectedStaff.length === staffData.length}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setSelectedStaff(staffData.map(staff => staff.id))
+                    } else {
+                      setSelectedStaff([])
+                    }
+                  }}
                 />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <Select onValueChange={handleDepartmentFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select Department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Departments</SelectItem>
-                  <SelectItem value="Computer Science">Computer Science</SelectItem>
-                  <SelectItem value="Mathematics">Mathematics</SelectItem>
-                  <SelectItem value="Physics">Physics</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select onValueChange={handleStaffTypeFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select Staff Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="Academic">Academic</SelectItem>
-                  <SelectItem value="Administrative">Administrative</SelectItem>
-                  <SelectItem value="Technical">Technical</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center mb-4">
-            <div className="space-x-2">
-              <Button onClick={handleBulkEdit} disabled={selectedStaff.length === 0}>
-                <Edit className="mr-2 h-4 w-4" /> Bulk Edit
-              </Button>
-              <Button onClick={handleBulkDelete} variant="destructive" disabled={selectedStaff.length === 0}>
-                <Trash2 className="mr-2 h-4 w-4" /> Bulk Delete
-              </Button>
-            </div>
-            <div className="space-x-2">
-              <Button as="label" htmlFor="csv-upload">
-                <Upload className="mr-2 h-4 w-4" /> Bulk Upload
-                <input id="csv-upload" type="file" accept=".csv" className="hidden" onChange={handleBulkUpload} />
-              </Button>
-              <Button>
-                <Download className="mr-2 h-4 w-4" /> Export CSV
-              </Button>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" /> Add Staff
-              </Button>
-            </div>
-          </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]">
-                  <input
-                    type="checkbox"
-                    onChange={() => {
-                      if (selectedStaff.length === filteredStaff.length) {
-                        setSelectedStaff([])
+              </TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Department</TableHead>
+              <TableHead>Staff Type</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredStaff.map((staff) => (
+              <TableRow key={staff.id}>
+                <TableCell>
+                  <Checkbox
+                    checked={selectedStaff.includes(staff.id)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedStaff([...selectedStaff, staff.id])
                       } else {
-                        setSelectedStaff(filteredStaff.map((staff) => staff.id))
+                        setSelectedStaff(selectedStaff.filter(id => id !== staff.id))
                       }
                     }}
-                    checked={selectedStaff.length === filteredStaff.length && filteredStaff.length > 0}
                   />
-                </TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Staff Type</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                </TableCell>
+                <TableCell>{staff.name}</TableCell>
+                <TableCell>{staff.email}</TableCell>
+                <TableCell>{staff.department}</TableCell>
+                <TableCell>{staff.staffType}</TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => handleEdit(staff)}>Edit</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDelete(staff.id)}>Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredStaff.map((staff) => (
-                <TableRow key={staff.id}>
-                  <TableCell>
-                    <input
-                      type="checkbox"
-                      checked={selectedStaff.includes(staff.id)}
-                      onChange={() => toggleStaffSelection(staff.id)}
-                    />
-                  </TableCell>
-                  <TableCell>{staff.name}</TableCell>
-                  <TableCell>{staff.email}</TableCell>
-                  <TableCell>{staff.department}</TableCell>
-                  <TableCell>{staff.staffType}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleEdit(staff)}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDelete(staff.id)}>Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            ))}
+          </TableBody>
+        </Table>
+
+        {filteredStaff.length === 0 && (
+          <div className="empty-state">
+            No staff members found matching your search criteria.
+          </div>
+        )}
+      </div>
+
+      <div className="manage-staff-footer">
+        <p className="text-sm text-gray-500">
+          Showing {filteredStaff.length} of {staffData.length} staff members
+        </p>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            disabled={selectedStaff.length === 0}
+          >
+            <Edit className="h-4 w-4" />
+            Bulk Edit
+          </Button>
+          <Button
+            variant="destructive"
+            className="flex items-center gap-2"
+            onClick={handleBulkDelete}
+            disabled={selectedStaff.length === 0}
+          >
+            <Trash2 className="h-4 w-4" />
+            Bulk Delete
+          </Button>
+        </div>
+      </div>
 
       {/* Edit Staff Dialog */}
       <Dialog open={editingStaff !== null} onOpenChange={() => setEditingStaff(null)}>

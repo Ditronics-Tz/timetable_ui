@@ -15,7 +15,8 @@ import {
   FolderKanban,
   School,
   FileSpreadsheet,
-  ChevronDown
+  ChevronDown,
+  Folder
 } from 'lucide-react';
 
 const coursesIcon = GraduationCap;
@@ -31,6 +32,7 @@ function Navbar() {
   const [isStaffExpanded, setIsStaffExpanded] = useState(false);
   const [isModuleAllocationExpanded, setIsModuleAllocationExpanded] = useState(false);
   const [isClassesExpanded, setIsClassesExpanded] = useState(false);
+  const [isProgramsExpanded, setIsProgramsExpanded] = useState(false);
 
   return (
     <div className="sidebar">
@@ -286,6 +288,38 @@ function Navbar() {
               className={`dropdown-item ${activePage === 'classes/manage' ? 'active' : ''}`}
             >
               Manage Classes
+            </Link>
+          </div>
+        </div>
+
+        <div className={`nav-item-dropdown ${isProgramsExpanded ? 'expanded' : ''}`}>
+          <div 
+            className={`nav-item ${activePage.startsWith('programs') ? 'active' : ''}`}
+            onClick={() => setIsProgramsExpanded(!isProgramsExpanded)}
+          >
+            <Folder className="nav-icon" size={20} />
+            <span>Programs</span>
+            <span className={`dropdown-arrow ${isProgramsExpanded ? 'expanded' : ''}`}>▼</span>
+          </div>
+          
+          <div className="dropdown-menu">
+            <Link 
+              to="/programs/add" 
+              className={`dropdown-item ${activePage === 'programs/add' ? 'active' : ''}`}
+            >
+              Add Program
+            </Link>
+            <Link 
+              to="/programs/view" 
+              className={`dropdown-item ${activePage === 'programs/view' ? 'active' : ''}`}
+            >
+              View Programs
+            </Link>
+            <Link 
+              to="/programs/manage" 
+              className={`dropdown-item ${activePage === 'programs/manage' ? 'active' : ''}`}
+            >
+              Manage Programs
             </Link>
           </div>
         </div>

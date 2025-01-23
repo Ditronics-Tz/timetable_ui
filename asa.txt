@@ -22,25 +22,5 @@ forms  to be  created
 - Staff (required, select from existing staff)
 - Program (required, select from existing programs)
 
-# Class information to be entered:
-- Program (required, select from existing programs)
-- Class Name (required)
-- Class Capacity (required)
-- Academic Year (required)
-- Class Stream (required)
 
 
-
-
-# Staff information to be entered:
-- Staff Name (required)
-- RFID ID (optional)
-- Email (optional)
-- Phone Number (optional)
-- Staff Type (required)
-- Staff Title (optional)
-- Department (required, select from existing departments)
-- User Account (optional, link to Django User)
-
-
-aaaa

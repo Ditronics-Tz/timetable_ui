@@ -1,0 +1,90 @@
+.manage-staff-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-left: 250px; /* Matches the sidebar width */
+  width: calc(100% - 250px); /* Accounts for sidebar */
+}
+
+.manage-staff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.manage-staff-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.manage-staff-search {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.manage-staff-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.manage-staff-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.manage-staff-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.manage-staff-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Search input specific styling */
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .manage-staff-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .manage-staff-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .manage-staff-actions button {
+    width: 100%;
+  }
+}
