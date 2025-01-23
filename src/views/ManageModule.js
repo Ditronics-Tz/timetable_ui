@@ -32,35 +32,8 @@ import {
 
 import '../styles/ManageModule.css';
 
-
-// Sample module data
-const initialModules = [
-  {
-    id: 1,
-    code: "CS101",
-    name: "Introduction to Programming",
-    type: "Core",
-    year: 2023,
-    semester: 1,
-    ntaLevel: 6,
-    creditValue: 15,
-  },
-  { id: 2, code: "MA201", name: "Linear Algebra", type: "Core", year: 2023, semester: 2, ntaLevel: 6, creditValue: 15 },
-  {
-    id: 3,
-    code: "EN301",
-    name: "Advanced Writing",
-    type: "Elective",
-    year: 2024,
-    semester: 1,
-    ntaLevel: 7,
-    creditValue: 10,
-  },
-  // Add more sample modules as needed
-]
-
 export default function ManageModules() {
-  const [modules, setModules] = useState(initialModules)
+  const [modules, setModules] = useState([]) // Empty initial state
   const [selectedModules, setSelectedModules] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [filterType, setFilterType] = useState("")
@@ -100,7 +73,6 @@ export default function ManageModules() {
   )
 
   return (
-
     <div className="manage-modules-container">
       <Card className="manage-modules-card">
         <div className="filters-container">
@@ -233,7 +205,6 @@ export default function ManageModules() {
                 Bulk Delete
               </Button>
             </div>
-
           </div>
         </div>
       </Card>

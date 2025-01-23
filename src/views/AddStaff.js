@@ -7,6 +7,7 @@ import { Button } from "../components/ui/button"
 import { Label } from "../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 import { User, CreditCard, Mail, Phone, UserCircle, Briefcase, Building } from "lucide-react"
+import '../styles/AddStaff.css'
 
 // Sample departments data
 const departments = [
@@ -80,140 +81,143 @@ export default function AddStaff() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <Card className="max-w-2xl mx-auto">
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            <User className="h-6 w-6" />
-            Add New Staff
-          </h1>
-
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="name" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Staff Name <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter staff name"
-                className={errors.name ? "border-red-500" : ""}
-              />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="rfidId" className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4" />
-                RFID ID
-              </Label>
-              <Input
-                id="rfidId"
-                name="rfidId"
-                value={formData.rfidId}
-                onChange={handleChange}
-                placeholder="Enter RFID ID (optional)"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="email" className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                Email
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter email (optional)"
-                className={errors.email ? "border-red-500" : ""}
-              />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="phoneNumber" className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                Phone Number
-              </Label>
-              <Input
-                id="phoneNumber"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                placeholder="Enter phone number (optional)"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="staffType" className="flex items-center gap-2">
-                <UserCircle className="h-4 w-4" />
-                Staff Type <span className="text-red-500">*</span>
-              </Label>
-              <Select
-                name="staffType"
-                value={formData.staffType}
-                onValueChange={(value) => handleSelectChange("staffType", value)}
-              >
-                <SelectTrigger className={errors.staffType ? "border-red-500" : ""}>
-                  <SelectValue placeholder="Select staff type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="academic">Academic</SelectItem>
-                  <SelectItem value="administrative">Administrative</SelectItem>
-                  <SelectItem value="technical">Technical</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.staffType && <p className="text-red-500 text-sm mt-1">{errors.staffType}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="staffTitle" className="flex items-center gap-2">
-                <Briefcase className="h-4 w-4" />
-                Staff Title
-              </Label>
-              <Input
-                id="staffTitle"
-                name="staffTitle"
-                value={formData.staffTitle}
-                onChange={handleChange}
-                placeholder="Enter staff title (optional)"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="department" className="flex items-center gap-2">
-                <Building className="h-4 w-4" />
-                Department <span className="text-red-500">*</span>
-              </Label>
-              <Select
-                name="department"
-                value={formData.department}
-                onValueChange={(value) => handleSelectChange("department", value)}
-              >
-                <SelectTrigger className={errors.department ? "border-red-500" : ""}>
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  {departments.map((dept) => (
-                    <SelectItem key={dept.id} value={dept.name}>
-                      {dept.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.department && <p className="text-red-500 text-sm mt-1">{errors.department}</p>}
-            </div>
+    <div className="add-staff-container">
+      <Card className="add-staff-card">
+        <h2 className="add-staff-title">
+          <User className="form-icon" size={24} />
+          Add New Staff
+        </h2>
+        
+        <form onSubmit={handleSubmit} className="add-staff-form">
+          <div className="form-group">
+            <Label className="form-label">
+              <User className="form-icon" size={16} />
+              Staff Name
+              <span className="required-field">*</span>
+            </Label>
+            <Input
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter staff name"
+              className={errors.name ? "border-red-500" : ""}
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
           </div>
 
-          <Button type="submit" className="w-full bg-black hover:bg-gray-800">
-            Add Staff
-          </Button>
+          <div className="form-group">
+            <Label className="form-label">
+              <CreditCard className="form-icon" size={16} />
+              RFID ID
+            </Label>
+            <Input
+              id="rfidId"
+              name="rfidId"
+              value={formData.rfidId}
+              onChange={handleChange}
+              placeholder="Enter RFID ID (optional)"
+            />
+          </div>
+
+          <div className="form-group">
+            <Label className="form-label">
+              <Mail className="form-icon" size={16} />
+              Email
+            </Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter email (optional)"
+              className={errors.email ? "border-red-500" : ""}
+            />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          </div>
+
+          <div className="form-group">
+            <Label className="form-label">
+              <Phone className="form-icon" size={16} />
+              Phone Number
+            </Label>
+            <Input
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              placeholder="Enter phone number (optional)"
+            />
+          </div>
+
+          <div className="form-group">
+            <Label className="form-label">
+              <UserCircle className="form-icon" size={16} />
+              Staff Type
+              <span className="required-field">*</span>
+            </Label>
+            <Select
+              name="staffType"
+              value={formData.staffType}
+              onValueChange={(value) => handleSelectChange("staffType", value)}
+            >
+              <SelectTrigger className={errors.staffType ? "border-red-500" : ""}>
+                <SelectValue placeholder="Select staff type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="academic">Academic</SelectItem>
+                <SelectItem value="administrative">Administrative</SelectItem>
+                <SelectItem value="technical">Technical</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.staffType && <p className="text-red-500 text-sm mt-1">{errors.staffType}</p>}
+          </div>
+
+          <div className="form-group">
+            <Label className="form-label">
+              <Briefcase className="form-icon" size={16} />
+              Staff Title
+            </Label>
+            <Input
+              id="staffTitle"
+              name="staffTitle"
+              value={formData.staffTitle}
+              onChange={handleChange}
+              placeholder="Enter staff title (optional)"
+            />
+          </div>
+
+          <div className="form-group">
+            <Label className="form-label">
+              <Building className="form-icon" size={16} />
+              Department
+              <span className="required-field">*</span>
+            </Label>
+            <Select
+              name="department"
+              value={formData.department}
+              onValueChange={(value) => handleSelectChange("department", value)}
+            >
+              <SelectTrigger className={errors.department ? "border-red-500" : ""}>
+                <SelectValue placeholder="Select department" />
+              </SelectTrigger>
+              <SelectContent>
+                {departments.map((dept) => (
+                  <SelectItem key={dept.id} value={dept.name}>
+                    {dept.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.department && <p className="text-red-500 text-sm mt-1">{errors.department}</p>}
+          </div>
+
+          <div className="submit-button">
+            <Button type="submit" className="w-full bg-black hover:bg-gray-800">
+              Add Staff
+            </Button>
+          </div>
         </form>
       </Card>
     </div>

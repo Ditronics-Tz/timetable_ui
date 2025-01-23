@@ -19,44 +19,8 @@ import {
 } from 'lucide-react'
 import '../styles/ViewModule.css'
 
-// Sample module data
-const initialModules = [
-  {
-    id: 1,
-    code: "CS101",
-    name: "Introduction to Programming",
-    type: "Core",
-    year: 2023,
-    semester: 1,
-    ntaLevel: 6,
-    creditValue: 15,
-  },
-  { id: 2, code: "MA201", name: "Linear Algebra", type: "Core", year: 2023, semester: 2, ntaLevel: 6, creditValue: 15 },
-  {
-    id: 3,
-    code: "EN301",
-    name: "Advanced Writing",
-    type: "Elective",
-    year: 2024,
-    semester: 1,
-    ntaLevel: 7,
-    creditValue: 10,
-  },
-  { id: 4, code: "PH202", name: "Modern Physics", type: "Core", year: 2023, semester: 2, ntaLevel: 6, creditValue: 20 },
-  {
-    id: 5,
-    code: "CS305",
-    name: "Database Systems",
-    type: "Core",
-    year: 2024,
-    semester: 1,
-    ntaLevel: 7,
-    creditValue: 15,
-  },
-]
-
 export default function ViewModules() {
-  const [modules] = useState(initialModules)
+  const [modules, setModules] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [filterType, setFilterType] = useState("")
   const [filterYear, setFilterYear] = useState("")
