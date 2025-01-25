@@ -1,0 +1,130 @@
+.view-dept-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  margin-left: calc(250px + 2rem); /* 250px for navbar width + 2rem padding */
+  margin-right: 2rem;
+}
+
+.view-dept-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.page-description {
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-section {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.search-container {
+  position: relative;
+  width: 300px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  width: 1rem;
+  height: 1rem;
+}
+
+.search-input {
+  padding-left: 2.5rem;
+}
+
+.table-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 2.5rem;
+  color: #6b7280;
+}
+
+.view-button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Dialog styles */
+.dialog-content {
+  max-width: 425px;
+}
+
+.dialog-grid {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.detail-section {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.detail-title {
+  font-weight: 600;
+  color: #111827;
+}
+
+.detail-text {
+  color: #6b7280;
+}
+
+@media (max-width: 1024px) {
+  .view-dept-container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    padding: 1rem;
+  }
+
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .search-container {
+    width: 100%;
+  }
+
+  .search-section {
+    margin-top: 1rem;
+  }
+}

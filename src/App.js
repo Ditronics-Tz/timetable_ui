@@ -21,6 +21,10 @@ import AddStaff from "./views/AddStaff"
 import AddProgram from './views/AddProgram';
 import ViewProgram from './views/ViewProgram';
 import ManageProgram from './views/ManageProgram';
+import AddDepartment from './views/AddDepartment'
+import ManageDepartments from './views/ManageDepartment'
+import ViewDepartments from './views/ViewDepartment'
+
 
 function App() {
   return (
@@ -55,6 +59,9 @@ function App() {
                 <Route path="/programs/add" element={<AddProgram />} />
                 <Route path="/programs/view" element={<ViewProgram />} />
                 <Route path="/programs/manage" element={<ManageProgram />} />
+                <Route path="/departments/add" element={<AddDepartment />} />
+                <Route path="/departments/manage" element={<ManageDepartments />} />
+                <Route path="/departments/view" element={<ViewDepartments />} />
               </Routes>
             </div>
           </div>
