@@ -1,0 +1,122 @@
+/* Container for the view program page */
+.view-program-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  margin-left: calc(250px + 2rem); /* 250px for navbar width + 2rem padding */
+  margin-right: 2rem;
+}
+
+/* Card styles */
+.view-program-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+/* Search container */
+.view-search-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.view-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+/* Search input styles */
+.view-search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.view-search-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  ring: 2px solid #93c5fd;
+}
+
+/* Table styles */
+.view-table-container {
+  margin-top: 1.5rem;
+  overflow-x: auto;
+}
+
+.view-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Table header */
+.view-table-header {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.view-table-header th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Table body */
+.view-table-row {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.view-table-row:hover {
+  background-color: #f9fafb;
+}
+
+.view-table-cell {
+  padding: 0.75rem 1rem;
+  color: #4b5563;
+}
+
+/* Action buttons */
+.view-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.view-action-button {
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.view-action-button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Empty state */
+.view-empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .view-program-container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    padding: 1rem;
+  }
+
+  .view-table-container {
+    margin-top: 1rem;
+  }
+}
