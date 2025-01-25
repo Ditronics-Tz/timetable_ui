@@ -1,0 +1,120 @@
+/* Container for the add program page */
+.add-program-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  margin-left: calc(250px + 2rem); /* 250px for navbar width + 2rem padding */
+  margin-right: 2rem;
+}
+
+/* Card styles */
+.add-program-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+/* Form spacing */
+.form-section {
+  margin-bottom: 1.5rem;
+}
+
+/* Input and select field containers */
+.input-container {
+  margin-bottom: 1.5rem;
+}
+
+/* Label styles with icons */
+.label-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* Required field indicator */
+.required-indicator {
+  color: #ef4444;
+  margin-left: 0.25rem;
+}
+
+/* Button styles */
+.submit-button {
+  width: 100%;
+  margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .add-program-container {
+    max-width: 100%;
+    padding: 1rem;
+  }
+}
+
+/* CSV Upload Section */
+.csv-upload-container {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.upload-area {
+  border: 2px dashed #e5e7eb;
+  border-radius: 8px;
+  padding: 2.5rem;
+  text-align: center;
+  background-color: #f9fafb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.upload-area:hover {
+  border-color: #9ca3af;
+  background-color: #f3f4f6;
+}
+
+/* Separator styles */
+.separator {
+  position: relative;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 2rem);
+  height: 1px;
+  background-color: #e5e7eb;
+}
+
+.separator::before {
+  left: 0;
+}
+
+.separator::after {
+  right: 0;
+}
+
+.separator-text {
+  background-color: white;
+  padding: 0 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Button styles for upload and download */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+/* Hide the default file input */
+input[type="file"] {
+  display: none;
+}

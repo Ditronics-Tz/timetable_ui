@@ -6,7 +6,7 @@ import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
 import { Label } from "../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { User, CreditCard, Mail, Phone, UserCircle, Briefcase, Building } from "lucide-react"
+import { User, CreditCard, Mail, Phone, UserCircle, Briefcase, Building, Upload, Download } from "lucide-react"
 import '../styles/AddStaff.css'
 
 // Sample departments data
@@ -27,6 +27,21 @@ export default function AddStaff() {
     staffTitle: "",
     department: "",
   })
+
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === "text/csv") {
+      setSelectedFile(file);
+    } else {
+      alert("Please upload a CSV file");
+    }
+  };
+
+  const handleDownloadTemplate = () => {
+    // Add logic to download CSV template
+  };
 
   const [errors, setErrors] = useState({})
 
@@ -213,11 +228,47 @@ export default function AddStaff() {
             {errors.department && <p className="text-red-500 text-sm mt-1">{errors.department}</p>}
           </div>
 
-          <div className="submit-button">
-            <Button type="submit" className="w-full bg-black hover:bg-gray-800">
-              Add Staff
+          <div className="separator">
+            <span className="separator-text">OR</span>
+          </div>
+
+          <div className="flex justify-between items-center mb-4">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={() => document.getElementById('fileInput').click()}
+            >
+              <Upload className="w-4 h-4" />
+              Upload CSV File
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={handleDownloadTemplate}
+            >
+              <Download className="w-4 h-4" />
+              Download Example CSV
             </Button>
           </div>
+
+          <div className="csv-upload-container">
+            <input
+              id="fileInput"
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <div className="upload-area">
+              <Upload className="w-12 h-12 text-gray-400 mb-4" />
+              <p className="text-lg text-gray-600">Click to upload or drag and drop</p>
+              <p className="text-sm text-gray-500 mt-1">CSV file only</p>
+            </div>
+          </div>
+
+          <Button className="submit-button bg-black text-white hover:bg-black/90">
+            Add Staff
+          </Button>
         </form>
       </Card>
     </div>

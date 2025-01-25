@@ -18,6 +18,9 @@ import ManageModule from './views/ManageModule';
 import ViewStaff from "./views/ViewStaff"
 import ManageStaff from "./views/ManageStaff"
 import AddStaff from "./views/AddStaff"
+import AddProgram from './views/AddProgram';
+import ViewProgram from './views/ViewProgram';
+import ManageProgram from './views/ManageProgram';
 
 function App() {
   return (
@@ -49,6 +52,9 @@ function App() {
                 <Route path="/staff/view" element={<ViewStaff />} />
                 <Route path="/staff/manage" element={<ManageStaff />} />
                 <Route path="/staff/add" element={<AddStaff />} />
+                <Route path="/programs/add" element={<AddProgram />} />
+                <Route path="/programs/view" element={<ViewProgram />} />
+                <Route path="/programs/manage" element={<ManageProgram />} />
               </Routes>
             </div>
           </div>
