@@ -1,0 +1,153 @@
+/* Container for the manage program page */
+.manage-program-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  margin-left: calc(250px + 2rem); /* 250px for navbar width + 2rem padding */
+  margin-right: 2rem;
+}
+
+/* Card styles */
+.manage-program-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+/* Search container */
+.search-container {
+  position: relative;
+  flex: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+/* Table styles */
+.table-container {
+  margin-top: 1.5rem;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Table header */
+.table-header {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Table body */
+.table-row {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.table-row:hover {
+  background-color: #f9fafb;
+}
+
+.table-cell {
+  padding: 0.75rem 1rem;
+  color: #4b5563;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.action-button {
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.action-button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+/* Checkbox styles */
+.checkbox-cell {
+  width: 48px;
+  text-align: center;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .manage-program-container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    padding: 1rem;
+  }
+
+  .table-container {
+    margin-top: 1rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+
+/* Button styles */
+.delete-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ef4444;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.delete-button:hover {
+  background-color: #dc2626;
+}
+
+.delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Search input styles */
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  ring: 2px solid #93c5fd;
+}
