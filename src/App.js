@@ -24,7 +24,8 @@ import ManageProgram from './views/ManageProgram';
 import AddDepartment from './views/AddDepartment'
 import ManageDepartments from './views/ManageDepartment'
 import ViewDepartments from './views/ViewDepartment'
-
+import ViewAllocations from "./views/ViewAllocations"
+import ModuleAllocations from "./views/ModuleAllocations" 
 
 function App() {
   return (
@@ -62,6 +63,9 @@ function App() {
                 <Route path="/departments/add" element={<AddDepartment />} />
                 <Route path="/departments/manage" element={<ManageDepartments />} />
                 <Route path="/departments/view" element={<ViewDepartments />} />
+                <Route path="/allocations/view" element={<ViewAllocations />} />
+                <Route path="/allocations/module" element={<ModuleAllocations />} />
+
               </Routes>
             </div>
           </div>

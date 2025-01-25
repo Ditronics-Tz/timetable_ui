@@ -172,14 +172,14 @@ function Navbar() {
           
           <div className="dropdown-menu">
             <Link 
-              to="/module-allocation/allocate" 
-              className={`dropdown-item ${activePage === 'module-allocation/allocate' ? 'active' : ''}`}
+              to="/allocations/module" 
+              className={`dropdown-item ${activePage === 'allocations/module' ? 'active' : ''}`}
             >
-              Allocate Modules
+              Module Allocations
             </Link>
             <Link 
-              to="/module-allocation/view" 
-              className={`dropdown-item ${activePage === 'module-allocation/view' ? 'active' : ''}`}
+              to="/allocations/view" 
+              className={`dropdown-item ${activePage === 'allocations/view' ? 'active' : ''}`}
             >
               View Allocations
             </Link>
