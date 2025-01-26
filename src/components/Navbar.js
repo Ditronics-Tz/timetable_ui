@@ -15,7 +15,8 @@ import {
   FolderKanban,
   FileSpreadsheet,
   ChevronDown,
-  Folder
+  Folder,
+  LogOut
 } from 'lucide-react';
 
 function Navbar() {
@@ -29,6 +30,12 @@ function Navbar() {
   const [isModuleAllocationExpanded, setIsModuleAllocationExpanded] = useState(false);
   const [isClassesExpanded, setIsClassesExpanded] = useState(false);
   const [isProgramsExpanded, setIsProgramsExpanded] = useState(false);
+
+  const handleLogout = () => {
+    console.log('Logging out...');
+    localStorage.clear();
+    window.location.href = '/login';
+  };
 
   return (
     <div className="sidebar">
@@ -286,6 +293,16 @@ function Navbar() {
           <Settings className="nav-icon" size={20} />
           <span>Settings</span>
         </Link>
+
+        <div className="nav-menu-bottom">
+          <div 
+            className="nav-item logout-item" 
+            onClick={handleLogout}
+          >
+            <LogOut className="nav-icon" size={20} />
+            <span>Logout</span>
+          </div>
+        </div>
       </nav>
     </div>
   );
