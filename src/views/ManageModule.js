@@ -1,214 +1,125 @@
-"use client"
+'use client'
 
-import { useState } from "react"
+import { useState } from 'react'
 import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
-import { Checkbox } from "../components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table"
-import {
-  Search,
-  Filter,
-  Download,
-  Trash2,
-  Edit2,
-  MoreHorizontal,
-  ChevronDown,
-  Layers,
-  Calendar,
-  Award,
-  Code,
-  BookOpen,
-} from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu"
+import { Upload, Download, Plus, User, BookOpen, School } from 'lucide-react'
+import '../styles/ManageModule.css'
 
-import '../styles/ManageModule.css';
+export default function ModuleAllocation() {
+  const [files, setFiles] = useState([])
 
-export default function ManageModules() {
-  const [modules, setModules] = useState([]) // Empty initial state
-  const [selectedModules, setSelectedModules] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterType, setFilterType] = useState("")
-  const [filterYear, setFilterYear] = useState("")
-
-  const handleSelectAll = (checked) => {
-    if (checked) {
-      setSelectedModules(modules.map((module) => module.id))
-    } else {
-      setSelectedModules([])
-    }
+  const handleDrag = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
   }
 
-  const handleSelect = (id) => {
-    if (selectedModules.includes(id)) {
-      setSelectedModules(selectedModules.filter((moduleId) => moduleId !== id))
-    } else {
-      setSelectedModules([...selectedModules, id])
-    }
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const files = e.dataTransfer.files
+    handleFiles(files)
   }
 
-  const handleBulkDelete = () => {
-    setModules(modules.filter((module) => !selectedModules.includes(module.id)))
-    setSelectedModules([])
+  const handleFiles = (files) => {
+    // Handle file upload logic here
   }
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value)
+  const downloadExampleCSV = () => {
+    // Download CSV logic here
   }
 
-  const filteredModules = modules.filter(
-    (module) =>
-      (module.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        module.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (filterType === "" || module.type === filterType) &&
-      (filterYear === "" || module.year.toString() === filterYear),
-  )
+  const handleAddAllocation = () => {
+    // Add allocation logic here
+  }
 
   return (
     <div className="manage-modules-container">
       <Card className="manage-modules-card">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900 mb-1">Module Allocation</h1>
+            <p className="text-gray-600">Assign modules to classes and staff members</p>
+          </div>
+          <Button 
+            variant="outline" 
+            className="text-gray-700 hover:bg-gray-50 border border-gray-200"
+            onClick={downloadExampleCSV}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Download Example CSV
+          </Button>
+        </div>
+
+        <div 
+          className="upload-container"
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        >
+          <input
+            type="file"
+            id="csv-upload"
+            className="hidden"
+            accept=".csv"
+            onChange={(e) => handleFiles(e.target.files)}
+          />
+          <Upload className="mx-auto h-8 w-8 text-gray-400 mb-3" />
+          <p className="text-gray-700 font-medium mb-1">Click to upload or drag and drop</p>
+          <p className="text-sm text-gray-500">CSV file only</p>
+        </div>
+
         <div className="filters-container">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-semibold flex items-center gap-2">
-              <Layers className="h-6 w-6" />
-              Manage Modules
-            </h1>
-            <Button className="bg-black hover:bg-gray-800">+ Add New Module</Button>
+          <div>
+            <label className="block">
+              Classes <span className="text-red-500">*</span>
+            </label>
+            <Button variant="outline" className="w-full justify-between bg-white border-gray-200">
+              Select classes
+              <School className="h-4 w-4 ml-2 text-gray-500" />
+            </Button>
           </div>
 
-          <div className="flex flex-wrap gap-4 mb-6">
-            <div className="flex-1 min-w-[200px]">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input placeholder="Search modules..." value={searchTerm} onChange={handleSearch} className="pl-10" />
-              </div>
-            </div>
+          <div>
+            <label className="block">
+              Modules <span className="text-red-500">*</span>
+            </label>
+            <Button variant="outline" className="w-full justify-between bg-white border-gray-200">
+              Select modules
+              <BookOpen className="h-4 w-4 ml-2 text-gray-500" />
+            </Button>
+          </div>
 
-            <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-[180px]">
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  <span>{filterType || "Filter by Type"}</span>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Core">Core</SelectItem>
-                <SelectItem value="Elective">Elective</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={filterYear} onValueChange={setFilterYear}>
-              <SelectTrigger className="w-[180px]">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>{filterYear || "Filter by Year"}</span>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Years</SelectItem>
-                <SelectItem value="2023">2023</SelectItem>
-                <SelectItem value="2024">2024</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button variant="outline" className="flex items-center gap-2">
-              <Download className="h-4 w-4" />
-              Export
+          <div>
+            <label className="block">
+              Staff <span className="text-red-500">*</span>
+            </label>
+            <Button variant="outline" className="w-full justify-between bg-white border-gray-200">
+              Select staff members
+              <User className="h-4 w-4 ml-2 text-gray-500" />
             </Button>
           </div>
         </div>
-        
-        <div className="table-container">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]">
-                  <Checkbox checked={selectedModules.length === modules.length} onCheckedChange={handleSelectAll} />
-                </TableHead>
-                <TableHead>Code</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Year</TableHead>
-                <TableHead>Semester</TableHead>
-                <TableHead>NTA Level</TableHead>
-                <TableHead>Credit Value</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredModules.map((module) => (
-                <TableRow key={module.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedModules.includes(module.id)}
-                      onCheckedChange={() => handleSelect(module.id)}
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium">{module.code}</TableCell>
-                  <TableCell>{module.name}</TableCell>
-                  <TableCell>{module.type}</TableCell>
-                  <TableCell>{module.year}</TableCell>
-                  <TableCell>{module.semester}</TableCell>
-                  <TableCell>{module.ntaLevel}</TableCell>
-                  <TableCell>{module.creditValue}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>
-                          <Edit2 className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      </Card>
 
-          <div className="mt-4 flex justify-between items-center">
-            <div className="text-sm text-gray-500">
-              {selectedModules.length} of {modules.length} row(s) selected.
-            </div>
-            <div className="space-x-2">
-              <Button variant="outline" className="flex items-center gap-2" disabled={selectedModules.length === 0}>
-                <Edit2 className="h-4 w-4" />
-                Bulk Edit
-              </Button>
-              <Button
-                variant="destructive"
-                className="flex items-center gap-2"
-                onClick={handleBulkDelete}
-                disabled={selectedModules.length === 0}
-              >
-                <Trash2 className="h-4 w-4" />
-                Bulk Delete
-              </Button>
-            </div>
-          </div>
+      <Card className="manage-modules-card">
+        <div className="current-allocations-header">
+          <h2 className="current-allocations-title">Current Allocations</h2>
+          <Button 
+            variant="secondary"
+            className="add-allocation-button"
+            onClick={handleAddAllocation}
+          >
+            <Plus className="h-4 w-4" />
+            Add Allocation
+          </Button>
         </div>
+        <p className="empty-state">
+          No allocations added yet. Create an allocation using the form or upload a CSV file.
+        </p>
       </Card>
     </div>
   )
 }
-
