@@ -29,6 +29,7 @@ import ModuleAllocations from "./views/ModuleAllocations"
 import TimetableGenerator from "./views/Timetable"
 import SettingsPage from "./views/Settings"
 
+
 function App() {
   return (
     <Router>
@@ -37,6 +38,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+       
 
         {/* Main app routes */}
         <Route path="/*" element={
