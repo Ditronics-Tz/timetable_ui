@@ -27,6 +27,7 @@ import ViewDepartments from './views/ViewDepartment'
 import ViewAllocations from "./views/ViewAllocations"
 import ModuleAllocations from "./views/ModuleAllocations" 
 import TimetableGenerator from "./views/Timetable"
+import SettingsPage from "./views/Settings"
 
 function App() {
   return (
@@ -67,6 +68,7 @@ function App() {
                 <Route path="/allocations/view" element={<ViewAllocations />} />
                 <Route path="/allocations/module" element={<ModuleAllocations />} />
                 <Route path="/timetable" element={<TimetableGenerator />} />
+                <Route path="/settings" element={<SettingsPage />} />
               </Routes>
             </div>
           </div>

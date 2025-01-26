@@ -1,0 +1,21 @@
+.settings-page {
+  margin-left: 250px;
+  padding: 1.5rem;
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.settings-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.settings-header {
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .settings-page {
+    margin-left: 280px;
+  }
+}
