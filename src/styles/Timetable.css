@@ -1,0 +1,12 @@
+.timetable-container {
+  margin-left: 250px;
+  padding: 1.5rem;
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+@media (min-width: 768px) {
+  .timetable-container {
+    margin-left: 280px;
+  }
+} 
