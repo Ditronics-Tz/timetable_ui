@@ -1,7 +1,9 @@
 .allocations-container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin-left: 250px;
   padding: 1.5rem;
+  min-height: 100vh;
+  background-color: #f9fafb;
 }
 
 .allocations-card {
@@ -142,6 +144,10 @@
 
 /* Responsive styles */
 @media (min-width: 768px) {
+  .allocations-container {
+    margin-left: 280px;
+  }
+
   .header-section {
     flex-direction: row;
     justify-content: space-between;
