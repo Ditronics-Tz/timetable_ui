@@ -8,18 +8,16 @@ import { Button } from "../../components/ui/button"
 import { Label } from "../../components/ui/label"
 import { Progress } from "../../components/ui/progress"
 import { Link, useNavigate } from 'react-router-dom'
-import { Building2, BadgeIcon as IdCard, User, Mail, Phone, Lock, Eye, EyeOff, ChevronRight, AlertCircle } from 'lucide-react'
+import { User, Mail, Lock, Eye, EyeOff, ChevronRight, AlertCircle } from 'lucide-react'
 import authService from '../../services/Authservice'
 import '../../styles/Register.css'
 
 export default function Register() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    institute: '',
-    staffId: '',
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    phoneNumber: '',
     password: '',
     confirmPassword: ''
   })
@@ -89,15 +87,8 @@ export default function Register() {
       const userData = {
         email: formData.email,
         password: formData.password,
-        first_name: formData.name.split(' ')[0], // Using name field and splitting for first/last name
-        last_name: formData.name.split(' ').slice(1).join(' '),
-        // Additional fields that can be stored in the user metadata or profile
-        // These might need to be adapted based on your backend implementation
-        profile: {
-          institute: formData.institute,
-          staff_id: formData.staffId,
-          phone_number: formData.phoneNumber
-        }
+        first_name: formData.firstName,
+        last_name: formData.lastName
       }
       
       await authService.register(userData)
@@ -160,18 +151,18 @@ export default function Register() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div className="relative">
-                <Label htmlFor="institute" className="text-gray-700">Institute</Label>
+                <Label htmlFor="firstName" className="text-gray-700">First Name</Label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Building2 className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-gray-400" />
                   </div>
                   <Input
-                    id="institute"
-                    name="institute"
+                    id="firstName"
+                    name="firstName"
                     type="text"
                     required
                     className="pl-10"
-                    value={formData.institute}
+                    value={formData.firstName}
                     onChange={handleChange}
                     disabled={isLoading}
                   />
@@ -179,18 +170,18 @@ export default function Register() {
               </div>
 
               <div className="relative">
-                <Label htmlFor="staffId" className="text-gray-700">Staff ID</Label>
+                <Label htmlFor="lastName" className="text-gray-700">Last Name</Label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <IdCard className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5 text-gray-400" />
                   </div>
                   <Input
-                    id="staffId"
-                    name="staffId"
+                    id="lastName"
+                    name="lastName"
                     type="text"
                     required
                     className="pl-10"
-                    value={formData.staffId}
+                    value={formData.lastName}
                     onChange={handleChange}
                     disabled={isLoading}
                   />
@@ -199,61 +190,21 @@ export default function Register() {
             </div>
 
             <div className="relative">
-              <Label htmlFor="name" className="text-gray-700">Full Name</Label>
+              <Label htmlFor="email" className="text-gray-700">Email address</Label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <Input
-                  id="name"
-                  name="name"
-                  type="text"
+                  id="email"
+                  name="email"
+                  type="email"
                   required
                   className="pl-10"
-                  value={formData.name}
+                  value={formData.email}
                   onChange={handleChange}
                   disabled={isLoading}
                 />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div className="relative">
-                <Label htmlFor="email" className="text-gray-700">Email address</Label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    className="pl-10"
-                    value={formData.email}
-                    onChange={handleChange}
-                    disabled={isLoading}
-                  />
-                </div>
-              </div>
-
-              <div className="relative">
-                <Label htmlFor="phoneNumber" className="text-gray-700">Phone Number</Label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <Input
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    type="tel"
-                    required
-                    className="pl-10"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    disabled={isLoading}
-                  />
-                </div>
               </div>
             </div>
 
