@@ -6,9 +6,10 @@ import { Label } from "../../components/ui/label"
 import { Input } from "../../components/ui/input"
 import { Button } from "../../components/ui/button"
 import { Checkbox } from "../../components/ui/checkbox"
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import authService from '../../services/Authservice'
 import '../../styles/Login.css'
 
 export default function Login() {
@@ -20,17 +21,40 @@ export default function Login() {
   })
 
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
     setFormData({ ...formData, [e.target.name]: value })
+    // Clear error when user starts typing
+    if (error) setError('')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Login data:', formData)
-    // Temporarily navigate to preview page after login
-    navigate('/dashboard')
+    setIsLoading(true)
+    setError('')
+    
+    try {
+      // Extract just email and password for login
+      const credentials = {
+        email: formData.email,
+        password: formData.password
+      }
+      
+      await authService.login(credentials)
+      
+      // If login successful, navigate to dashboard
+      navigate('/dashboard')
+    } catch (error) {
+      const errorMessage = 
+        error.response?.data?.message || 
+        'Login failed. Please check your credentials and try again.'
+      setError(errorMessage)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -61,6 +85,13 @@ export default function Login() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Card className="py-8 px-4 shadow-2xl sm:rounded-lg sm:px-10 bg-white/95 backdrop-blur-sm">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md flex items-start">
+              <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+          
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="relative">
               <Label htmlFor="email" className="text-gray-700">Email address</Label>
@@ -77,6 +108,7 @@ export default function Login() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -96,12 +128,14 @@ export default function Login() {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
+                  disabled={isLoading}
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    disabled={isLoading}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -121,6 +155,7 @@ export default function Login() {
                   checked={formData.rememberMe}
                   onCheckedChange={(checked) => setFormData({ ...formData, rememberMe: checked })}
                   className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
+                  disabled={isLoading}
                 />
                 <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700">
                   Remember me
@@ -138,8 +173,9 @@ export default function Login() {
               <Button 
                 type="submit" 
                 className="w-full bg-black hover:bg-gray-800 text-white transition-all duration-300 py-6"
+                disabled={isLoading}
               >
-                Sign in
+                {isLoading ? 'Signing in...' : 'Sign in'}
               </Button>
             </div>
           </form>

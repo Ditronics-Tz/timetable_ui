@@ -8,7 +8,8 @@ import { Button } from "../../components/ui/button"
 import { Label } from "../../components/ui/label"
 import { Progress } from "../../components/ui/progress"
 import { Link, useNavigate } from 'react-router-dom'
-import { Building2, BadgeIcon as IdCard, User, Mail, Phone, Lock, Eye, EyeOff, ChevronRight } from 'lucide-react'
+import { Building2, BadgeIcon as IdCard, User, Mail, Phone, Lock, Eye, EyeOff, ChevronRight, AlertCircle } from 'lucide-react'
+import authService from '../../services/Authservice'
 import '../../styles/Register.css'
 
 export default function Register() {
@@ -26,6 +27,8 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [passwordStrength, setPasswordStrength] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -34,6 +37,9 @@ export default function Register() {
     if (name === 'password') {
       calculatePasswordStrength(value)
     }
+    
+    // Clear error when user starts typing
+    if (error) setError('')
   }
 
   const calculatePasswordStrength = (password) => {
@@ -52,11 +58,68 @@ export default function Register() {
     return 'bg-green-500'
   }
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match')
+      return false
+    }
+    
+    // Check if password is strong enough
+    if (passwordStrength < 50) {
+      setError('Password is too weak. Please use a stronger password.')
+      return false
+    }
+    
+    return true
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Registration data:', formData)
-    // Temporarily navigate to preview page after registration
-    navigate('/dashboard')
+    
+    if (!validateForm()) {
+      return
+    }
+    
+    setIsLoading(true)
+    setError('')
+    
+    try {
+      // Prepare user data for registration according to the backend requirements
+      const userData = {
+        email: formData.email,
+        password: formData.password,
+        first_name: formData.name.split(' ')[0], // Using name field and splitting for first/last name
+        last_name: formData.name.split(' ').slice(1).join(' '),
+        // Additional fields that can be stored in the user metadata or profile
+        // These might need to be adapted based on your backend implementation
+        profile: {
+          institute: formData.institute,
+          staff_id: formData.staffId,
+          phone_number: formData.phoneNumber
+        }
+      }
+      
+      await authService.register(userData)
+      
+      // After successful registration, attempt to login automatically
+      const loginData = {
+        email: formData.email,
+        password: formData.password
+      }
+      
+      await authService.login(loginData)
+      
+      // If all is successful, navigate to dashboard
+      navigate('/dashboard')
+    } catch (error) {
+      const errorMessage = 
+        error.response?.data?.message || 
+        'Registration failed. Please try again with different information.'
+      setError(errorMessage)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -81,12 +144,19 @@ export default function Register() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          Register to start using SACAS  Timetable System 
+          Register to start using SACAS Timetable System 
         </motion.div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Card className="py-8 px-4 shadow-2xl sm:rounded-lg sm:px-10 bg-white/95 backdrop-blur-sm">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md flex items-start">
+              <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+          
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div className="relative">
@@ -103,6 +173,7 @@ export default function Register() {
                     className="pl-10"
                     value={formData.institute}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -121,6 +192,7 @@ export default function Register() {
                     className="pl-10"
                     value={formData.staffId}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -140,6 +212,7 @@ export default function Register() {
                   className="pl-10"
                   value={formData.name}
                   onChange={handleChange}
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -159,6 +232,7 @@ export default function Register() {
                     className="pl-10"
                     value={formData.email}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -177,6 +251,7 @@ export default function Register() {
                     className="pl-10"
                     value={formData.phoneNumber}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -197,12 +272,14 @@ export default function Register() {
                     className="pl-10 pr-10"
                     value={formData.password}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                      disabled={isLoading}
                     >
                       {showPassword ? (
                         <EyeOff className="h-5 w-5" />
@@ -242,12 +319,14 @@ export default function Register() {
                     className="pl-10 pr-10"
                     value={formData.confirmPassword}
                     onChange={handleChange}
+                    disabled={isLoading}
                   />
                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                      disabled={isLoading}
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="h-5 w-5" />
@@ -264,8 +343,9 @@ export default function Register() {
               <Button 
                 type="submit" 
                 className="w-full bg-black hover:bg-gray-800 text-white transition-all duration-300 py-6"
+                disabled={isLoading}
               >
-                Register
+                {isLoading ? 'Processing...' : 'Register'}
               </Button>
             </div>
           </form>
@@ -286,6 +366,7 @@ export default function Register() {
               <Link 
                 to="/login" 
                 className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300"
+                tabIndex={isLoading ? -1 : 0}
               >
                 Sign in
                 <ChevronRight className="ml-2 h-4 w-4" />
