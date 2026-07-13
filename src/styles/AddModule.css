@@ -2,8 +2,8 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  margin-left: 250px;
-  width: calc(100% - 250px);
+  margin-left: 0;
+  width: 100%;
 }
 
 .add-module-card {

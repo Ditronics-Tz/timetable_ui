@@ -3,7 +3,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
-  margin-left: calc(250px + 2rem); /* 250px for navbar width + 2rem padding */
+  margin-left: 0; /* 250px for navbar width + 2rem padding */
   margin-right: 2rem;
 }
 

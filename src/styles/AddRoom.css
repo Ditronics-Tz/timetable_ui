@@ -2,8 +2,8 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  margin-left: 250px;
-  width: calc(100% - 250px);
+  margin-left: 0;
+  width: 100%;
 }
 
 .add-room-card {
@@ -98,7 +98,7 @@
 @media (max-width: 1024px) {
   .add-room-container {
     margin: 1rem;
-    margin-left: calc(250px + 1rem);
+    margin-left: 0;
     padding: 1.5rem;
   }
 }

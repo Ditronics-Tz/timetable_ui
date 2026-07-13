@@ -1,24 +1,30 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
+import PageHeader from "../components/PageHeader";
 import classService from "../services/classService";
 import courseService from "../services/courseService";
 import { extractApiError } from "../lib/apiError";
+import { useToast } from "../components/Toast";
+
+const empty = {
+  name: "",
+  course_id: "",
+  year: 1,
+  academic_year: "",
+  number_of_students: 30,
+};
 
 export default function AddClass() {
+  const navigate = useNavigate();
+  const toast = useToast();
   const [courses, setCourses] = useState([]);
-  const [form, setForm] = useState({
-    name: "",
-    course_id: "",
-    year: 1,
-    academic_year: "",
-    number_of_students: 30,
-  });
+  const [form, setForm] = useState(empty);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     courseService
@@ -27,11 +33,9 @@ export default function AddClass() {
       .catch((e) => setError(extractApiError(e)));
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const save = async (addAnother) => {
     setLoading(true);
     setError("");
-    setMessage("");
     try {
       await classService.create({
         name: form.name,
@@ -40,14 +44,9 @@ export default function AddClass() {
         academic_year: form.academic_year || undefined,
         number_of_students: Number(form.number_of_students),
       });
-      setMessage("Class created.");
-      setForm({
-        name: "",
-        course_id: "",
-        year: 1,
-        academic_year: "",
-        number_of_students: 30,
-      });
+      toast.success("Class created.");
+      if (addAnother) setForm(empty);
+      else navigate("/classes/view");
     } catch (err) {
       setError(extractApiError(err));
     } finally {
@@ -56,15 +55,31 @@ export default function AddClass() {
   };
 
   return (
-    <div className="p-6">
-      <Card className="p-6 max-w-2xl mx-auto space-y-4">
-        <h2 className="text-2xl font-bold">Add Class</h2>
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-        {message && <div className="text-green-700 text-sm">{message}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="space-y-4">
+      <PageHeader
+        title="Add class"
+        crumbs={[
+          { label: "Classes", to: "/classes/view" },
+          { label: "Add" },
+        ]}
+      />
+      <Card className="p-6 max-w-2xl border shadow-sm space-y-4">
+        {error && (
+          <div className="rounded-md bg-red-50 border border-red-200 text-red-700 text-sm p-3">
+            {error}
+          </div>
+        )}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            save(false);
+          }}
+          className="space-y-4"
+        >
           <div>
-            <Label>Class name</Label>
+            <Label htmlFor="name">Class name *</Label>
             <Input
+              id="name"
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -72,9 +87,10 @@ export default function AddClass() {
             />
           </div>
           <div>
-            <Label>Program</Label>
+            <Label htmlFor="course_id">Program *</Label>
             <select
-              className="w-full border rounded h-10 px-2"
+              id="course_id"
+              className="w-full border rounded-md h-10 px-2 bg-white"
               required
               value={form.course_id}
               onChange={(e) => setForm({ ...form, course_id: e.target.value })}
@@ -88,9 +104,10 @@ export default function AddClass() {
             </select>
           </div>
           <div>
-            <Label>Year of Study (1–6)</Label>
+            <Label htmlFor="year">Year of study (1–6) *</Label>
             <select
-              className="w-full border rounded h-10 px-2"
+              id="year"
+              className="w-full border rounded-md h-10 px-2 bg-white"
               value={form.year}
               onChange={(e) => setForm({ ...form, year: e.target.value })}
             >
@@ -102,28 +119,36 @@ export default function AddClass() {
             </select>
           </div>
           <div>
-            <Label>Academic year (calendar)</Label>
+            <Label htmlFor="academic_year">Academic year (calendar)</Label>
             <Input
+              id="academic_year"
               value={form.academic_year}
               onChange={(e) => setForm({ ...form, academic_year: e.target.value })}
               placeholder="e.g. 2024/25"
             />
           </div>
           <div>
-            <Label>Number of students</Label>
+            <Label htmlFor="number_of_students">Number of students *</Label>
             <Input
+              id="number_of_students"
               type="number"
               min={1}
               required
               value={form.number_of_students}
-              onChange={(e) =>
-                setForm({ ...form, number_of_students: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, number_of_students: e.target.value })}
             />
           </div>
-          <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "Create class"}
-          </Button>
+          <div className="flex flex-wrap gap-2 pt-2">
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving…" : "Create class"}
+            </Button>
+            <Button type="button" variant="outline" disabled={loading} onClick={() => save(true)}>
+              Save and add another
+            </Button>
+            <Button type="button" variant="ghost" onClick={() => navigate("/classes/view")}>
+              Cancel
+            </Button>
+          </div>
         </form>
       </Card>
     </div>

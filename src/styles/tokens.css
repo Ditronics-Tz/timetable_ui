@@ -1,0 +1,41 @@
+/* SACAS design tokens — single source of truth */
+:root {
+  --sidebar-width: 16rem; /* 256px expanded */
+  --sidebar-width-collapsed: 4.5rem; /* 72px icon rail */
+  --sidebar-bg: #15192c;
+  --sidebar-fg: #8a94a6;
+  --sidebar-fg-active: #ffffff;
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-active: #1e2235;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+
+  --page-bg: #f4f6f9;
+  --page-max-width: 1600px;
+  --page-padding-x: 1.5rem;
+  --page-padding-y: 1.5rem;
+
+  --surface: #ffffff;
+  --surface-border: #e5e7eb;
+  --surface-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --warning: #d97706;
+  --info: #2563eb;
+
+  --radius-card: 0.75rem;
+  --focus-ring: 0 0 0 2px #fff, 0 0 0 4px #15192c;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-padding-x: 2rem;
+    --page-padding-y: 2rem;
+  }
+}

@@ -2,8 +2,8 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  margin-left: 250px; /* Matches the sidebar width */
-  width: calc(100% - 250px); /* Accounts for sidebar */
+  margin-left: 0; /* Matches the sidebar width */
+  width: 100%; /* Accounts for sidebar */
 }
 
 .add-staff-card {

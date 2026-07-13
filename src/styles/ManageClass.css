@@ -2,8 +2,8 @@
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  margin-left: 250px; /* Adjust based on your navbar width */
-  width: calc(100% - 250px);
+  margin-left: 0; /* Adjust based on your navbar width */
+  width: 100%;
   min-height: calc(100vh - 64px); /* Adjust based on your navbar height */
   background-color: #f9fafb;
 }

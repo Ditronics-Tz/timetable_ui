@@ -1,23 +1,28 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
+import PageHeader from "../components/PageHeader";
 import facultyService from "../services/facultyService";
 import { extractApiError } from "../lib/apiError";
-import "../styles/AddDepartment.css";
+import { useToast } from "../components/Toast";
+
+const empty = {
+  name: "",
+  description: "",
+  hod_name: "",
+  hod_phone: "",
+  hod_email: "",
+};
 
 export default function AddDepartment() {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    hod_name: "",
-    hod_phone: "",
-    hod_email: "",
-  });
+  const navigate = useNavigate();
+  const toast = useToast();
+  const [formData, setFormData] = useState(empty);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -25,11 +30,9 @@ export default function AddDepartment() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const save = async (addAnother) => {
     setLoading(true);
     setError("");
-    setMessage("");
     try {
       await facultyService.create({
         name: formData.name,
@@ -38,14 +41,12 @@ export default function AddDepartment() {
         hod_phone: formData.hod_phone,
         hod_email: formData.hod_email,
       });
-      setMessage("Department created successfully.");
-      setFormData({
-        name: "",
-        description: "",
-        hod_name: "",
-        hod_phone: "",
-        hod_email: "",
-      });
+      toast.success("Department created.");
+      if (addAnother) {
+        setFormData(empty);
+      } else {
+        navigate("/departments/view");
+      }
     } catch (err) {
       setError(extractApiError(err));
     } finally {
@@ -54,15 +55,30 @@ export default function AddDepartment() {
   };
 
   return (
-    <div className="add-department-container p-6">
-      <Card className="p-6 max-w-2xl mx-auto space-y-4">
-        <h2 className="text-2xl font-bold">Add New Department</h2>
-        <p className="text-sm text-gray-500">Maps to backend Faculty</p>
-        {error && <div className="p-3 bg-red-50 text-red-700 rounded text-sm">{error}</div>}
-        {message && <div className="p-3 bg-green-50 text-green-800 rounded text-sm">{message}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="space-y-4">
+      <PageHeader
+        title="Add department"
+        subtitle="Maps to backend Faculty"
+        crumbs={[
+          { label: "Departments", to: "/departments/view" },
+          { label: "Add" },
+        ]}
+      />
+      <Card className="p-6 max-w-2xl border shadow-sm space-y-4">
+        {error && (
+          <div className="rounded-md bg-red-50 border border-red-200 text-red-700 text-sm p-3">
+            {error}
+          </div>
+        )}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            save(false);
+          }}
+          className="space-y-4"
+        >
           <div>
-            <Label htmlFor="name">Department name</Label>
+            <Label htmlFor="name">Department name *</Label>
             <Input id="name" name="name" required value={formData.name} onChange={handleChange} />
           </div>
           <div>
@@ -92,9 +108,22 @@ export default function AddDepartment() {
               onChange={handleChange}
             />
           </div>
-          <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "Create department"}
-          </Button>
+          <div className="flex flex-wrap gap-2 pt-2">
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving…" : "Create department"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={loading}
+              onClick={() => save(true)}
+            >
+              Save and add another
+            </Button>
+            <Button type="button" variant="ghost" onClick={() => navigate("/departments/view")}>
+              Cancel
+            </Button>
+          </div>
         </form>
       </Card>
     </div>

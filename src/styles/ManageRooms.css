@@ -74,7 +74,7 @@
 .container {
   flex: 1;
   padding: 32px;
-  margin-left: 250px;
+  margin-left: 0;
   background-color: #f8f9ff;
 }
 
@@ -276,6 +276,6 @@ body {
 .view-rooms-container {
   flex: 1;
   padding: 32px;
-  margin-left: 250px;
+  margin-left: 0;
   background-color: #f8f9ff;
 }

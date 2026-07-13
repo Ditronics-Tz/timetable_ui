@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import "../styles/Navbar.css";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -12,40 +11,60 @@ import {
   FileSpreadsheet,
   UserCog,
   LogOut,
+  PanelLeftClose,
+  PanelLeft,
+  Menu,
+  X,
 } from "lucide-react";
 import { getCurrentUser, isAdmin } from "../lib/auth";
 import authService from "../services/Authservice";
 
-function NavDropdown({ label, icon: Icon, base, expanded, setExpanded, activePage, items }) {
+function NavDropdown({ label, icon: Icon, base, expanded, setExpanded, activePage, items, collapsed }) {
+  const open = expanded && !collapsed;
   return (
-    <div className={`nav-item-dropdown ${expanded ? "expanded" : ""}`}>
-      <div
-        className={`nav-item ${activePage.startsWith(base) ? "active" : ""}`}
+    <div>
+      <button
+        type="button"
+        className={`sidebar-item ${activePage.startsWith(base) ? "is-active" : ""}`}
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={open}
       >
-        <Icon className="nav-icon" size={20} />
-        <span>{label}</span>
-        <span className={`dropdown-arrow ${expanded ? "expanded" : ""}`}>▼</span>
-      </div>
-      <div className="dropdown-menu">
-        {items.map((item) => (
-          <Link
-            key={item.to}
-            to={item.to}
-            className={`dropdown-item ${activePage === item.to.replace(/^\//, "") ? "active" : ""}`}
-          >
-            {item.label}
-          </Link>
-        ))}
+        <Icon size={20} aria-hidden />
+        <span className="label">{label}</span>
+        <span className={`chevron ${open ? "open" : ""}`} aria-hidden>
+          ▼
+        </span>
+      </button>
+      <div className={`dropdown-panel ${open ? "open" : ""}`}>
+        {items.map((item) => {
+          const path = item.to.replace(/^\//, "");
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`dropdown-link ${activePage === path ? "is-active" : ""}`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-function Navbar() {
+/**
+ * Sidebar navigation. Lives inside the grid shell column (not position:fixed alone).
+ */
+export default function Navbar({
+  collapsed = false,
+  onToggleCollapse,
+  mobileOpen = false,
+  onCloseMobile,
+}) {
   const location = useLocation();
   const navigate = useNavigate();
-  const activePage = location.pathname.substring(1);
+  const activePage = location.pathname.replace(/^\//, "");
   const user = getCurrentUser();
   const admin = isAdmin();
 
@@ -56,6 +75,12 @@ function Navbar() {
   const [isModuleAllocationExpanded, setIsModuleAllocationExpanded] = useState(false);
   const [isClassesExpanded, setIsClassesExpanded] = useState(false);
   const [isProgramsExpanded, setIsProgramsExpanded] = useState(false);
+
+  // Close mobile drawer after navigation
+  useEffect(() => {
+    onCloseMobile?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   const handleLogout = async () => {
     await authService.logout();
@@ -68,42 +93,50 @@ function Navbar() {
       : "User";
 
   return (
-    <div className="sidebar">
-      <div className="logo-section">
-        <div className="logo-circle">
-          <UserCog size={24} className="admin-icon" />
+    <aside className="app-sidebar" aria-label="Main navigation">
+      <div className="sidebar-brand">
+        <UserCog size={22} className="text-white shrink-0" aria-hidden />
+        <div className="brand-text min-w-0">
+          <h2>{admin ? "ADMIN" : "USER"}</h2>
+          <div className="brand-meta" title={displayName}>
+            {displayName}
+          </div>
         </div>
-        <h2>{admin ? "ADMIN" : "USER"}</h2>
-        <p className="text-xs text-gray-400 px-2 truncate" title={displayName}>
-          {displayName}
-        </p>
+        <button
+          type="button"
+          className="ml-auto md:hidden text-white p-1 rounded hover:bg-white/10"
+          onClick={onCloseMobile}
+          aria-label="Close menu"
+        >
+          <X size={20} />
+        </button>
       </div>
 
-      <nav className="nav-menu">
+      <nav className="sidebar-nav">
         <Link
           to="/dashboard"
-          className={`nav-item ${activePage === "dashboard" ? "active" : ""}`}
+          className={`sidebar-item ${activePage === "dashboard" ? "is-active" : ""}`}
         >
-          <LayoutDashboard className="nav-icon" size={20} />
-          <span>Dashboard</span>
+          <LayoutDashboard size={20} aria-hidden />
+          <span className="label">Dashboard</span>
         </Link>
 
         {admin && (
           <>
             <Link
               to="/timetable"
-              className={`nav-item ${activePage === "timetable" ? "active" : ""}`}
+              className={`sidebar-item ${activePage === "timetable" ? "is-active" : ""}`}
             >
-              <Calendar className="nav-icon" size={20} />
-              <span>Timetable</span>
+              <Calendar size={20} aria-hidden />
+              <span className="label">Timetable</span>
             </Link>
 
             <Link
               to="/preview"
-              className={`nav-item ${activePage === "preview" ? "active" : ""}`}
+              className={`sidebar-item ${activePage === "preview" ? "is-active" : ""}`}
             >
-              <FileSpreadsheet className="nav-icon" size={20} />
-              <span>Preview</span>
+              <FileSpreadsheet size={20} aria-hidden />
+              <span className="label">Preview</span>
             </Link>
 
             <NavDropdown
@@ -113,6 +146,7 @@ function Navbar() {
               expanded={isRoomsExpanded}
               setExpanded={setIsRoomsExpanded}
               activePage={activePage}
+              collapsed={collapsed}
               items={[
                 { to: "/rooms/add", label: "Add Rooms" },
                 { to: "/rooms/view", label: "View Rooms" },
@@ -127,6 +161,7 @@ function Navbar() {
               expanded={isClassesExpanded}
               setExpanded={setIsClassesExpanded}
               activePage={activePage}
+              collapsed={collapsed}
               items={[
                 { to: "/classes/add", label: "Add Class" },
                 { to: "/classes/view", label: "View Classes" },
@@ -141,6 +176,7 @@ function Navbar() {
               expanded={isModulesExpanded}
               setExpanded={setIsModulesExpanded}
               activePage={activePage}
+              collapsed={collapsed}
               items={[
                 { to: "/modules/add", label: "Add Module" },
                 { to: "/modules/view", label: "View Modules" },
@@ -155,6 +191,7 @@ function Navbar() {
               expanded={isStaffExpanded}
               setExpanded={setIsStaffExpanded}
               activePage={activePage}
+              collapsed={collapsed}
               items={[
                 { to: "/staff/add", label: "Add Staff" },
                 { to: "/staff/view", label: "View Staff" },
@@ -169,6 +206,7 @@ function Navbar() {
               expanded={isProgramsExpanded}
               setExpanded={setIsProgramsExpanded}
               activePage={activePage}
+              collapsed={collapsed}
               items={[
                 { to: "/programs/add", label: "Add Program" },
                 { to: "/programs/view", label: "View Programs" },
@@ -183,6 +221,7 @@ function Navbar() {
               expanded={isDepartmentsExpanded}
               setExpanded={setIsDepartmentsExpanded}
               activePage={activePage}
+              collapsed={collapsed}
               items={[
                 { to: "/departments/add", label: "Add Department" },
                 { to: "/departments/view", label: "View Departments" },
@@ -197,6 +236,7 @@ function Navbar() {
               expanded={isModuleAllocationExpanded}
               setExpanded={setIsModuleAllocationExpanded}
               activePage={activePage}
+              collapsed={collapsed}
               items={[
                 { to: "/allocations/module", label: "Module Allocation" },
                 { to: "/allocations/view", label: "View Allocations" },
@@ -207,19 +247,41 @@ function Navbar() {
 
         <Link
           to="/settings"
-          className={`nav-item ${activePage === "settings" ? "active" : ""}`}
+          className={`sidebar-item ${activePage === "settings" ? "is-active" : ""}`}
         >
-          <Settings className="nav-icon" size={20} />
-          <span>Settings</span>
+          <Settings size={20} aria-hidden />
+          <span className="label">Settings</span>
         </Link>
-
-        <button type="button" className="nav-item logout-btn" onClick={handleLogout}>
-          <LogOut className="nav-icon" size={20} />
-          <span>Logout</span>
-        </button>
       </nav>
-    </div>
+
+      <div className="sidebar-footer">
+        <button
+          type="button"
+          className="sidebar-item sidebar-collapse-btn"
+          onClick={onToggleCollapse}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {collapsed ? <PanelLeft size={20} /> : <PanelLeftClose size={20} />}
+          <span className="label">{collapsed ? "Expand" : "Collapse"}</span>
+        </button>
+        <button type="button" className="sidebar-item" onClick={handleLogout}>
+          <LogOut size={20} aria-hidden />
+          <span className="label">Logout</span>
+        </button>
+      </div>
+    </aside>
   );
 }
 
-export default Navbar;
+export function MobileMenuButton({ onClick }) {
+  return (
+    <button
+      type="button"
+      className="p-2 rounded-md border border-slate-200 bg-white hover:bg-slate-50"
+      onClick={onClick}
+      aria-label="Open menu"
+    >
+      <Menu size={20} />
+    </button>
+  );
+}

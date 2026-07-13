@@ -1,5 +1,5 @@
 .timetable-page {
-  margin-left: 250px;
+  margin-left: 0;
   padding: 1.5rem;
   min-height: 100vh;
   background-color: #f9fafb;
@@ -16,6 +16,6 @@
 
 @media (min-width: 768px) {
   .timetable-page {
-    margin-left: 280px;
+    margin-left: 0;
   }
 } 

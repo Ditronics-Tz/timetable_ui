@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
+import PageHeader from "../components/PageHeader";
 import courseService from "../services/courseService";
 import facultyService from "../services/facultyService";
 import { extractApiError } from "../lib/apiError";
+import { useToast } from "../components/Toast";
+
+const empty = { name: "", faculty_id: "", description: "", level: "" };
 
 export default function AddProgram() {
+  const navigate = useNavigate();
+  const toast = useToast();
   const [faculties, setFaculties] = useState([]);
-  const [form, setForm] = useState({
-    name: "",
-    faculty_id: "",
-    description: "",
-    level: "",
-  });
+  const [form, setForm] = useState(empty);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     facultyService
@@ -27,11 +28,9 @@ export default function AddProgram() {
       .catch((e) => setError(extractApiError(e)));
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const save = async (addAnother) => {
     setLoading(true);
     setError("");
-    setMessage("");
     try {
       await courseService.create({
         name: form.name,
@@ -39,8 +38,9 @@ export default function AddProgram() {
         description: form.description,
         level: form.level,
       });
-      setMessage("Program created.");
-      setForm({ name: "", faculty_id: "", description: "", level: "" });
+      toast.success("Program created.");
+      if (addAnother) setForm(empty);
+      else navigate("/programs/view");
     } catch (err) {
       setError(extractApiError(err));
     } finally {
@@ -49,25 +49,42 @@ export default function AddProgram() {
   };
 
   return (
-    <div className="p-6">
-      <Card className="p-6 max-w-2xl mx-auto space-y-4">
-        <h2 className="text-2xl font-bold">Add Program</h2>
-        <p className="text-sm text-gray-500">Maps to backend Course</p>
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-        {message && <div className="text-green-700 text-sm">{message}</div>}
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="space-y-4">
+      <PageHeader
+        title="Add program"
+        subtitle="Maps to backend Course"
+        crumbs={[
+          { label: "Programs", to: "/programs/view" },
+          { label: "Add" },
+        ]}
+      />
+      <Card className="p-6 max-w-2xl border shadow-sm space-y-4">
+        {error && (
+          <div className="rounded-md bg-red-50 border border-red-200 text-red-700 text-sm p-3">
+            {error}
+          </div>
+        )}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            save(false);
+          }}
+          className="space-y-4"
+        >
           <div>
-            <Label>Program name</Label>
+            <Label htmlFor="name">Program name *</Label>
             <Input
+              id="name"
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
           </div>
           <div>
-            <Label>Department (Faculty)</Label>
+            <Label htmlFor="faculty_id">Department (Faculty) *</Label>
             <select
-              className="w-full border rounded h-10 px-2"
+              id="faculty_id"
+              className="w-full border rounded-md h-10 px-2 bg-white"
               required
               value={form.faculty_id}
               onChange={(e) => setForm({ ...form, faculty_id: e.target.value })}
@@ -81,23 +98,33 @@ export default function AddProgram() {
             </select>
           </div>
           <div>
-            <Label>Level (NTA / diploma / degree)</Label>
+            <Label htmlFor="level">Level (NTA / diploma / degree)</Label>
             <Input
+              id="level"
               value={form.level}
               onChange={(e) => setForm({ ...form, level: e.target.value })}
               placeholder="e.g. NTA Level 6"
             />
           </div>
           <div>
-            <Label>Description</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
+              id="description"
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
           </div>
-          <Button type="submit" disabled={loading}>
-            {loading ? "Saving..." : "Create program"}
-          </Button>
+          <div className="flex flex-wrap gap-2 pt-2">
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving…" : "Create program"}
+            </Button>
+            <Button type="button" variant="outline" disabled={loading} onClick={() => save(true)}>
+              Save and add another
+            </Button>
+            <Button type="button" variant="ghost" onClick={() => navigate("/programs/view")}>
+              Cancel
+            </Button>
+          </div>
         </form>
       </Card>
     </div>
