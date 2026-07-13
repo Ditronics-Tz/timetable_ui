@@ -1,148 +1,118 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/v1';
+import api from "./api";
+import {
+  setAuth,
+  clearAuth,
+  getCurrentUser,
+  getToken,
+  isAuthenticated,
+  hasRole,
+} from "../lib/auth";
+import { extractApiError } from "../lib/apiError";
 
 class AuthService {
-  // Register a new user
   async register(userData) {
-    try {
-      const response = await axios.post(`${API_URL}/auth/register`, userData);
-      return response.data;
-    } catch (error) {
-      this._handleError(error);
-      throw error;
-    }
+    // snake_case on the wire
+    const payload = {
+      email: userData.email,
+      password: userData.password,
+      first_name: userData.first_name || userData.firstName,
+      last_name: userData.last_name || userData.lastName,
+      phone_number: userData.phone_number || userData.phoneNumber || undefined,
+    };
+    const response = await api.post("/auth/register", payload);
+    return response.data;
   }
 
-  // Login user
   async login(credentials) {
-    try {
-      const response = await axios.post(`${API_URL}/auth/login`, credentials);
-      
-      if (response.data.token) {
-        localStorage.setItem('user', JSON.stringify(response.data));
-        this._setAuthorizationHeader(response.data.token);
-      }
-      
-      return response.data;
-    } catch (error) {
-      this._handleError(error);
-      throw error;
+    const response = await api.post("/auth/login", {
+      email: credentials.email,
+      password: credentials.password,
+    });
+    const data = response.data;
+    if (data.token) {
+      setAuth({
+        token: data.token,
+        user: data.user,
+      });
     }
+    return data;
   }
 
-  // Logout user
   async logout() {
     try {
-      // Call the backend logout endpoint if needed
-      await axios.post(`${API_URL}/auth/logout`);
-    } catch (error) {
-      console.error('Logout error:', error);
+      await api.post("/auth/logout");
+    } catch {
+      // ignore network errors on logout
     } finally {
-      // Always clear local storage and remove auth header
-      localStorage.removeItem('user');
-      this._removeAuthorizationHeader();
+      clearAuth();
     }
   }
 
-  // Get current user profile
+  async verifyEmail({ email, otp }) {
+    const response = await api.post("/auth/verify-email", { email, otp });
+    return response.data;
+  }
+
+  async resendVerification(email) {
+    const response = await api.post("/auth/resend-verification", { email });
+    return response.data;
+  }
+
+  async forgotPassword(email) {
+    const response = await api.post("/auth/forgot-password", { email });
+    return response.data;
+  }
+
+  async resetPassword({ email, otp, new_password }) {
+    const response = await api.post("/auth/reset-password", {
+      email,
+      otp,
+      new_password,
+    });
+    return response.data;
+  }
+
   async getProfile() {
-    try {
-      const response = await axios.get(`${API_URL}/profile`);
-      return response.data;
-    } catch (error) {
-      this._handleError(error);
-      throw error;
-    }
+    const response = await api.get("/protected/profile");
+    return response.data;
   }
 
-  // Update user profile
-  async updateProfile(userId, userData) {
-    try {
-      const response = await axios.put(`${API_URL}/users/${userId}`, userData);
-      return response.data;
-    } catch (error) {
-      this._handleError(error);
-      throw error;
-    }
+  async changePassword(payload) {
+    const response = await api.put("/protected/change-password", payload);
+    return response.data;
   }
 
-  // Get current user from local storage
+  async updateUser(userId, userData) {
+    const response = await api.put(`/protected/users/${userId}`, userData);
+    return response.data;
+  }
+
   getCurrentUser() {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    return getCurrentUser();
   }
 
-  // Check if user is authenticated
+  getToken() {
+    return getToken();
+  }
+
   isAuthenticated() {
-    const user = this.getCurrentUser();
-    return !!user && !!user.token;
+    return isAuthenticated();
   }
 
-  // Set up interceptor to handle token expiration
-  setupAxiosInterceptors() {
-    // Request interceptor to add token to all requests
-    axios.interceptors.request.use(
-      (config) => {
-        const user = this.getCurrentUser();
-        if (user && user.token) {
-          config.headers.Authorization = `Bearer ${user.token}`;
-        }
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-
-    // Response interceptor to handle authentication errors
-    axios.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error.response && error.response.status === 401) {
-          // Token expired or invalid, logout user
-          this.logout();
-          window.location.href = '/login';
-        }
-        return Promise.reject(error);
-      }
-    );
+  hasRole(...roles) {
+    return hasRole(...roles);
   }
 
-  // Helper method to set authorization header
-  _setAuthorizationHeader(token) {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-  }
-
-  // Helper method to remove authorization header
-  _removeAuthorizationHeader() {
-    delete axios.defaults.headers.common['Authorization'];
-  }
-
-  // Helper method to handle API errors
-  _handleError(error) {
-    const errorMessage = 
-      (error.response && error.response.data && error.response.data.message) || 
-      error.message || 
-      'Unknown error occurred';
-    
-    console.error('API Error:', errorMessage);
-  }
-
-  // Initialize auth service
-  initialize() {
-    const user = this.getCurrentUser();
-    if (user && user.token) {
-      this._setAuthorizationHeader(user.token);
-    }
-    this.setupAxiosInterceptors();
+  extractError(error) {
+    return extractApiError(error);
   }
 }
 
-// Create a singleton instance
 const authService = new AuthService();
-authService.initialize();
-
 export default authService;
+export {
+  getCurrentUser,
+  getToken,
+  isAuthenticated,
+  hasRole,
+};

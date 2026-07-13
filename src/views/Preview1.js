@@ -1,195 +1,161 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Building2, // For departments
-  GraduationCap, // For faculties
-  BookOpen, // For programs
-  Calendar, // For academic year
-  BookMarked, // For semester
-  Building, // For department selection
-  FileSpreadsheet, // For timetable type
-  Search, // For search button
-  Download // For download button
-} from 'lucide-react';
-import '../styles/Preview1.css';
+import { useEffect, useMemo, useState } from "react";
+import { Card } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Label } from "../components/ui/label";
+import classService from "../services/classService";
+import staffService from "../services/staffService";
+import timetableService from "../services/timetableService";
+import { extractApiError } from "../lib/apiError";
 
-function Preview1() {
-  // State for statistics
-  const [stats] = useState({
-    departments: 0,
-    faculties: 0,
-    programs: 0
-  });
+const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday"];
+const SLOTS = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
 
-  // State for dropdown values
-  const [academicYears, setAcademicYears] = useState([]);
-  const [semesters, setSemesters] = useState([]);
-  const [timetableTypes, setTimetableTypes] = useState([]);
-  
-  // Selected values
-  const [selectedYear, setSelectedYear] = useState('');
-  const [selectedSemester, setSelectedSemester] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  
-  // Department state
-  const [departments, setDepartments] = useState([]);
-  const [selectedDepartment, setSelectedDepartment] = useState('');
+function cellLabel(entry) {
+  if (!entry) return "";
+  const subject = entry.module?.name || entry.subject?.name || `M${entry.module_id || entry.subject_id}`;
+  const staff = entry.staff?.name || `S${entry.staff_id}`;
+  const room = entry.room?.name || `R${entry.room_id}`;
+  return `${subject}\n${staff}\n${room}`;
+}
+
+export default function Preview1() {
+  const [classes, setClasses] = useState([]);
+  const [staffList, setStaffList] = useState([]);
+  const [mode, setMode] = useState("class"); // class | staff
+  const [classId, setClassId] = useState("");
+  const [staffId, setStaffId] = useState("");
+  const [entries, setEntries] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchDropdownData();
+    Promise.all([classService.list({ limit: 100 }), staffService.list({ limit: 100 })])
+      .then(([c, s]) => {
+        setClasses(c.classes || []);
+        setStaffList(s.staff || []);
+      })
+      .catch((e) => setError(extractApiError(e)));
   }, []);
 
-  const fetchDropdownData = async () => {
+  const load = async () => {
+    setLoading(true);
+    setError("");
     try {
-      const [yearsRes, semestersRes, typesRes, departmentsRes] = await Promise.all([
-        fetch('/api/academic-years'),
-        fetch('/api/semesters'),
-        fetch('/api/timetable-types'),
-        fetch('/api/departments')
-      ]);
-
-      const years = await yearsRes.json();
-      const semesters = await semestersRes.json();
-      const types = await typesRes.json();
-      const departments = await departmentsRes.json();
-
-      setAcademicYears(years);
-      setSemesters(semesters);
-      setTimetableTypes(types);
-      setDepartments(departments);
-    } catch (error) {
-      console.error('Error fetching dropdown data:', error);
+      const data =
+        mode === "class"
+          ? await timetableService.getByClass(Number(classId))
+          : await timetableService.getByStaff(Number(staffId));
+      setEntries(data.timetables || []);
+    } catch (e) {
+      setError(extractApiError(e));
+      setEntries([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDownload = () => {
-    console.log('Downloading timetable...');
-  };
+  const grid = useMemo(() => {
+    const map = {};
+    for (const e of entries) {
+      const key = `${e.day}|${e.start_time}`;
+      map[key] = e;
+    }
+    return map;
+  }, [entries]);
 
   return (
-    <div className="app-container">
-      <div className="preview-container">
-        <div className="header">
-          <h1>SACAS TIMETABLE GENERATOR</h1>
+    <div className="p-6">
+      <Card className="p-6 space-y-4 overflow-auto">
+        <h1 className="text-2xl font-bold">Timetable preview</h1>
+        <div className="flex flex-wrap gap-3 items-end">
+          <div>
+            <Label>View by</Label>
+            <select
+              className="border rounded h-10 px-2 block"
+              value={mode}
+              onChange={(e) => setMode(e.target.value)}
+            >
+              <option value="class">Class</option>
+              <option value="staff">Staff</option>
+            </select>
+          </div>
+          {mode === "class" ? (
+            <div>
+              <Label>Class</Label>
+              <select
+                className="border rounded h-10 px-2 block min-w-[200px]"
+                value={classId}
+                onChange={(e) => setClassId(e.target.value)}
+              >
+                <option value="">Select</option>
+                {classes.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div>
+              <Label>Staff</Label>
+              <select
+                className="border rounded h-10 px-2 block min-w-[200px]"
+                value={staffId}
+                onChange={(e) => setStaffId(e.target.value)}
+              >
+                <option value="">Select</option>
+                {staffList.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <Button
+            onClick={load}
+            disabled={loading || (mode === "class" ? !classId : !staffId)}
+          >
+            {loading ? "Loading..." : "Load schedule"}
+          </Button>
         </div>
-
-        <div className="stats-container">
-          <div className="stat-card">
-            <Building2 className="stat-icon" />
-            <div className="stat-content">
-              <div className="stat-title">DEPARTMENTS</div>
-              <div className="stat-value">{stats.departments}</div>
-            </div>
-          </div>
-          
-          <div className="stat-card">
-            <GraduationCap className="stat-icon" />
-            <div className="stat-content">
-              <div className="stat-title">FACULTIES</div>
-              <div className="stat-value">{stats.faculties}</div>
-            </div>
-          </div>
-          
-          <div className="stat-card">
-            <BookOpen className="stat-icon" />
-            <div className="stat-content">
-              <div className="stat-title">PROGRAMS</div>
-              <div className="stat-value">{stats.programs}</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="generator-section">
-          <h1 className="section-title">TIMETABLE GENERATOR PREVIEW</h1>
-          
-          <div className="form-row">
-            <div className="form-group">
-              <label>
-                <Calendar size={16} className="input-icon" />
-                Academic Year
-              </label>
-              <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
-                <option value="">Select Year</option>
-                {academicYears.map(year => (
-                  <option key={year.id} value={year.value}>{year.label}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>
-                <BookMarked size={16} className="input-icon" />
-                Semester
-              </label>
-              <select value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)}>
-                <option value="">Select Semester</option>
-                {semesters.map(semester => (
-                  <option key={semester.id} value={semester.value}>{semester.label}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>
-                <Building size={16} className="input-icon" />
-                Department
-              </label>
-              <select value={selectedDepartment} onChange={(e) => setSelectedDepartment(e.target.value)}>
-                <option value="">Select Department</option>
-                {departments.map(dept => (
-                  <option key={dept.id} value={dept.value}>{dept.label}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>
-                <FileSpreadsheet size={16} className="input-icon" />
-                Timetable Type
-              </label>
-              <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
-                <option value="">Select Type</option>
-                {timetableTypes.map(type => (
-                  <option key={type.id} value={type.value}>{type.label}</option>
-                ))}
-              </select>
-            </div>
-            
-            <button className="search-button">
-              <Search size={20} color="white" />
-            </button>
-          </div>
-        </div>
-
-        <div className="preview-section">
-          <div className="preview-header">
-            <h2>TIMETABLE PREVIEW</h2>
-            <button className="download-button">
-              Download Timetable
-              <Download size={16} color="white" />
-            </button>
-          </div>
-          
-          <table className="timetable">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+        <table className="w-full border-collapse text-xs md:text-sm">
+          <thead>
+            <tr>
+              <th className="border p-2 bg-gray-100">Time</th>
+              {DAYS.map((d) => (
+                <th key={d} className="border p-2 bg-gray-100 capitalize">
+                  {d}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {SLOTS.map((slot) => (
+              <tr key={slot}>
+                <td className="border p-2 font-medium whitespace-nowrap">{slot}</td>
+                {DAYS.map((d) => {
+                  const entry = grid[`${d}|${slot}`];
+                  return (
+                    <td
+                      key={d}
+                      className={`border p-2 align-top whitespace-pre-line ${
+                        entry ? "bg-blue-50" : ""
+                      }`}
+                    >
+                      {cellLabel(entry)}
+                    </td>
+                  );
+                })}
               </tr>
-            </thead>
-            <tbody>
-              {/* Table content */}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            ))}
+          </tbody>
+        </table>
+        {!loading && entries.length === 0 && (
+          <p className="text-gray-500 text-sm">No timetable entries for this selection.</p>
+        )}
+      </Card>
     </div>
   );
 }
-
-export default Preview1; 

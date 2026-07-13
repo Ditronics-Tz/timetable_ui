@@ -1,66 +1,66 @@
-'use client'
-
-import { useState } from 'react'
-import { Card } from "../../components/ui/card"
-import { Label } from "../../components/ui/label"
-import { Input } from "../../components/ui/input"
-import { Button } from "../../components/ui/button"
-import { Checkbox } from "../../components/ui/checkbox"
-import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import authService from '../../services/Authservice'
-import '../../styles/Login.css'
+import { useState } from "react";
+import { Card } from "../../components/ui/card";
+import { Label } from "../../components/ui/label";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Checkbox } from "../../components/ui/checkbox";
+import { Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
+import authService from "../../services/Authservice";
+import { extractApiError } from "../../lib/apiError";
+import { isAuthenticated } from "../../lib/auth";
+import "../../styles/Login.css";
+import { useEffect } from "react";
 
 export default function Login() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
-  })
+    email: "",
+    password: "",
+    rememberMe: false,
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const redirect = searchParams.get("redirect") || "/dashboard";
+      navigate(redirect, { replace: true });
+    }
+  }, [navigate, searchParams]);
 
   const handleChange = (e) => {
-    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
-    setFormData({ ...formData, [e.target.name]: value })
-    // Clear error when user starts typing
-    if (error) setError('')
-  }
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    setFormData({ ...formData, [e.target.name]: value });
+    if (error) setError("");
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
-    
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
     try {
-      // Extract just email and password for login
-      const credentials = {
+      await authService.login({
         email: formData.email,
-        password: formData.password
-      }
-      
-      await authService.login(credentials)
-      
-      // If login successful, navigate to dashboard
-      navigate('/dashboard')
-    } catch (error) {
-      const errorMessage = 
-        error.response?.data?.message || 
-        'Login failed. Please check your credentials and try again.'
-      setError(errorMessage)
+        password: formData.password,
+      });
+      const redirect = searchParams.get("redirect") || "/dashboard";
+      navigate(redirect);
+    } catch (err) {
+      setError(extractApiError(err) || "Login failed. Please check your credentials.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -69,17 +69,7 @@ export default function Login() {
           <h2 className="mt-6 text-center text-5xl font-bold text-white tracking-tight">
             SACAS
           </h2>
-          <p className="mt-2 text-center text-xl text-gray-300">
-            Timetable Generator
-          </p>
-        </motion.div>
-        <motion.div
-          className="mt-2 text-center text-sm text-gray-400"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-        >
-          Sign in to your account
+          <p className="mt-2 text-center text-xl text-gray-300">Timetable Generator</p>
         </motion.div>
       </div>
 
@@ -91,14 +81,12 @@ export default function Login() {
               <span>{error}</span>
             </div>
           )}
-          
+
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="relative">
-              <Label htmlFor="email" className="text-gray-700">Email address</Label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
+            <div>
+              <Label htmlFor="email">Email address</Label>
+              <div className="mt-1 relative">
+                <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 <Input
                   id="email"
                   name="email"
@@ -113,12 +101,10 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="relative">
-              <Label htmlFor="password" className="text-gray-700">Password</Label>
-              <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <div className="mt-1 relative">
+                <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 <Input
                   id="password"
                   name="password"
@@ -130,20 +116,13 @@ export default function Login() {
                   placeholder="Enter your password"
                   disabled={isLoading}
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                    disabled={isLoading}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className="absolute right-3 top-2.5 text-gray-400"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
             </div>
 
@@ -151,59 +130,34 @@ export default function Login() {
               <div className="flex items-center">
                 <Checkbox
                   id="rememberMe"
-                  name="rememberMe"
                   checked={formData.rememberMe}
-                  onCheckedChange={(checked) => setFormData({ ...formData, rememberMe: checked })}
-                  className="h-4 w-4 text-black focus:ring-black border-gray-300 rounded"
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, rememberMe: checked })
+                  }
                   disabled={isLoading}
                 />
-                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-700">
                   Remember me
                 </label>
               </div>
-
-              <div className="text-sm">
-                <Link to="/forgot-password" className="font-medium text-black hover:text-gray-700 transition-colors duration-200">
-                  Forgot your password?
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <Button 
-                type="submit" 
-                className="w-full bg-black hover:bg-gray-800 text-white transition-all duration-300 py-6"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Signing in...' : 'Sign in'}
-              </Button>
-            </div>
-          </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Don't have an account?
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <Link 
-                to="/register" 
-                className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300"
-              >
-                Register now
+              <Link to="/forgot-password" className="text-sm font-medium text-black hover:underline">
+                Forgot password?
               </Link>
             </div>
+
+            <Button type="submit" className="w-full bg-black hover:bg-gray-800" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center text-sm">
+            <span className="text-gray-500">Don&apos;t have an account? </span>
+            <Link to="/register" className="font-medium text-black hover:underline">
+              Register
+            </Link>
           </div>
         </Card>
       </div>
     </div>
-  )
+  );
 }
-

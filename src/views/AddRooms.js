@@ -1,171 +1,168 @@
-import React, { useState } from 'react';
-import { Card } from "../components/ui/card"
-import { Input } from "../components/ui/input"
-import { Button } from "../components/ui/button"
-import { Label } from "../components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { Upload, Users, Building, Hash } from 'lucide-react';
-import '../styles/AddRoom.css';
+import { useState } from "react";
+import { Card } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Label } from "../components/ui/label";
+import { Checkbox } from "../components/ui/checkbox";
+import roomService from "../services/roomService";
+import { extractApiError } from "../lib/apiError";
 
-const AddRooms = () => {
-  const [roomData, setRoomData] = useState({
-    room_name: '',
-    room_description: '',
-    room_type: '',
-    capacity: '',
-    building_name: '',
-    room_no: ''
+export default function AddRooms() {
+  const [form, setForm] = useState({
+    name: "",
+    capacity: 40,
+    sticky: false,
+    projector: false,
+    lab: false,
+    studio: false,
+    ac: false,
+    whiteboard: true,
+    computers: 0,
+    building: "",
+    room_no: "",
+    description: "",
+    room_type: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(roomData);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setRoomData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type === "text/csv") {
-      console.log("CSV file selected:", file);
-    } else {
-      alert("Please upload a valid CSV file");
+    setLoading(true);
+    setError("");
+    setMessage("");
+    try {
+      const features = {
+        projector: form.projector,
+        lab: form.lab,
+        studio: form.studio,
+        ac: form.ac,
+        whiteboard: form.whiteboard,
+        computers: Number(form.computers) || 0,
+        building: form.building,
+        room_no: form.room_no,
+        description: form.description,
+        room_type: form.room_type,
+      };
+      await roomService.create({
+        name: form.name,
+        capacity: Number(form.capacity),
+        sticky: form.sticky,
+        features,
+      });
+      setMessage("Room created.");
+      setForm({
+        name: "",
+        capacity: 40,
+        sticky: false,
+        projector: false,
+        lab: false,
+        studio: false,
+        ac: false,
+        whiteboard: true,
+        computers: 0,
+        building: "",
+        room_no: "",
+        description: "",
+        room_type: "",
+      });
+    } catch (err) {
+      setError(extractApiError(err));
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDownloadTemplate = (e) => {
-    e.preventDefault();
-    // Add your download template logic here
-    console.log("Downloading template...");
-  };
-
   return (
-    <div className="add-room-container">
-      <Card className="add-room-card">
-        <h1>Add New Room</h1>
-        <p>Enter the room details below or use bulk upload.</p>
-        
-        <div className="upload-section">
-          <Upload className="upload-icon" size={24} />
-          <input
-            type="file"
-            accept=".csv"
-            id="csvFile"
-            onChange={handleFileUpload}
-            className="file-input"
-          />
-          <label htmlFor="csvFile" className="file-label">
-            Choose CSV File
-          </label>
-          <p>Upload multiple rooms using a CSV file</p>
-          <button onClick={handleDownloadTemplate} className="template-link">
-            Download CSV Template
-          </button>
-        </div>
-
-        <div className="separator">
-          <span>OR ADD SINGLE ROOM</span>
-        </div>
-
-        <form className="add-room-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <Label>Room Name</Label>
+    <div className="p-6">
+      <Card className="p-6 max-w-2xl mx-auto space-y-4">
+        <h2 className="text-2xl font-bold">Add Room</h2>
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+        {message && <div className="text-green-700 text-sm">{message}</div>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label>Name</Label>
             <Input
-              type="text"
-              name="room_name"
-              value={roomData.room_name}
-              onChange={handleChange}
-              placeholder="Enter room name"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
           </div>
-
-          <div className="form-group">
-            <Label>Room Type</Label>
-            <Select
-              name="room_type"
-              value={roomData.room_type}
-              onValueChange={(value) => handleChange({ target: { name: 'room_type', value }})}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select room type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="lecture">Lecture Hall</SelectItem>
-                <SelectItem value="lab">Laboratory</SelectItem>
-                <SelectItem value="conference">Conference Room</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="form-group">
-            <Label>Room Description</Label>
-            <Input
-              type="text"
-              name="room_description"
-              value={roomData.room_description}
-              onChange={handleChange}
-              placeholder="Enter room description"
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <Label>
-                <Users size={16} className="input-icon" />
-                Capacity
-              </Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Building</Label>
               <Input
-                type="number"
-                name="capacity"
-                value={roomData.capacity}
-                onChange={handleChange}
-                placeholder="0"
+                value={form.building}
+                onChange={(e) => setForm({ ...form, building: e.target.value })}
               />
             </div>
-
-            <div className="form-group">
-              <Label>
-                <Building size={16} className="input-icon" />
-                Building Name
-              </Label>
+            <div>
+              <Label>Room no</Label>
               <Input
-                type="text"
-                name="building_name"
-                value={roomData.building_name}
-                onChange={handleChange}
-                placeholder="Enter building name"
+                value={form.room_no}
+                onChange={(e) => setForm({ ...form, room_no: e.target.value })}
               />
             </div>
           </div>
-
-          <div className="form-group">
-            <Label>
-              <Hash size={16} className="input-icon" />
-              Room Number
-            </Label>
+          <div>
+            <Label>Room type</Label>
             <Input
-              type="text"
-              name="room_no"
-              value={roomData.room_no}
-              onChange={handleChange}
-              placeholder="Enter room number"
+              value={form.room_type}
+              onChange={(e) => setForm({ ...form, room_type: e.target.value })}
+              placeholder="lecture / lab / studio"
             />
           </div>
-
-          <Button type="submit" className="submit-button">
-            Add Room
+          <div>
+            <Label>Capacity</Label>
+            <Input
+              type="number"
+              min={1}
+              required
+              value={form.capacity}
+              onChange={(e) => setForm({ ...form, capacity: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>Description</Label>
+            <Input
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              ["projector", "Projector"],
+              ["lab", "Lab"],
+              ["studio", "Studio"],
+              ["ac", "AC"],
+              ["whiteboard", "Whiteboard"],
+              ["sticky", "Sticky room"],
+            ].map(([key, label]) => (
+              <div key={key} className="flex items-center gap-2">
+                <Checkbox
+                  id={key}
+                  checked={!!form[key]}
+                  onCheckedChange={(v) => setForm({ ...form, [key]: !!v })}
+                />
+                <Label htmlFor={key}>{label}</Label>
+              </div>
+            ))}
+          </div>
+          <div>
+            <Label>Computers</Label>
+            <Input
+              type="number"
+              min={0}
+              value={form.computers}
+              onChange={(e) => setForm({ ...form, computers: e.target.value })}
+            />
+          </div>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Saving..." : "Create room"}
           </Button>
         </form>
       </Card>
     </div>
   );
-};
-
-export default AddRooms;
+}

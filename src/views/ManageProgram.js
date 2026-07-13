@@ -1,126 +1,154 @@
-"use client"
-
-import { useState } from 'react'
-import { Card } from "../components/ui/card"
-import { Input } from "../components/ui/input"
-import { Button } from "../components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table"
-import { Checkbox } from "../components/ui/checkbox"
-import { Search, Edit2, Trash2 } from "lucide-react"
-import '../styles/ManageProgram.css'
+import { useCallback, useState } from "react";
+import { Card } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../components/ui/alert-dialog";
+import courseService from "../services/courseService";
+import usePaginatedList from "../hooks/usePaginatedList";
+import { extractApiError } from "../lib/apiError";
 
 export default function ManageProgram() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [programs, setPrograms] = useState([])
-  const [selectedPrograms, setSelectedPrograms] = useState([])
+  const fetchFn = useCallback((p) => courseService.list(p), []);
+  const { items, loading, error, refetch, nextPage, prevPage, offset, hasMore } =
+    usePaginatedList(fetchFn, "courses");
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({});
+  const [err, setErr] = useState("");
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value)
-  }
+  const startEdit = (c) => {
+    setEditing(c.id);
+    setForm({
+      name: c.name || "",
+      description: c.description || "",
+      level: c.level || "",
+      faculty_id: c.faculty_id,
+    });
+  };
 
-  const handleBulkDelete = () => {
-    // Implement bulk delete logic
-  }
+  const save = async () => {
+    try {
+      await courseService.update(editing, {
+        name: form.name,
+        description: form.description,
+        level: form.level,
+        faculty_id: Number(form.faculty_id),
+      });
+      setEditing(null);
+      refetch();
+    } catch (e) {
+      setErr(extractApiError(e));
+    }
+  };
 
-  const filteredPrograms = programs.filter(
-    (program) =>
-      program.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      program.department.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const remove = async (id) => {
+    try {
+      await courseService.remove(id);
+      refetch();
+    } catch (e) {
+      setErr(extractApiError(e));
+    }
+  };
 
   return (
-    <div className="manage-program-container">
-      <Card className="manage-program-card">
-        <h1 className="text-2xl font-bold mb-2">Manage Programs</h1>
-        <p className="text-gray-500 mb-8">Manage and update program information.</p>
-
-        <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <div className="search-container">
-              <Search className="search-icon" />
-              <Input
-                placeholder="Search programs..."
-                value={searchTerm}
-                onChange={handleSearch}
-                className="search-input"
-              />
-            </div>
-            <Button
-              variant="destructive"
-              onClick={handleBulkDelete}
-              disabled={selectedPrograms.length === 0}
-              className="delete-button"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete Selected
-            </Button>
-          </div>
-
-          <div className="table-container">
-            <Table className="table">
-              <TableHeader className="table-header">
-                <TableRow>
-                  <TableHead className="checkbox-cell">
-                    <Checkbox
-                      checked={selectedPrograms.length === programs.length}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedPrograms(programs.map(p => p.id))
-                        } else {
-                          setSelectedPrograms([])
-                        }
-                      }}
-                    />
-                  </TableHead>
-                  <TableHead>Program Name</TableHead>
-                  <TableHead>Department</TableHead>
-                  <TableHead>NTA Level</TableHead>
-                  <TableHead>Level</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+    <div className="p-6">
+      <Card className="p-6 space-y-4">
+        <h1 className="text-2xl font-bold">Manage Programs</h1>
+        {(error || err) && <div className="text-red-600 text-sm">{error || err}</div>}
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Level</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.map((c) => (
+                <TableRow key={c.id}>
+                  <TableCell>{c.name}</TableCell>
+                  <TableCell>{c.level}</TableCell>
+                  <TableCell className="space-x-2">
+                    <Button size="sm" variant="outline" onClick={() => startEdit(c)}>
+                      Edit
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button size="sm" variant="destructive">
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete program?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Delete “{c.name}”?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => remove(c.id)}>
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredPrograms.map((program) => (
-                  <TableRow key={program.id} className="table-row">
-                    <TableCell className="checkbox-cell">
-                      <Checkbox
-                        checked={selectedPrograms.includes(program.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedPrograms([...selectedPrograms, program.id])
-                          } else {
-                            setSelectedPrograms(selectedPrograms.filter(id => id !== program.id))
-                          }
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell className="table-cell">{program.name}</TableCell>
-                    <TableCell className="table-cell">{program.department}</TableCell>
-                    <TableCell className="table-cell">{program.ntaLevel}</TableCell>
-                    <TableCell className="table-cell">{program.level}</TableCell>
-                    <TableCell className="table-cell">
-                      <div className="action-buttons">
-                        <Button variant="ghost" size="icon" className="action-button">
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="action-button">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-
-            {filteredPrograms.length === 0 && (
-              <div className="empty-state">
-                No programs found matching your search criteria.
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        {editing && (
+          <div className="border rounded p-4 space-y-3">
+            <h3 className="font-semibold">Edit course #{editing}</h3>
+            {["name", "level", "description"].map((k) => (
+              <div key={k}>
+                <Label>{k}</Label>
+                <Input
+                  value={form[k] || ""}
+                  onChange={(e) => setForm({ ...form, [k]: e.target.value })}
+                />
               </div>
-            )}
+            ))}
+            <div className="flex gap-2">
+              <Button onClick={save}>Save</Button>
+              <Button variant="outline" onClick={() => setEditing(null)}>
+                Cancel
+              </Button>
+            </div>
           </div>
+        )}
+        <div className="flex gap-2 justify-end">
+          <Button variant="outline" disabled={offset <= 0} onClick={prevPage}>
+            Previous
+          </Button>
+          <Button variant="outline" disabled={!hasMore} onClick={nextPage}>
+            Next
+          </Button>
         </div>
       </Card>
     </div>
-  )
+  );
 }

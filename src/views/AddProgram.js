@@ -1,132 +1,105 @@
-"use client"
+import { useEffect, useState } from "react";
+import { Card } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Label } from "../components/ui/label";
+import { Textarea } from "../components/ui/textarea";
+import courseService from "../services/courseService";
+import facultyService from "../services/facultyService";
+import { extractApiError } from "../lib/apiError";
 
-import { useState } from 'react'
-import { Card } from "../components/ui/card"
-import { Label } from "../components/ui/label"
-import { Input } from "../components/ui/input"
-import { Button } from "../components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { BookOpen, Building2, GraduationCap, Upload, Download } from "lucide-react"
-import '../styles/AddProgram.css'
+export default function AddProgram() {
+  const [faculties, setFaculties] = useState([]);
+  const [form, setForm] = useState({
+    name: "",
+    faculty_id: "",
+    description: "",
+    level: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-export default function AddProgramPage() {
-  const [selectedFile, setSelectedFile] = useState(null);
+  useEffect(() => {
+    facultyService
+      .list({ limit: 100, offset: 0 })
+      .then((d) => setFaculties(d.faculties || []))
+      .catch((e) => setError(extractApiError(e)));
+  }, []);
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type === "text/csv") {
-      setSelectedFile(file);
-    } else {
-      alert("Please upload a CSV file");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setMessage("");
+    try {
+      await courseService.create({
+        name: form.name,
+        faculty_id: Number(form.faculty_id),
+        description: form.description,
+        level: form.level,
+      });
+      setMessage("Program created.");
+      setForm({ name: "", faculty_id: "", description: "", level: "" });
+    } catch (err) {
+      setError(extractApiError(err));
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDownloadTemplate = () => {
-    // Add logic to download CSV template
-  };
-
   return (
-    <div className="add-program-container">
-      <Card className="add-program-card">
-        <h1 className="text-2xl font-bold mb-2">Add New Program</h1>
-        <p className="text-gray-500 mb-8">Enter the program details below to create a new program.</p>
-
-        <div className="space-y-6">
-          <div className="input-container">
-            <Label className="label-with-icon">
-              <BookOpen className="w-5 h-5" />
-              Program Name <span className="required-indicator">*</span>
-            </Label>
-            <Input placeholder="Enter program name" />
-          </div>
-
-          <div className="input-container">
-            <Label className="label-with-icon">
-              <Building2 className="w-5 h-5" />
-              Department <span className="required-indicator">*</span>
-            </Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select department" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cs">Computer Science</SelectItem>
-                <SelectItem value="eng">Engineering</SelectItem>
-                <SelectItem value="bus">Business</SelectItem>
-                <SelectItem value="arts">Arts & Sciences</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="input-container">
-            <Label className="label-with-icon">
-              <GraduationCap className="w-5 h-5" />
-              NTA Level
-            </Label>
-            <Input placeholder="Enter NTA level (optional)" />
-          </div>
-
-          <div className="input-container">
-            <Label className="label-with-icon">
-              <GraduationCap className="w-5 h-5" />
-              Level <span className="required-indicator">*</span>
-            </Label>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Select program level" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="diploma">Diploma</SelectItem>
-                <SelectItem value="degree">Degree</SelectItem>
-                <SelectItem value="vocational">Vocational Level</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="separator">
-            <span className="separator-text">OR</span>
-          </div>
-
-          <div className="flex justify-between items-center mb-4">
-            <Button 
-              variant="outline" 
-              className="flex items-center gap-2"
-              onClick={() => document.getElementById('fileInput').click()}
-            >
-              <Upload className="w-4 h-4" />
-              Upload CSV File
-            </Button>
-            <Button 
-              variant="outline" 
-              className="flex items-center gap-2"
-              onClick={handleDownloadTemplate}
-            >
-              <Download className="w-4 h-4" />
-              Download Example CSV
-            </Button>
-          </div>
-
-          <div className="csv-upload-container">
-            <input
-              id="fileInput"
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              className="hidden"
+    <div className="p-6">
+      <Card className="p-6 max-w-2xl mx-auto space-y-4">
+        <h2 className="text-2xl font-bold">Add Program</h2>
+        <p className="text-sm text-gray-500">Maps to backend Course</p>
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+        {message && <div className="text-green-700 text-sm">{message}</div>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label>Program name</Label>
+            <Input
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
-            <div className="upload-area">
-              <Upload className="w-12 h-12 text-gray-400 mb-4" />
-              <p className="text-lg text-gray-600">Click to upload or drag and drop</p>
-              <p className="text-sm text-gray-500 mt-1">CSV file only</p>
-            </div>
           </div>
-
-          <Button className="submit-button bg-black text-white hover:bg-black/90">
-            Add Program
+          <div>
+            <Label>Department (Faculty)</Label>
+            <select
+              className="w-full border rounded h-10 px-2"
+              required
+              value={form.faculty_id}
+              onChange={(e) => setForm({ ...form, faculty_id: e.target.value })}
+            >
+              <option value="">Select department</option>
+              {faculties.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <Label>Level (NTA / diploma / degree)</Label>
+            <Input
+              value={form.level}
+              onChange={(e) => setForm({ ...form, level: e.target.value })}
+              placeholder="e.g. NTA Level 6"
+            />
+          </div>
+          <div>
+            <Label>Description</Label>
+            <Textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+            />
+          </div>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Saving..." : "Create program"}
           </Button>
-        </div>
+        </form>
       </Card>
     </div>
-  )
+  );
 }
-

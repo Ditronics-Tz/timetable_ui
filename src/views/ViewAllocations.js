@@ -1,227 +1,96 @@
-"use client"
-
-import { useState } from "react"
-import { Search, Trash2, User, BookOpen, School, Eye } from "lucide-react"
-import { Input } from "../components/ui/input"
-import { Button } from "../components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table"
+import { useEffect, useState } from "react";
+import { Card } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Label } from "../components/ui/label";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../components/ui/alert-dialog"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../components/ui/dialog"
-import { Badge } from "../components/ui/badge"
-import { Card } from "../components/ui/card"
-import '../styles/ViewAllocations.css'
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/table";
+import staffService from "../services/staffService";
+import { extractApiError } from "../lib/apiError";
 
 export default function ViewAllocations() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [viewedAllocation, setViewedAllocation] = useState(null)
+  const [staff, setStaff] = useState([]);
+  const [staffId, setStaffId] = useState("");
+  const [modules, setModules] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Mock data - replace with your actual data
-  const mockAllocations = [
-    {
-      id: 1,
-      staff: { id: 1, name: "John Doe" },
-      classes: [
-        { id: 1, name: "Class A" },
-        { id: 2, name: "Class B" },
-      ],
-      modules: [
-        { id: 1, name: "Mathematics 101" },
-        { id: 2, name: "Physics 101" },
-      ],
-    },
-    {
-      id: 2,
-      staff: { id: 2, name: "Jane Smith" },
-      classes: [{ id: 3, name: "Class C" }],
-      modules: [{ id: 3, name: "Chemistry 101" }],
-    },
-  ]
+  useEffect(() => {
+    staffService
+      .list({ limit: 200 })
+      .then((d) => setStaff(d.staff || []))
+      .catch((e) => setError(extractApiError(e)));
+  }, []);
 
-  const [allocations, setAllocations] = useState(mockAllocations)
-
-  const handleSearch = (value) => {
-    setSearchTerm(value)
-  }
-
-  const handleDelete = (allocationId) => {
-    setAllocations((prev) => prev.filter((allocation) => allocation.id !== allocationId))
-  }
-
-  const filteredAllocations = allocations.filter((allocation) =>
-    allocation.staff.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const load = async () => {
+    if (!staffId) return;
+    setLoading(true);
+    setError("");
+    try {
+      const d = await staffService.listModules(staffId);
+      setModules(d.modules || []);
+    } catch (e) {
+      setError(extractApiError(e));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="allocations-container">
-      <Card className="allocations-card">
-        <div className="header-section">
-          <div className="header-content">
-            <h1 className="page-title">View Allocations</h1>
-            <p className="page-description">Search and manage module allocations</p>
+    <div className="p-6">
+      <Card className="p-6 space-y-4">
+        <h1 className="text-2xl font-bold">View allocations</h1>
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+        <div className="flex gap-3 items-end">
+          <div className="flex-1">
+            <Label>Staff member</Label>
+            <select
+              className="w-full border rounded h-10 px-2"
+              value={staffId}
+              onChange={(e) => setStaffId(e.target.value)}
+            >
+              <option value="">Select staff</option>
+              {staff.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="search-container">
-            <Search className="search-icon" />
-            <Input
-              placeholder="Search by staff name..."
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-          </div>
+          <Button onClick={load} disabled={!staffId || loading}>
+            {loading ? "Loading..." : "Load modules"}
+          </Button>
         </div>
-
-        <div className="table-container">
+        {modules.length === 0 ? (
+          <p className="text-gray-500 text-sm">No modules assigned (or not loaded).</p>
+        ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Staff</TableHead>
-                <TableHead>Classes</TableHead>
-                <TableHead>Modules</TableHead>
-                <TableHead className="w-[120px]">Actions</TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead>Code</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Type</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredAllocations.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="empty-message">
-                    No allocations found
-                  </TableCell>
+              {modules.map((m) => (
+                <TableRow key={m.id}>
+                  <TableCell>{m.id}</TableCell>
+                  <TableCell>{m.code}</TableCell>
+                  <TableCell>{m.name}</TableCell>
+                  <TableCell>{m.type}</TableCell>
                 </TableRow>
-              ) : (
-                filteredAllocations.map((allocation) => (
-                  <TableRow key={allocation.id}>
-                    <TableCell>
-                      <div className="staff-info">
-                        <User className="staff-icon" />
-                        <span>{allocation.staff.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="badge-container">
-                        {allocation.classes.map((cls) => (
-                          <Badge key={cls.id} variant="secondary" className="badge">
-                            <School className="badge-icon" />
-                            {cls.name}
-                          </Badge>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="badge-container">
-                        {allocation.modules.map((module) => (
-                          <Badge key={module.id} variant="secondary" className="badge">
-                            <BookOpen className="badge-icon" />
-                            {module.name}
-                          </Badge>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="actions-container">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="view-button"
-                              onClick={() => setViewedAllocation(allocation)}
-                            >
-                              <Eye className="action-icon" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Allocation Details</DialogTitle>
-                              <DialogDescription>
-                                Detailed information about the allocation
-                              </DialogDescription>
-                            </DialogHeader>
-                            {viewedAllocation && (
-                              <div className="dialog-section">
-                                <div>
-                                  <h3 className="section-title">Staff</h3>
-                                  <p className="section-content">{viewedAllocation.staff.name}</p>
-                                </div>
-                                <div>
-                                  <h3 className="section-title">Classes</h3>
-                                  <ul>
-                                    {viewedAllocation.classes.map((cls) => (
-                                      <li key={cls.id} className="list-item">
-                                        {cls.name}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                                <div>
-                                  <h3 className="section-title">Modules</h3>
-                                  <ul>
-                                    {viewedAllocation.modules.map((module) => (
-                                      <li key={module.id} className="list-item">
-                                        {module.name}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              </div>
-                            )}
-                          </DialogContent>
-                        </Dialog>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="delete-button"
-                            >
-                              <Trash2 className="action-icon" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent className="alert-dialog-content">
-                            <AlertDialogHeader className="alert-dialog-header">
-                              <AlertDialogTitle className="alert-dialog-title">
-                                Delete Allocation
-                              </AlertDialogTitle>
-                              <AlertDialogDescription className="alert-dialog-description">
-                                Are you sure you want to delete this allocation? This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter className="alert-dialog-footer">
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                className="delete-action"
-                                onClick={() => handleDelete(allocation.id)}
-                              >
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
+              ))}
             </TableBody>
           </Table>
-        </div>
+        )}
       </Card>
     </div>
-  )
+  );
 }

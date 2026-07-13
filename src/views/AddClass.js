@@ -1,167 +1,131 @@
-'use client'
+import { useEffect, useState } from "react";
+import { Card } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { Label } from "../components/ui/label";
+import classService from "../services/classService";
+import courseService from "../services/courseService";
+import { extractApiError } from "../lib/apiError";
 
-import { useState } from 'react'
-import { Card } from "../components/ui/card"
-import { Label } from "../components/ui/label"
-import { Input } from "../components/ui/input"
-import { Button } from "../components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { 
-  Upload, 
-  GraduationCap, 
-  BookOpen, 
-  Users, 
-  Calendar,
-  Plus,
-  Download
-} from 'lucide-react'
-import '../styles/AddClass.css'
+export default function AddClass() {
+  const [courses, setCourses] = useState([]);
+  const [form, setForm] = useState({
+    name: "",
+    course_id: "",
+    year: 1,
+    academic_year: "",
+    number_of_students: 30,
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-function AddClass() {
-  const [formData, setFormData] = useState({
-    program: '',
-    className: '',
-    capacity: '',
-    academicYear: ''
-  })
+  useEffect(() => {
+    courseService
+      .list({ limit: 100 })
+      .then((d) => setCourses(d.courses || []))
+      .catch((e) => setError(extractApiError(e)));
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log(formData)
-  }
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      console.log('File selected:', file.name)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setMessage("");
+    try {
+      await classService.create({
+        name: form.name,
+        course_id: Number(form.course_id),
+        year: Number(form.year),
+        academic_year: form.academic_year || undefined,
+        number_of_students: Number(form.number_of_students),
+      });
+      setMessage("Class created.");
+      setForm({
+        name: "",
+        course_id: "",
+        year: 1,
+        academic_year: "",
+        number_of_students: 30,
+      });
+    } catch (err) {
+      setError(extractApiError(err));
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="add-class-container">
-      <Card className="add-class-card">
-        <h2 className="form-title">
-          <Plus className="title-icon" size={24} />
-          Add New Class
-        </h2>
-        <form onSubmit={handleSubmit} className="class-form">
-          <div className="form-grid">
-            <div className="form-group">
-              <Label htmlFor="program" className="label-with-icon">
-                <GraduationCap className="label-icon" size={16} />
-                Program (required)
-              </Label>
-              <Select 
-                required 
-                onValueChange={(value) => setFormData({...formData, program: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a program" />
-                </SelectTrigger>
-                <SelectContent>
-                  {/* Programs will be populated from API */}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="form-group">
-              <Label htmlFor="className" className="label-with-icon">
-                <BookOpen className="label-icon" size={16} />
-                Class Name (required)
-              </Label>
-              <Input
-                id="className"
-                required
-                placeholder="Enter class name"
-                value={formData.className}
-                onChange={(e) => setFormData({...formData, className: e.target.value})}
-              />
-            </div>
-
-            <div className="form-group">
-              <Label htmlFor="capacity" className="label-with-icon">
-                <Users className="label-icon" size={16} />
-                Class Capacity (required)
-              </Label>
-              <Input
-                id="capacity"
-                type="number"
-                required
-                min="1"
-                placeholder="Enter class capacity"
-                value={formData.capacity}
-                onChange={(e) => setFormData({...formData, capacity: e.target.value})}
-              />
-            </div>
-
-            <div className="form-group">
-              <Label htmlFor="academicYear" className="label-with-icon">
-                <Calendar className="label-icon" size={16} />
-                Academic Year (required)
-              </Label>
-              <Input
-                id="academicYear"
-                required
-                placeholder="Enter academic year"
-                value={formData.academicYear}
-                onChange={(e) => setFormData({...formData, academicYear: e.target.value})}
-              />
-            </div>
+    <div className="p-6">
+      <Card className="p-6 max-w-2xl mx-auto space-y-4">
+        <h2 className="text-2xl font-bold">Add Class</h2>
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+        {message && <div className="text-green-700 text-sm">{message}</div>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label>Class name</Label>
+            <Input
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="e.g. BIT Y2 Group A"
+            />
           </div>
-
-          <div className="button-container">
-            <Button type="submit" className="submit-button">
-              <Plus size={16} className="button-icon" />
-              Add Class
-            </Button>
-          </div>
-        </form>
-
-        <div className="divider">
-          <div className="divider-line">
-            <span className="divider-text">Or</span>
-          </div>
-        </div>
-
-        <div className="csv-section">
-          <div className="csv-header">
-            <Label className="csv-title">
-              <Upload size={16} className="label-icon" />
-              Upload CSV File
-            </Label>
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="example-button"
-              onClick={() => {
-                console.log('Downloading example CSV...')
-              }}
+          <div>
+            <Label>Program</Label>
+            <select
+              className="w-full border rounded h-10 px-2"
+              required
+              value={form.course_id}
+              onChange={(e) => setForm({ ...form, course_id: e.target.value })}
             >
-              <Download size={16} className="button-icon" />
-              Download Example CSV
-            </Button>
+              <option value="">Select program</option>
+              {courses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="upload-container">
-            <label className="upload-area">
-              <div className="upload-content">
-                <Upload className="upload-icon" />
-                <p className="upload-text">
-                  <span className="upload-bold">Click to upload</span> or drag and drop
-                </p>
-                <p className="upload-hint">CSV file only</p>
-              </div>
-              <input 
-                type="file" 
-                className="hidden" 
-                accept=".csv"
-                onChange={handleFileUpload}
-              />
-            </label>
+          <div>
+            <Label>Year of Study (1–6)</Label>
+            <select
+              className="w-full border rounded h-10 px-2"
+              value={form.year}
+              onChange={(e) => setForm({ ...form, year: e.target.value })}
+            >
+              {[1, 2, 3, 4, 5, 6].map((y) => (
+                <option key={y} value={y}>
+                  Year {y}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
+          <div>
+            <Label>Academic year (calendar)</Label>
+            <Input
+              value={form.academic_year}
+              onChange={(e) => setForm({ ...form, academic_year: e.target.value })}
+              placeholder="e.g. 2024/25"
+            />
+          </div>
+          <div>
+            <Label>Number of students</Label>
+            <Input
+              type="number"
+              min={1}
+              required
+              value={form.number_of_students}
+              onChange={(e) =>
+                setForm({ ...form, number_of_students: e.target.value })
+              }
+            />
+          </div>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Saving..." : "Create class"}
+          </Button>
+        </form>
       </Card>
     </div>
-  )
+  );
 }
-
-export default AddClass

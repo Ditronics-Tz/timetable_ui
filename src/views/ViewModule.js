@@ -1,142 +1,71 @@
-"use client"
+import { useCallback } from "react";
+import { Card } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/ui/table";
+import moduleService from "../services/moduleService";
+import usePaginatedList from "../hooks/usePaginatedList";
 
-import { useState } from "react"
-import { Card } from "../components/ui/card"
-import { Input } from "../components/ui/input"
-import { Button } from "../components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table"
-import { 
-  Search, 
-  Filter, 
-  Download, 
-  Eye, 
-  Layers, 
-  Calendar, 
-  Award, 
-  Code, 
-  BookOpen 
-} from 'lucide-react'
-import '../styles/ViewModule.css'
-
-export default function ViewModules() {
-  const [modules, setModules] = useState([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterType, setFilterType] = useState("")
-  const [filterYear, setFilterYear] = useState("")
-
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value)
-  }
-
-  const filteredModules = modules.filter(
-    (module) =>
-      (module.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        module.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (filterType === "" || module.type === filterType) &&
-      (filterYear === "" || module.year.toString() === filterYear),
-  )
+export default function ViewModule() {
+  const fetchFn = useCallback((p) => moduleService.list(p), []);
+  const { items, loading, error, nextPage, prevPage, offset, hasMore, refetch } =
+    usePaginatedList(fetchFn, "modules");
 
   return (
-    <div className="view-modules-container">
-      <Card className="view-modules-card">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold flex items-center gap-2">
-            <Eye className="h-6 w-6" />
-            View Modules
-          </h1>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Export Modules
+    <div className="p-6">
+      <Card className="p-6 space-y-4">
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold">View Modules</h1>
+          <Button variant="outline" onClick={refetch}>
+            Refresh
           </Button>
         </div>
-
-        <div className="filters-container">
-          <div className="flex flex-wrap gap-4 mb-6">
-            <div className="flex-1 min-w-[200px]">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input placeholder="Search modules..." value={searchTerm} onChange={handleSearch} className="pl-10" />
-              </div>
-            </div>
-
-            <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-[180px]">
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  <span>{filterType || "Filter by Type"}</span>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Core">Core</SelectItem>
-                <SelectItem value="Elective">Elective</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={filterYear} onValueChange={setFilterYear}>
-              <SelectTrigger className="w-[180px]">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>{filterYear || "Filter by Year"}</span>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Years</SelectItem>
-                <SelectItem value="2023">2023</SelectItem>
-                <SelectItem value="2024">2024</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="table-container">
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+        {loading ? (
+          <p>Loading...</p>
+        ) : items.length === 0 ? (
+          <p className="text-gray-500">No modules yet.</p>
+        ) : (
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Code</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
-                <TableHead>Year</TableHead>
-                <TableHead>Semester</TableHead>
-                <TableHead>NTA Level</TableHead>
-                <TableHead>Credit Value</TableHead>
+                <TableHead>Credits</TableHead>
+                <TableHead>Lab</TableHead>
+                <TableHead>Program</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredModules.map((module) => (
-                <TableRow key={module.id}>
-                  <TableCell className="font-medium flex items-center gap-2">
-                    <Code className="h-4 w-4 text-gray-400" />
-                    {module.code}
-                  </TableCell>
-                  <TableCell className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4 text-gray-400" />
-                    {module.name}
-                  </TableCell>
-                  <TableCell>{module.type}</TableCell>
-                  <TableCell>{module.year}</TableCell>
-                  <TableCell>{module.semester}</TableCell>
-                  <TableCell className="flex items-center gap-2">
-                    <Award className="h-4 w-4 text-gray-400" />
-                    {module.ntaLevel}
-                  </TableCell>
-                  <TableCell>{module.creditValue}</TableCell>
+              {items.map((m) => (
+                <TableRow key={m.id}>
+                  <TableCell>{m.code}</TableCell>
+                  <TableCell>{m.name}</TableCell>
+                  <TableCell>{m.type}</TableCell>
+                  <TableCell>{m.credit_hours}</TableCell>
+                  <TableCell>{m.requires_lab ? "Yes" : "No"}</TableCell>
+                  <TableCell>{m.course?.name || m.course_id || "—"}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-
-          {filteredModules.length === 0 && (
-            <div className="text-center py-4 text-gray-500">No modules found matching your search criteria.</div>
-          )}
-
-          <div className="mt-4 text-sm text-gray-500">
-            Showing {filteredModules.length} of {modules.length} modules
-          </div>
+        )}
+        <div className="flex gap-2 justify-end">
+          <Button variant="outline" disabled={offset <= 0} onClick={prevPage}>
+            Previous
+          </Button>
+          <Button variant="outline" disabled={!hasMore} onClick={nextPage}>
+            Next
+          </Button>
         </div>
       </Card>
     </div>
-  )
+  );
 }
-

@@ -10,6 +10,7 @@ import { Progress } from "../../components/ui/progress"
 import { Link, useNavigate } from 'react-router-dom'
 import { User, Mail, Lock, Eye, EyeOff, ChevronRight, AlertCircle } from 'lucide-react'
 import authService from '../../services/Authservice'
+import { extractApiError } from '../../lib/apiError'
 import '../../styles/Register.css'
 
 export default function Register() {
@@ -92,22 +93,10 @@ export default function Register() {
       }
       
       await authService.register(userData)
-      
-      // After successful registration, attempt to login automatically
-      const loginData = {
-        email: formData.email,
-        password: formData.password
-      }
-      
-      await authService.login(loginData)
-      
-      // If all is successful, navigate to dashboard
-      navigate('/dashboard')
+      // Do not auto-login — account is inactive until email verification
+      navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`)
     } catch (error) {
-      const errorMessage = 
-        error.response?.data?.message || 
-        'Registration failed. Please try again with different information.'
-      setError(errorMessage)
+      setError(extractApiError(error) || 'Registration failed. Please try again.')
     } finally {
       setIsLoading(false)
     }
