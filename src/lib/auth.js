@@ -12,8 +12,15 @@ export function getAuth() {
 }
 
 export function setAuth({ token, user }) {
-  localStorage.setItem(AUTH_KEY, JSON.stringify({ token, user }));
-  // Clear legacy key if present
+  // Prefer role from JWT claims so localStorage cannot drift from signed token
+  let nextUser = user ? { ...user } : null;
+  if (token && nextUser) {
+    const claims = decodeToken(token);
+    if (claims?.role) {
+      nextUser.role = String(claims.role).trim();
+    }
+  }
+  localStorage.setItem(AUTH_KEY, JSON.stringify({ token, user: nextUser }));
   localStorage.removeItem("user");
 }
 
@@ -30,7 +37,7 @@ export function getCurrentUser() {
   return getAuth()?.user || null;
 }
 
-/** Decode JWT payload without verification (client-side exp check only). */
+/** Decode JWT payload without verification (client-side exp / role read only). */
 export function decodeToken(token) {
   if (!token) return null;
   try {
@@ -52,7 +59,6 @@ export function decodeToken(token) {
 export function isTokenExpired(token) {
   const claims = decodeToken(token);
   if (!claims || typeof claims.exp !== "number") return false;
-  // treat as expired 30s early
   return claims.exp * 1000 <= Date.now() + 30_000;
 }
 
@@ -66,12 +72,35 @@ export function isAuthenticated() {
   return true;
 }
 
-export function hasRole(...roles) {
+/**
+ * Effective role from signed JWT claims first, then user blob.
+ * Normalized lowercase string.
+ */
+export function getRole() {
+  const token = getToken();
+  if (token && !isTokenExpired(token)) {
+    const claims = decodeToken(token);
+    if (claims?.role != null && String(claims.role).trim() !== "") {
+      return String(claims.role).trim();
+    }
+  }
   const user = getCurrentUser();
-  if (!user?.role) return false;
-  return roles.includes(user.role);
+  if (user?.role != null && String(user.role).trim() !== "") {
+    return String(user.role).trim();
+  }
+  return null;
+}
+
+export function hasRole(...roles) {
+  const role = getRole();
+  if (!role) return false;
+  return roles.includes(role);
 }
 
 export function isAdmin() {
   return hasRole("administrator", "super_admin");
+}
+
+export function isSuperAdmin() {
+  return hasRole("super_admin");
 }
