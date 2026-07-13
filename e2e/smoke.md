@@ -11,7 +11,7 @@ Run this manually against `docker compose up` or the three-terminal local stack.
 6. Allocations: assign staff to modules.
 7. Timetable Preview dry-run for a class → schedule or clear unsat reasons.
 8. Commit generate → Preview grid shows slots.
-9. Manual entry conflict → 409 message in UI.
+9. Generate/preview conflict or infeasibility → 409/422 message shown on /timetable (no manual entry form).
 10. Edit course/module/room via manage screens → lists reflect changes.
 11. Logout → protected routes redirect to login; `auth` cleared from localStorage.
 
