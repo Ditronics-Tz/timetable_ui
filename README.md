@@ -11,16 +11,14 @@ React admin SPA for the **SACAS** university timetable system.
 ## Stack
 
 - **React 19** · **Vite 6** · **React Router 7**
-- **Tailwind CSS** · **Radix UI** · **Lucide** · **Axios** · **Vitest**
-- App shell: CSS Grid sidebar + main (collapsible desktop / drawer mobile)
+- **Tailwind** · **Radix UI** · **Lucide** · **Axios** · **Vitest**
+- App shell: **CSS Grid** sidebar + main (collapse on desktop, drawer on mobile)
 
 ---
 
 ## Quick start (Windows)
 
-### 1. Backend must be running
-
-In the backend repo:
+### 1. Start backend first
 
 ```powershell
 cd ..\Sacas-backend
@@ -34,28 +32,51 @@ API: http://localhost:8080
 ```powershell
 cd timetable_ui
 copy .env.example .env
-# Ensure:
 # VITE_API_URL=http://localhost:8080/api
 
 npm install
 npm run dev
 ```
 
-Open **http://localhost:5173**
+Open **http://localhost:5173** (hard refresh after updates: Ctrl+Shift+R).
 
 ---
 
 ## Demo login
 
-Use accounts seeded by the backend (password for all: **`password`**):
+Passwords all: **`password`** (seeded by backend)
 
-| Email | Role |
-|-------|------|
-| `admin@example.com` | super_admin (full access) |
-| `coordinator@sacas.local` | administrator (timetable admin) |
-| `lecturer@sacas.local` | user (no admin screens) |
+| Email | Role | UI |
+|-------|------|-----|
+| `admin@example.com` | super_admin | Full admin nav |
+| `coordinator@sacas.local` | administrator | Full admin nav |
+| `lecturer@sacas.local` | user | Dashboard + Settings only |
 
-Details: backend `DEMO_ACCOUNTS.txt`.
+Backend file: `Sacas-backend/DEMO_ACCOUNTS.txt`
+
+---
+
+## RBAC (frontend)
+
+- **JWT claim `role` is source of truth** (`getRole()` / `isAdmin()`).
+- Admin routes wrapped in `RequireAuth` + `RequireRole` (`administrator` \| `super_admin`).
+- Non-admin direct URL → **Insufficient permissions** screen (not blank).
+- Sidebar hides Timetable / Rooms / Staff / … for `role=user`.
+- Backend still enforces 403 on APIs — UI hide is not the security boundary.
+
+Details: **[docs/RBAC_AUDIT.md](./docs/RBAC_AUDIT.md)**
+
+---
+
+## Features / UX notes
+
+| Area | Behavior |
+|------|----------|
+| App shell | Grid layout — content not under sidebar |
+| After create | Navigates to entity **view** list; **Save and add another** optional |
+| `/timetable` | **Generate** + **Preview dry-run** only (no manual entry form) |
+| Weekly grid | `/preview` |
+| Domain labels | Department → Faculty, Program → Course ([domain-mapping](./docs/domain-mapping.md)) |
 
 ---
 
@@ -63,10 +84,10 @@ Details: backend `DEMO_ACCOUNTS.txt`.
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` / `npm start` | Vite dev server (port **5173**) |
-| `npm run build` | Production build → `dist/` |
-| `npm run preview` | Serve production build |
-| `npm test` | Vitest unit tests |
+| `npm run dev` / `npm start` | Vite dev (**5173**) |
+| `npm run build` | Production → `dist/` |
+| `npm run preview` | Preview production build |
+| `npm test` | Vitest |
 
 ### Env
 
@@ -74,9 +95,9 @@ Details: backend `DEMO_ACCOUNTS.txt`.
 VITE_API_URL=http://localhost:8080/api
 ```
 
-- In **dev**, if unset, Vite proxies `/api` → `http://localhost:8080` (see `vite.config.js`).
-- In **production build**, `VITE_API_URL` must be set at build time.
-- Never commit `.env` — only `.env.example`.
+- Dev: optional proxy `/api` → backend (`vite.config.js`) if unset.
+- Production build: set `VITE_API_URL` at build time.
+- Never commit `.env`.
 
 ### Docker (UI only)
 
@@ -87,55 +108,36 @@ docker run -p 3000:80 sacas-ui
 
 ---
 
-## App structure (UI)
+## Layout
 
 ```
 src/
-  App.js                 # routes + auth guards
+  App.js                 # routes + guards
   components/
-    Layout.js            # app shell (grid)
-    Navbar.js            # sidebar nav
-    PageHeader.jsx       # title + breadcrumbs
-    Toast.jsx            # success/error toasts
-    RequireAuth.jsx
-    RequireRole.jsx
-    ui/                  # Radix/shadcn-style primitives
-  views/                 # pages (Dashboard, Add/View/Manage, Auth, …)
-  services/              # axios API clients
-  styles/
-    tokens.css           # design tokens
-    shell.css            # shell + sidebar layout
-  lib/                   # auth helpers, apiError
+    Layout.js            # app shell
+    Navbar.js            # role-aware sidebar
+    PageHeader.jsx
+    Toast.jsx
+    RequireAuth.jsx / RequireRole.jsx
+  views/                 # pages (no manual timetable form)
+  services/              # API clients
+  styles/tokens.css shell.css
+  lib/auth.js            # JWT role helpers
 ```
-
-### UX notes (current)
-
-- **Shell:** sidebar does not overlap main content (grid reserves width).
-- **After create:** add forms navigate to the entity **view/list** page; **Save and add another** stays on the form.
-- **Roles:** timetable admin routes require `administrator` / `super_admin`.
-
-Domain names in the UI map to backend models:
-
-| UI label | Backend |
-|----------|---------|
-| Department | Faculty |
-| Program | Course |
-| Module / Class / Room / Staff | same |
-
-See [docs/domain-mapping.md](./docs/domain-mapping.md).
 
 ---
 
-## Docs (this repo)
+## Docs index
 
 | File | Topic |
 |------|--------|
-| [DECISIONS.md](./DECISIONS.md) | Shell overlap root cause, nav decisions |
-| [docs/frontend.md](./docs/frontend.md) | Routes & structure |
-| [docs/domain-mapping.md](./docs/domain-mapping.md) | UI ↔ API field mapping |
+| [DECISIONS.md](./DECISIONS.md) | Shell + nav decisions |
+| [docs/RBAC_AUDIT.md](./docs/RBAC_AUDIT.md) | FE RBAC |
+| [docs/frontend.md](./docs/frontend.md) | Routes / structure |
+| [docs/domain-mapping.md](./docs/domain-mapping.md) | UI ↔ API names |
 | [docs/integration.md](./docs/integration.md) | FE/BE alignment |
-| [docs/setup.md](./docs/setup.md) | Setup notes |
-| [docs/DEPENDENCY_AUDIT.md](./docs/DEPENDENCY_AUDIT.md) | Vite / audit notes |
+| [docs/setup.md](./docs/setup.md) | Setup |
+| [docs/DEPENDENCY_AUDIT.md](./docs/DEPENDENCY_AUDIT.md) | Vite / audit |
 | [e2e/smoke.md](./e2e/smoke.md) | Manual smoke checklist |
 
 ---
@@ -144,8 +146,8 @@ See [docs/domain-mapping.md](./docs/domain-mapping.md).
 
 | Issue | Fix |
 |-------|-----|
-| CORS / network errors | Backend running? `CORS_ALLOWED_ORIGINS` includes `http://localhost:5173`? |
-| Login works, admin pages blocked | Use `admin@…` or `coordinator@…` (not `lecturer@…`) |
-| Blank / clipped layout | Hard refresh (Ctrl+Shift+R); ensure latest `shell.css` loaded |
-| API 401 on lists | Token expired — log in again |
-| Build fails on env | Set `VITE_API_URL` before `npm run build` |
+| CORS / network | Backend up? `CORS_ALLOWED_ORIGINS` includes `http://localhost:5173`? |
+| Admin pages blocked | Use admin account, not `lecturer@…` |
+| Clipped layout | Hard refresh; latest `shell.css` |
+| 401 on lists | Re-login |
+| Build env | Set `VITE_API_URL` before `npm run build` |
