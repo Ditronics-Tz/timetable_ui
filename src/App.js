@@ -48,6 +48,7 @@ function AppShell() {
           <Route path="/settings" element={<SettingsPage />} />
 
           <Route path="/preview" element={<AdminOnly><Preview1 /></AdminOnly>} />
+          <Route path="/my-timetable" element={<Preview1 />} />
           <Route path="/timetable" element={<AdminOnly><TimetableGenerator /></AdminOnly>} />
 
           <Route path="/rooms/add" element={<AdminOnly><AddRooms /></AdminOnly>} />
