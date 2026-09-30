@@ -21,6 +21,9 @@ import ResetPassword from "./views/Auth/ResetPassword";
 import AddModule from "./views/AddModule";
 import ViewModule from "./views/ViewModule";
 import ManageModule from "./views/ManageModule";
+import AddSubject from "./views/AddSubject";
+import ViewSubjects from "./views/ViewSubjects";
+import ManageSubjects from "./views/ManageSubjects";
 import ViewStaff from "./views/ViewStaff";
 import ManageStaff from "./views/ManageStaff";
 import AddStaff from "./views/AddStaff";
@@ -63,6 +66,10 @@ function AppShell() {
           <Route path="/modules/add" element={<AdminOnly><AddModule /></AdminOnly>} />
           <Route path="/modules/view" element={<AdminOnly><ViewModule /></AdminOnly>} />
           <Route path="/modules/manage" element={<AdminOnly><ManageModule /></AdminOnly>} />
+
+          <Route path="/subjects/add" element={<AdminOnly><AddSubject /></AdminOnly>} />
+          <Route path="/subjects/view" element={<AdminOnly><ViewSubjects /></AdminOnly>} />
+          <Route path="/subjects/manage" element={<AdminOnly><ManageSubjects /></AdminOnly>} />
 
           <Route path="/staff/view" element={<AdminOnly><ViewStaff /></AdminOnly>} />
           <Route path="/staff/manage" element={<AdminOnly><ManageStaff /></AdminOnly>} />

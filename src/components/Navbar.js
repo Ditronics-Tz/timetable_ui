@@ -7,6 +7,7 @@ import {
   Settings,
   Users,
   BookOpen,
+  BookMarked,
   Building,
   FileSpreadsheet,
   UserCog,
@@ -70,6 +71,7 @@ export default function Navbar({
 
   const [isRoomsExpanded, setIsRoomsExpanded] = useState(false);
   const [isModulesExpanded, setIsModulesExpanded] = useState(false);
+  const [isSubjectsExpanded, setIsSubjectsExpanded] = useState(false);
   const [isDepartmentsExpanded, setIsDepartmentsExpanded] = useState(false);
   const [isStaffExpanded, setIsStaffExpanded] = useState(false);
   const [isModuleAllocationExpanded, setIsModuleAllocationExpanded] = useState(false);
@@ -181,6 +183,21 @@ export default function Navbar({
                 { to: "/modules/add", label: "Add Module" },
                 { to: "/modules/view", label: "View Modules" },
                 { to: "/modules/manage", label: "Manage Modules" },
+              ]}
+            />
+
+            <NavDropdown
+              label="Subjects"
+              icon={BookMarked}
+              base="subjects"
+              expanded={isSubjectsExpanded}
+              setExpanded={setIsSubjectsExpanded}
+              activePage={activePage}
+              collapsed={collapsed}
+              items={[
+                { to: "/subjects/add", label: "Add Subject" },
+                { to: "/subjects/view", label: "View Subjects" },
+                { to: "/subjects/manage", label: "Manage Subjects" },
               ]}
             />
 
