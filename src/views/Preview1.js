@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
+import PageHeader from "../components/PageHeader";
 import classService from "../services/classService";
 import staffService from "../services/staffService";
 import timetableService from "../services/timetableService";
@@ -83,9 +84,16 @@ export default function Preview1() {
     (mode === "class" ? !classId : mode === "staff" ? !staffId : false);
 
   return (
-    <div className="p-6">
+    <div className="space-y-6">
+      <PageHeader
+        title="Timetable preview"
+        crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Timetable", to: "/timetable" },
+          { label: "Preview" },
+        ]}
+      />
       <Card className="p-6 space-y-4 overflow-auto">
-        <h1 className="text-2xl font-bold">Timetable preview</h1>
 
         <div className="flex flex-wrap gap-3 items-end">
           <div>

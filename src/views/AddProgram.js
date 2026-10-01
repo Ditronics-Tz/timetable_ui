@@ -49,11 +49,12 @@ export default function AddProgram() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader
         title="Add program"
         subtitle="Maps to backend Course"
         crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
           { label: "Programs", to: "/programs/view" },
           { label: "Add" },
         ]}
