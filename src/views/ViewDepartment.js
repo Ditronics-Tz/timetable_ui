@@ -12,7 +12,6 @@ import {
 } from "../components/ui/table";
 import facultyService from "../services/facultyService";
 import usePaginatedList from "../hooks/usePaginatedList";
-import "../styles/ViewDepartment.css";
 
 export default function ViewDepartments() {
   const fetchFn = useCallback(
