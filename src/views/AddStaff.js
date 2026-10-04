@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Checkbox } from "../components/ui/checkbox";
 import PageHeader from "../components/PageHeader";
+import ListState from "../components/ListState";
 import staffService from "../services/staffService";
 import facultyService from "../services/facultyService";
 import { extractApiError } from "../lib/apiError";
@@ -33,13 +34,25 @@ export default function AddStaff() {
   const [form, setForm] = useState(empty);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [facultiesLoading, setFacultiesLoading] = useState(true);
+  const [facultiesError, setFacultiesError] = useState("");
+
+  const loadFaculties = useCallback(async () => {
+    setFacultiesLoading(true);
+    setFacultiesError("");
+    try {
+      const data = await facultyService.list({ limit: 100 });
+      setFaculties(data.faculties || []);
+    } catch (err) {
+      setFacultiesError(extractApiError(err));
+    } finally {
+      setFacultiesLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    facultyService
-      .list({ limit: 100 })
-      .then((d) => setFaculties(d.faculties || []))
-      .catch((e) => setError(extractApiError(e)));
-  }, []);
+    loadFaculties();
+  }, [loadFaculties]);
 
   const toggleDay = (day) => {
     setUnavailable((prev) =>
@@ -94,6 +107,13 @@ export default function AddStaff() {
             {error}
           </div>
         )}
+        <ListState
+          loading={facultiesLoading}
+          error={facultiesError}
+          isEmpty={!facultiesLoading && !facultiesError && faculties.length === 0}
+          emptyMessage="No faculties are available. Add a faculty first."
+          onRetry={loadFaculties}
+        />
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -125,6 +145,7 @@ export default function AddStaff() {
             <select
               id="faculty_id"
               className="w-full border rounded-md h-10 px-2 bg-white"
+              disabled={facultiesLoading || !!facultiesError || faculties.length === 0}
               required
               value={form.faculty_id}
               onChange={(e) => setForm({ ...form, faculty_id: e.target.value })}
@@ -213,10 +234,10 @@ export default function AddStaff() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2 pt-2">
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || facultiesLoading || !!facultiesError || faculties.length === 0}>
               {loading ? "Saving…" : "Create staff"}
             </Button>
-            <Button type="button" variant="outline" disabled={loading} onClick={() => save(true)}>
+            <Button type="button" variant="outline" disabled={loading || facultiesLoading || !!facultiesError || faculties.length === 0} onClick={() => save(true)}>
               Save and add another
             </Button>
             <Button type="button" variant="ghost" onClick={() => navigate("/staff/view")}>

@@ -14,7 +14,7 @@ export function usePaginatedList(fetchFn, itemsKey, options = {}) {
   const [items, setItems] = useState([]);
   const [limit, setLimit] = useState(pageSize);
   const [offset, setOffset] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(autoLoad);
   const [error, setError] = useState("");
   const [hasMore, setHasMore] = useState(true);
 
