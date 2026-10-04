@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
@@ -22,6 +23,8 @@ function cellLabel(entry) {
 }
 
 export default function Preview1() {
+  const [searchParams] = useSearchParams();
+  const requestedClassId = searchParams.get("classId");
   const [classes, setClasses] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [mode, setMode] = useState("class"); // class | staff | my
@@ -30,6 +33,7 @@ export default function Preview1() {
   const [entries, setEntries] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [classesLoaded, setClassesLoaded] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -40,20 +44,21 @@ export default function Preview1() {
         setClasses(c.classes || []);
         setStaffList(s.staff || []);
       })
-      .catch((e) => setError(extractApiError(e)));
+      .catch((e) => setError(extractApiError(e)))
+      .finally(() => setClassesLoaded(true));
   }, []);
 
-  const load = async () => {
+  const loadSchedule = useCallback(async (selectionMode, selectionId) => {
     setLoading(true);
     setError("");
 
     try {
       let data;
 
-      if (mode === "class") {
-        data = await timetableService.getByClass(Number(classId));
-      } else if (mode === "staff") {
-        data = await timetableService.getByStaff(Number(staffId));
+      if (selectionMode === "class") {
+        data = await timetableService.getByClass(Number(selectionId));
+      } else if (selectionMode === "staff") {
+        data = await timetableService.getByStaff(Number(selectionId));
       } else {
         data = await timetableService.getMyTimetable();
       }
@@ -65,7 +70,23 @@ export default function Preview1() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!classesLoaded || !requestedClassId) return;
+
+    const matchingClass = classes.find(
+      (item) => String(item.id) === requestedClassId
+    );
+    if (!matchingClass) return;
+
+    setMode("class");
+    setClassId(String(matchingClass.id));
+    loadSchedule("class", matchingClass.id);
+  }, [classes, classesLoaded, loadSchedule, requestedClassId]);
+
+  const load = () =>
+    loadSchedule(mode, mode === "class" ? classId : staffId);
 
   const grid = useMemo(() => {
     const map = {};
@@ -89,9 +110,10 @@ export default function Preview1() {
 
         <div className="flex flex-wrap gap-3 items-end">
           <div>
-            <Label>View by</Label>
+            <Label htmlFor="preview_mode">View by</Label>
 
             <select
+              id="preview_mode"
               className="border rounded h-10 px-2 block"
               value={mode}
               onChange={(e) => {
@@ -108,9 +130,10 @@ export default function Preview1() {
 
           {mode === "class" ? (
             <div>
-              <Label>Class</Label>
+              <Label htmlFor="preview_class_id">Class</Label>
 
               <select
+                id="preview_class_id"
                 className="border rounded h-10 px-2 block min-w-[200px]"
                 value={classId}
                 onChange={(e) => setClassId(e.target.value)}
@@ -126,9 +149,10 @@ export default function Preview1() {
             </div>
           ) : mode === "staff" ? (
             <div>
-              <Label>Staff</Label>
+              <Label htmlFor="preview_staff_id">Staff</Label>
 
               <select
+                id="preview_staff_id"
                 className="border rounded h-10 px-2 block min-w-[200px]"
                 value={staffId}
                 onChange={(e) => setStaffId(e.target.value)}
