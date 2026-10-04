@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { Card } from "../components/ui/card";
+import DataTable from "../components/DataTable";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import {
@@ -46,12 +47,13 @@ export default function ViewDepartments() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-        {loading ? (
-          <div className="py-8 text-center text-gray-500">Loading...</div>
-        ) : filtered.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">No departments found.</div>
-        ) : (
+        <DataTable
+          loading={loading}
+          error={error}
+          isEmpty={filtered.length === 0}
+          emptyMessage="No departments found."
+          onRetry={refetch}
+        >
           <Table>
             <TableHeader>
               <TableRow>
@@ -76,7 +78,7 @@ export default function ViewDepartments() {
               ))}
             </TableBody>
           </Table>
-        )}
+        </DataTable>
         <div className="flex gap-2 justify-end">
           <Button variant="outline" disabled={offset <= 0 || loading} onClick={prevPage}>
             Previous

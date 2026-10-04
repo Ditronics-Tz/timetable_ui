@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { Card } from "../components/ui/card";
+import DataTable from "../components/DataTable";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -48,8 +49,14 @@ export default function ManageSubjects() {
     <div className="p-6">
       <Card className="p-6 space-y-4">
         <h1 className="text-2xl font-bold">Manage Subjects</h1>
-        {(error || actionError) && <div role="alert" className="text-red-600 text-sm">{actionError || error}</div>}
-        {loading ? <p>Loading...</p> : (
+        {actionError && <div role="alert" className="text-red-600 text-sm">{actionError}</div>}
+        <DataTable
+          loading={loading}
+          error={error}
+          isEmpty={items.length === 0}
+          emptyMessage="No subjects found."
+          onRetry={refetch}
+        >
           <Table>
             <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Credit hours</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
             <TableBody>{items.map((subject) => (
@@ -68,7 +75,7 @@ export default function ManageSubjects() {
               </TableRow>
             ))}</TableBody>
           </Table>
-        )}
+        </DataTable>
         {editing !== null && (
           <div className="border rounded p-4 space-y-3">
             <h2 className="font-semibold">Edit subject #{editing}</h2>

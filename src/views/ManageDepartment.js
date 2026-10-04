@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { Card } from "../components/ui/card";
+import DataTable from "../components/DataTable";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -72,11 +73,15 @@ export default function ManageDepartments() {
     <div className="p-6">
       <Card className="p-6 space-y-4">
         <h1 className="text-2xl font-bold">Manage Departments</h1>
-        {(error || err) && <div className="text-red-600 text-sm">{error || err}</div>}
+        {err && <div role="alert" className="text-red-600 text-sm">{err}</div>}
         {msg && <div className="text-green-700 text-sm">{msg}</div>}
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
+        <DataTable
+          loading={loading}
+          error={error}
+          isEmpty={items.length === 0}
+          emptyMessage="No departments found."
+          onRetry={refetch}
+        >
           <Table>
             <TableHeader>
               <TableRow>
@@ -120,7 +125,7 @@ export default function ManageDepartments() {
               ))}
             </TableBody>
           </Table>
-        )}
+        </DataTable>
         {editing && (
           <div className="border rounded p-4 space-y-3">
             <h3 className="font-semibold">Edit faculty #{editing}</h3>

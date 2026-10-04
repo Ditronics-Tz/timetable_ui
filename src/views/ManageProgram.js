@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { Card } from "../components/ui/card";
+import DataTable from "../components/DataTable";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -72,10 +73,14 @@ export default function ManageProgram() {
     <div className="p-6">
       <Card className="p-6 space-y-4">
         <h1 className="text-2xl font-bold">Manage Programs</h1>
-        {(error || err) && <div className="text-red-600 text-sm">{error || err}</div>}
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
+        {err && <div role="alert" className="text-red-600 text-sm">{err}</div>}
+        <DataTable
+          loading={loading}
+          error={error}
+          isEmpty={items.length === 0}
+          emptyMessage="No programs found."
+          onRetry={refetch}
+        >
           <Table>
             <TableHeader>
               <TableRow>
@@ -119,7 +124,7 @@ export default function ManageProgram() {
               ))}
             </TableBody>
           </Table>
-        )}
+        </DataTable>
         {editing && (
           <div className="border rounded p-4 space-y-3">
             <h3 className="font-semibold">Edit course #{editing}</h3>
