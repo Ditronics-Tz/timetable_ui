@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+import PageHeader from "../components/PageHeader";
 import { Input } from "../components/ui/input";
 import {
   Table,
@@ -12,7 +13,6 @@ import {
 } from "../components/ui/table";
 import facultyService from "../services/facultyService";
 import usePaginatedList from "../hooks/usePaginatedList";
-import "../styles/ViewDepartment.css";
 
 export default function ViewDepartments() {
   const fetchFn = useCallback(
@@ -30,17 +30,22 @@ export default function ViewDepartments() {
   );
 
   return (
-    <div className="p-6">
-      <Card className="p-6 space-y-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">View Departments</h1>
-            <p className="text-sm text-gray-500">Faculties from the API</p>
-          </div>
-          <Button variant="outline" onClick={() => refetch()}>
+    <div className="space-y-6">
+      <PageHeader
+        title="View departments"
+        subtitle="Faculties from the API"
+        crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Departments", to: "/departments/view" },
+          { label: "View" },
+        ]}
+        actions={
+          <Button variant="outline" onClick={refetch}>
             Refresh
           </Button>
-        </div>
+        }
+      />
+      <Card className="p-6 space-y-4">
         <Input
           placeholder="Search departments..."
           value={searchTerm}

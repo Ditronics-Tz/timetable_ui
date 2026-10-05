@@ -55,10 +55,11 @@ export default function AddClass() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader
         title="Add class"
         crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
           { label: "Classes", to: "/classes/view" },
           { label: "Add" },
         ]}

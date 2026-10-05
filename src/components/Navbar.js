@@ -4,6 +4,8 @@ import {
   LayoutDashboard,
   Building2,
   Calendar,
+  GraduationCap,
+  CalendarDays,
   Settings,
   Users,
   BookOpen,
@@ -141,6 +143,14 @@ export default function Navbar({
               <span className="label">Preview</span>
             </Link>
 
+            <Link
+              to="/course-preview"
+              className={`sidebar-item ${activePage === "course-preview" ? "is-active" : ""}`}
+            >
+              <GraduationCap size={20} aria-hidden />
+              <span className="label">Course timetable</span>
+            </Link>
+
             <NavDropdown
               label="Rooms"
               icon={Building2}
@@ -261,6 +271,14 @@ export default function Navbar({
             />
           </>
         )}
+
+        <Link
+          to="/my-schedule"
+          className={`sidebar-item ${activePage === "my-schedule" ? "is-active" : ""}`}
+        >
+          <CalendarDays size={20} aria-hidden />
+          <span className="label">My Schedule</span>
+        </Link>
 
         <Link
           to="/settings"
