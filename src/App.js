@@ -37,6 +37,7 @@ import ViewAllocations from "./views/ViewAllocations";
 import ModuleAllocations from "./views/ModuleAllocations";
 import TimetableGenerator from "./views/Timetable";
 import SettingsPage from "./views/Settings";
+import MySchedule from "./views/MySchedule";
 
 const AdminOnly = ({ children }) => (
   <RequireRole allow={["administrator", "super_admin"]}>{children}</RequireRole>
@@ -49,6 +50,7 @@ function AppShell() {
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/my-schedule" element={<MySchedule />} />
 
           <Route path="/preview" element={<AdminOnly><Preview1 /></AdminOnly>} />
           <Route path="/my-timetable" element={<Preview1 />} />

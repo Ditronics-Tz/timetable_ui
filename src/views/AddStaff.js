@@ -80,10 +80,11 @@ export default function AddStaff() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader
         title="Add staff"
         crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
           { label: "Staff", to: "/staff/view" },
           { label: "Add" },
         ]}

@@ -71,10 +71,11 @@ export default function AddModule() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader
         title="Add module"
         crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
           { label: "Modules", to: "/modules/view" },
           { label: "Add" },
         ]}
