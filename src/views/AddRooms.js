@@ -66,10 +66,11 @@ export default function AddRooms() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader
         title="Add room"
         crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
           { label: "Rooms", to: "/rooms/view" },
           { label: "Add" },
         ]}
