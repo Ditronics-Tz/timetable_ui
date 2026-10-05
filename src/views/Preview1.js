@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-<<<<<<< HEAD
 import { useSearchParams } from "react-router-dom";
-=======
->>>>>>> origin/master
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
@@ -27,11 +24,6 @@ function cellLabel(entry) {
   return `${subject}\n${staff}\n${room}`;
 }
 
-<<<<<<< HEAD
-export default function Preview1() {
-  const [searchParams] = useSearchParams();
-  const requestedClassId = searchParams.get("classId");
-=======
 function TimetableGrid({ entries, label }) {
   const grid = useMemo(() => {
     const map = {};
@@ -81,7 +73,8 @@ function TimetableGrid({ entries, label }) {
 }
 
 export default function Preview1({ initialMode = "class" }) {
->>>>>>> origin/master
+  const [searchParams] = useSearchParams();
+  const requestedClassId = searchParams.get("classId");
   const [classes, setClasses] = useState([]);
   const [courses, setCourses] = useState([]);
   const [staffList, setStaffList] = useState([]);
@@ -109,9 +102,6 @@ export default function Preview1({ initialMode = "class" }) {
       .finally(() => setClassesLoaded(true));
   }, []);
 
-<<<<<<< HEAD
-  const loadSchedule = useCallback(async (selectionMode, selectionId) => {
-=======
   const loadCourses = useCallback(async () => {
     setCoursesLoading(true);
     setCourseError("");
@@ -129,39 +119,39 @@ export default function Preview1({ initialMode = "class" }) {
     loadCourses();
   }, [loadCourses]);
 
-  const load = async () => {
->>>>>>> origin/master
-    setLoading(true);
-    setError("");
+  const load = useCallback(
+    async ({ mode: selectedMode, classId: selectedClassId, staffId: selectedStaffId, courseId: selectedCourseId } = {}) => {
+      const activeMode = selectedMode ?? mode;
+      const activeClassId = selectedClassId ?? classId;
+      const activeStaffId = selectedStaffId ?? staffId;
+      const activeCourseId = selectedCourseId ?? courseId;
 
-    try {
-      let data;
+      setLoading(true);
+      setError("");
 
-<<<<<<< HEAD
-      if (selectionMode === "class") {
-        data = await timetableService.getByClass(Number(selectionId));
-      } else if (selectionMode === "staff") {
-        data = await timetableService.getByStaff(Number(selectionId));
-=======
-      if (mode === "class") {
-        data = await timetableService.getByClass(Number(classId));
-      } else if (mode === "staff") {
-        data = await timetableService.getByStaff(Number(staffId));
-      } else if (mode === "course") {
-        data = await timetableService.getByCourse(Number(courseId));
->>>>>>> origin/master
-      } else {
-        data = await timetableService.getMyTimetable();
+      try {
+        let data;
+
+        if (activeMode === "class") {
+          data = await timetableService.getByClass(Number(activeClassId));
+        } else if (activeMode === "staff") {
+          data = await timetableService.getByStaff(Number(activeStaffId));
+        } else if (activeMode === "course") {
+          data = await timetableService.getByCourse(Number(activeCourseId));
+        } else {
+          data = await timetableService.getMyTimetable();
+        }
+
+        setEntries(data.timetables || []);
+      } catch (e) {
+        setError(extractApiError(e));
+        setEntries([]);
+      } finally {
+        setLoading(false);
       }
-
-      setEntries(data.timetables || []);
-    } catch (e) {
-      setError(extractApiError(e));
-      setEntries([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [classId, courseId, mode, staffId]
+  );
 
   useEffect(() => {
     if (!classesLoaded || !requestedClassId) return;
@@ -171,13 +161,11 @@ export default function Preview1({ initialMode = "class" }) {
     );
     if (!matchingClass) return;
 
+    const matchedClassId = String(matchingClass.id);
     setMode("class");
-    setClassId(String(matchingClass.id));
-    loadSchedule("class", matchingClass.id);
-  }, [classes, classesLoaded, loadSchedule, requestedClassId]);
-
-  const load = () =>
-    loadSchedule(mode, mode === "class" ? classId : staffId);
+    setClassId(matchedClassId);
+    load({ mode: "class", classId: matchedClassId });
+  }, [classes, classesLoaded, load, requestedClassId]);
 
   const entriesByClass = useMemo(() => {
     const groups = new Map();
@@ -296,7 +284,7 @@ export default function Preview1({ initialMode = "class" }) {
             </div>
           ) : null}
 
-          <Button onClick={load} disabled={loadDisabled}>
+          <Button onClick={() => load()} disabled={loadDisabled}>
             {loading ? "Loading..." : "Load schedule"}
           </Button>
         </div>
