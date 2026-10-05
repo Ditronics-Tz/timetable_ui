@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+import PageHeader from "../components/PageHeader";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import {
@@ -63,9 +64,16 @@ export default function ManageRooms() {
   };
 
   return (
-    <div className="p-6">
+    <div className="space-y-6">
+      <PageHeader
+        title="Manage rooms"
+        crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Rooms", to: "/rooms/view" },
+          { label: "Manage" },
+        ]}
+      />
       <Card className="p-6 space-y-4">
-        <h1 className="text-2xl font-bold">Manage Rooms</h1>
         {(error || err) && <div className="text-red-600 text-sm">{error || err}</div>}
         {loading ? (
           <p>Loading...</p>

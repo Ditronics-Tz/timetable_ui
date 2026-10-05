@@ -4,7 +4,11 @@ import {
   LayoutDashboard,
   Building2,
   Calendar,
+<<<<<<< HEAD
   GraduationCap,
+=======
+  CalendarDays,
+>>>>>>> origin/master
   Settings,
   Users,
   BookOpen,
@@ -270,6 +274,14 @@ export default function Navbar({
             />
           </>
         )}
+
+        <Link
+          to="/my-schedule"
+          className={`sidebar-item ${activePage === "my-schedule" ? "is-active" : ""}`}
+        >
+          <CalendarDays size={20} aria-hidden />
+          <span className="label">My Schedule</span>
+        </Link>
 
         <Link
           to="/settings"
