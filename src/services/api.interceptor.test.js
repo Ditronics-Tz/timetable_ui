@@ -29,12 +29,6 @@ describe("api module loads without localhost hardcode when VITE set", () => {
     vi.resetModules();
     const mod = await import("./api");
     expect(mod.default).toBeDefined();
-<<<<<<< HEAD
-    expect(typeof mod.baseURL).toBe("string");
-    expect(mod.baseURL.includes("/api") || mod.baseURL.startsWith("http")).toBe(true);
-  }, 15000);
-=======
     expect(mod.baseURL).toBe("https://api.example.test/api");
   }, 15_000);
->>>>>>> origin/master
 });

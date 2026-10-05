@@ -4,11 +4,8 @@ import {
   LayoutDashboard,
   Building2,
   Calendar,
-<<<<<<< HEAD
   GraduationCap,
-=======
   CalendarDays,
->>>>>>> origin/master
   Settings,
   Users,
   BookOpen,
