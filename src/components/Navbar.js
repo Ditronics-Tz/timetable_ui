@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Building2,
   Calendar,
+  GraduationCap,
   CalendarDays,
   Settings,
   Users,
@@ -140,6 +141,14 @@ export default function Navbar({
             >
               <FileSpreadsheet size={20} aria-hidden />
               <span className="label">Preview</span>
+            </Link>
+
+            <Link
+              to="/course-preview"
+              className={`sidebar-item ${activePage === "course-preview" ? "is-active" : ""}`}
+            >
+              <GraduationCap size={20} aria-hidden />
+              <span className="label">Course timetable</span>
             </Link>
 
             <NavDropdown

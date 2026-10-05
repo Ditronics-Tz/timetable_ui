@@ -53,6 +53,7 @@ function AppShell() {
           <Route path="/my-schedule" element={<MySchedule />} />
 
           <Route path="/preview" element={<AdminOnly><Preview1 /></AdminOnly>} />
+          <Route path="/course-preview" element={<AdminOnly><Preview1 initialMode="course" /></AdminOnly>} />
           <Route path="/my-timetable" element={<Preview1 />} />
           <Route path="/timetable" element={<AdminOnly><TimetableGenerator /></AdminOnly>} />
 

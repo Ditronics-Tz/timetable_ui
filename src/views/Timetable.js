@@ -4,6 +4,7 @@ import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import PageHeader from "../components/PageHeader";
+import GenerationSettingsPanel from "../components/GenerationSettingsPanel";
 import classService from "../services/classService";
 import timetableService from "../services/timetableService";
 import { extractApiError, extractSolverDetails } from "../lib/apiError";
@@ -69,6 +70,8 @@ export default function TimetableGenerator() {
           </Button>
         }
       />
+
+      <GenerationSettingsPanel />
 
       <Card className="p-6 space-y-4 border shadow-sm max-w-3xl">
         {error && (
