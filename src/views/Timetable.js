@@ -140,7 +140,9 @@ export default function TimetableGenerator() {
             </ul>
             {classId && (
               <Button asChild variant="link" className="px-0 h-auto">
-                <Link to={`/preview`}>View weekly grid</Link>
+                <Link to={`/preview?classId=${encodeURIComponent(classId)}`}>
+                  View weekly grid
+                </Link>
               </Button>
             )}
           </div>

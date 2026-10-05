@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
@@ -72,6 +73,8 @@ function TimetableGrid({ entries, label }) {
 }
 
 export default function Preview1({ initialMode = "class" }) {
+  const [searchParams] = useSearchParams();
+  const requestedClassId = searchParams.get("classId");
   const [classes, setClasses] = useState([]);
   const [courses, setCourses] = useState([]);
   const [staffList, setStaffList] = useState([]);
@@ -84,6 +87,7 @@ export default function Preview1({ initialMode = "class" }) {
   const [courseError, setCourseError] = useState("");
   const [coursesLoading, setCoursesLoading] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [classesLoaded, setClassesLoaded] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -94,7 +98,8 @@ export default function Preview1({ initialMode = "class" }) {
         setClasses(c.classes || []);
         setStaffList(s.staff || []);
       })
-      .catch((e) => setError(extractApiError(e)));
+      .catch((e) => setError(extractApiError(e)))
+      .finally(() => setClassesLoaded(true));
   }, []);
 
   const loadCourses = useCallback(async () => {
@@ -114,31 +119,53 @@ export default function Preview1({ initialMode = "class" }) {
     loadCourses();
   }, [loadCourses]);
 
-  const load = async () => {
-    setLoading(true);
-    setError("");
+  const load = useCallback(
+    async ({ mode: selectedMode, classId: selectedClassId, staffId: selectedStaffId, courseId: selectedCourseId } = {}) => {
+      const activeMode = selectedMode ?? mode;
+      const activeClassId = selectedClassId ?? classId;
+      const activeStaffId = selectedStaffId ?? staffId;
+      const activeCourseId = selectedCourseId ?? courseId;
 
-    try {
-      let data;
+      setLoading(true);
+      setError("");
 
-      if (mode === "class") {
-        data = await timetableService.getByClass(Number(classId));
-      } else if (mode === "staff") {
-        data = await timetableService.getByStaff(Number(staffId));
-      } else if (mode === "course") {
-        data = await timetableService.getByCourse(Number(courseId));
-      } else {
-        data = await timetableService.getMyTimetable();
+      try {
+        let data;
+
+        if (activeMode === "class") {
+          data = await timetableService.getByClass(Number(activeClassId));
+        } else if (activeMode === "staff") {
+          data = await timetableService.getByStaff(Number(activeStaffId));
+        } else if (activeMode === "course") {
+          data = await timetableService.getByCourse(Number(activeCourseId));
+        } else {
+          data = await timetableService.getMyTimetable();
+        }
+
+        setEntries(data.timetables || []);
+      } catch (e) {
+        setError(extractApiError(e));
+        setEntries([]);
+      } finally {
+        setLoading(false);
       }
+    },
+    [classId, courseId, mode, staffId]
+  );
 
-      setEntries(data.timetables || []);
-    } catch (e) {
-      setError(extractApiError(e));
-      setEntries([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    if (!classesLoaded || !requestedClassId) return;
+
+    const matchingClass = classes.find(
+      (item) => String(item.id) === requestedClassId
+    );
+    if (!matchingClass) return;
+
+    const matchedClassId = String(matchingClass.id);
+    setMode("class");
+    setClassId(matchedClassId);
+    load({ mode: "class", classId: matchedClassId });
+  }, [classes, classesLoaded, load, requestedClassId]);
 
   const entriesByClass = useMemo(() => {
     const groups = new Map();
@@ -257,7 +284,7 @@ export default function Preview1({ initialMode = "class" }) {
             </div>
           ) : null}
 
-          <Button onClick={load} disabled={loadDisabled}>
+          <Button onClick={() => load()} disabled={loadDisabled}>
             {loading ? "Loading..." : "Load schedule"}
           </Button>
         </div>
