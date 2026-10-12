@@ -10,6 +10,7 @@ import moduleService from "../services/moduleService";
 import courseService from "../services/courseService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
+import { getCachedLookup } from "../lib/lookupCache";
 
 const TYPES = [
   { value: "core", label: "Core" },
@@ -37,8 +38,7 @@ export default function AddModule() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    courseService
-      .list({ limit: 100 })
+    getCachedLookup("courses:100", () => courseService.list({ limit: 100 }))
       .then((d) => setCourses(d.courses || []))
       .catch((e) => setError(extractApiError(e)));
   }, []);

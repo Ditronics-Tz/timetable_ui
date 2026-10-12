@@ -10,6 +10,7 @@ import courseService from "../services/courseService";
 import facultyService from "../services/facultyService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
+import { getCachedLookup } from "../lib/lookupCache";
 
 const empty = { name: "", faculty_id: "", description: "", level: "" };
 
@@ -22,8 +23,7 @@ export default function AddProgram() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    facultyService
-      .list({ limit: 100, offset: 0 })
+    getCachedLookup("faculties:100", () => facultyService.list({ limit: 100, offset: 0 }))
       .then((d) => setFaculties(d.faculties || []))
       .catch((e) => setError(extractApiError(e)));
   }, []);

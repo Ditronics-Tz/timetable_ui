@@ -6,7 +6,6 @@ import { Button } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
 import authService from "../../services/Authservice";
 import { extractApiError } from "../../lib/apiError";
 import { isAuthenticated } from "../../lib/auth";
@@ -60,17 +59,12 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="text-center auth-heading-enter">
           <h2 className="mt-6 text-center text-5xl font-bold text-white tracking-tight">
             SACAS
           </h2>
           <p className="mt-2 text-center text-xl text-gray-300">Timetable Generator</p>
-        </motion.div>
+        </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

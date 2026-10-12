@@ -9,6 +9,7 @@ import classService from "../services/classService";
 import courseService from "../services/courseService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
+import { getCachedLookup } from "../lib/lookupCache";
 
 const empty = {
   name: "",
@@ -27,8 +28,7 @@ export default function AddClass() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    courseService
-      .list({ limit: 100 })
+    getCachedLookup("courses:100", () => courseService.list({ limit: 100 }))
       .then((d) => setCourses(d.courses || []))
       .catch((e) => setError(extractApiError(e)));
   }, []);

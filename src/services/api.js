@@ -1,6 +1,8 @@
 import axios from "axios";
 import { getToken, clearAuth } from "../lib/auth";
 import { extractApiError } from "../lib/apiError";
+import { clearLookupCache } from "../lib/lookupCache";
+import { invalidatePaginatedListCache } from "../lib/paginatedListCache";
 
 function resolveBaseURL() {
   const url = import.meta.env?.VITE_API_URL;
@@ -57,11 +59,6 @@ export async function ensureCsrfToken() {
   return csrfBootstrap;
 }
 
-// Eager bootstrap on module load (non-blocking). Skip under Vitest/jsdom (no backend).
-if (typeof window !== "undefined" && !import.meta.env?.VITEST && import.meta.env?.MODE !== "test") {
-  ensureCsrfToken().catch(() => {});
-}
-
 api.interceptors.request.use(
   async (config) => {
     const token = getToken();
@@ -96,6 +93,11 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
+    const method = String(response.config?.method || "get").toLowerCase();
+    if (["post", "put", "patch", "delete"].includes(method)) {
+      clearLookupCache();
+      invalidatePaginatedListCache();
+    }
     const headerToken =
       response.headers?.["x-csrf-token"] || response.headers?.["X-CSRF-Token"];
     if (headerToken) {

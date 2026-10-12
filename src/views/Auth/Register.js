@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { Card } from "../../components/ui/card"
 import { Input } from "../../components/ui/input"
 import { Button } from "../../components/ui/button"
@@ -105,27 +104,17 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="text-center auth-heading-enter">
           <h2 className="mt-6 text-center text-5xl font-bold text-white tracking-tight">
             SACAS
           </h2>
           <p className="mt-2 text-center text-xl text-gray-300">
             Timetable Generator
           </p>
-        </motion.div>
-        <motion.div
-          className="mt-2 text-center text-sm text-gray-400"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-        >
+        </div>
+        <div className="mt-2 text-center text-sm text-gray-400 auth-subtitle-enter">
           Register to start using SACAS Timetable System 
-        </motion.div>
+        </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

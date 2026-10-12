@@ -9,6 +9,7 @@ import courseService from "../services/courseService";
 import staffService from "../services/staffService";
 import timetableService from "../services/timetableService";
 import { extractApiError } from "../lib/apiError";
+import { getCachedLookup } from "../lib/lookupCache";
 
 const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday"];
 const SLOTS = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
@@ -91,8 +92,8 @@ export default function Preview1({ initialMode = "class" }) {
 
   useEffect(() => {
     Promise.all([
-      classService.list({ limit: 100 }),
-      staffService.list({ limit: 100 }),
+      getCachedLookup("classes:100", () => classService.list({ limit: 100 })),
+      getCachedLookup("staff:100", () => staffService.list({ limit: 100 })),
     ])
       .then(([c, s]) => {
         setClasses(c.classes || []);

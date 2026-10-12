@@ -10,6 +10,7 @@ import staffService from "../services/staffService";
 import facultyService from "../services/facultyService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
+import { getCachedLookup } from "../lib/lookupCache";
 
 const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
@@ -35,8 +36,7 @@ export default function AddStaff() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    facultyService
-      .list({ limit: 100 })
+    getCachedLookup("faculties:100", () => facultyService.list({ limit: 100 }))
       .then((d) => setFaculties(d.faculties || []))
       .catch((e) => setError(extractApiError(e)));
   }, []);

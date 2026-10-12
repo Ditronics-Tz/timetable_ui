@@ -3,6 +3,29 @@
   background-image: linear-gradient(to bottom right, #111827, #000000);
 }
 
+.auth-heading-enter {
+  animation: auth-heading-enter 500ms ease-out both;
+}
+
+.auth-subtitle-enter {
+  animation: auth-subtitle-enter 500ms ease-out 500ms both;
+}
+
+@keyframes auth-heading-enter {
+  from { opacity: 0; transform: translateY(-50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes auth-subtitle-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-heading-enter,
+  .auth-subtitle-enter { animation: none; }
+}
+
 /* Card animations */
 .card-enter {
   opacity: 0;
