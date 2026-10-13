@@ -1,49 +1,60 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./views/Dashboard";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
 import RequireRole from "./components/RequireRole";
 import { ToastProvider } from "./components/Toast";
-import Preview1 from "./views/Preview1";
-import AddRooms from "./views/AddRooms";
-import ViewRooms from "./views/ViewRooms";
-import RoomManagement from "./views/ManageRooms";
-import AddClass from "./views/AddClass";
-import ViewClass from "./views/ViewClass";
-import ManageClass from "./views/ManageClass";
 import Login from "./views/Auth/Login";
-import Register from "./views/Auth/Register";
-import VerifyEmail from "./views/Auth/VerifyEmail";
-import ForgotPassword from "./views/Auth/ForgotPassword";
-import ResetPassword from "./views/Auth/ResetPassword";
-import AddModule from "./views/AddModule";
-import ViewModule from "./views/ViewModule";
-import ManageModule from "./views/ManageModule";
-import AddSubject from "./views/AddSubject";
-import ViewSubjects from "./views/ViewSubjects";
-import ManageSubjects from "./views/ManageSubjects";
-import ViewStaff from "./views/ViewStaff";
-import ManageStaff from "./views/ManageStaff";
-import AddStaff from "./views/AddStaff";
-import AddProgram from "./views/AddProgram";
-import ViewProgram from "./views/ViewProgram";
-import ManageProgram from "./views/ManageProgram";
-import AddDepartment from "./views/AddDepartment";
-import ManageDepartments from "./views/ManageDepartment";
-import ViewDepartments from "./views/ViewDepartment";
-import ViewAllocations from "./views/ViewAllocations";
-import ModuleAllocations from "./views/ModuleAllocations";
-import TimetableGenerator from "./views/Timetable";
-import SettingsPage from "./views/Settings";
-import MySchedule from "./views/MySchedule";
-import RegisterInstitution from "./views/Auth/RegisterInstitution";
-import AddMembers from "./views/AddMembers";
-import ViewMembers from "./views/ViewMembers";
-import ManageMembers from "./views/ManageMembers";
-import SuperAdminConsole from "./views/SuperAdminConsole";
-import AnalyticsDashboard from "./views/AnalyticsDashboard";
+
+const Dashboard = lazy(() => import("./views/Dashboard"));
+const Preview1 = lazy(() => import("./views/Preview1"));
+const AddRooms = lazy(() => import("./views/AddRooms"));
+const ViewRooms = lazy(() => import("./views/ViewRooms"));
+const RoomManagement = lazy(() => import("./views/ManageRooms"));
+const AddClass = lazy(() => import("./views/AddClass"));
+const ViewClass = lazy(() => import("./views/ViewClass"));
+const ManageClass = lazy(() => import("./views/ManageClass"));
+const Register = lazy(() => import("./views/Auth/Register"));
+const RegisterInstitution = lazy(() => import("./views/Auth/RegisterInstitution"));
+const VerifyEmail = lazy(() => import("./views/Auth/VerifyEmail"));
+const ForgotPassword = lazy(() => import("./views/Auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("./views/Auth/ResetPassword"));
+const AddModule = lazy(() => import("./views/AddModule"));
+const ViewModule = lazy(() => import("./views/ViewModule"));
+const ManageModule = lazy(() => import("./views/ManageModule"));
+const AddSubject = lazy(() => import("./views/AddSubject"));
+const ViewSubjects = lazy(() => import("./views/ViewSubjects"));
+const ManageSubjects = lazy(() => import("./views/ManageSubjects"));
+const ViewStaff = lazy(() => import("./views/ViewStaff"));
+const ManageStaff = lazy(() => import("./views/ManageStaff"));
+const AddStaff = lazy(() => import("./views/AddStaff"));
+const AddProgram = lazy(() => import("./views/AddProgram"));
+const ViewProgram = lazy(() => import("./views/ViewProgram"));
+const ManageProgram = lazy(() => import("./views/ManageProgram"));
+const AddDepartment = lazy(() => import("./views/AddDepartment"));
+const ManageDepartments = lazy(() => import("./views/ManageDepartment"));
+const ViewDepartments = lazy(() => import("./views/ViewDepartment"));
+const ViewAllocations = lazy(() => import("./views/ViewAllocations"));
+const ModuleAllocations = lazy(() => import("./views/ModuleAllocations"));
+const TimetableGenerator = lazy(() => import("./views/Timetable"));
+const SettingsPage = lazy(() => import("./views/Settings"));
+const MySchedule = lazy(() => import("./views/MySchedule"));
+const AddMembers = lazy(() => import("./views/AddMembers"));
+const ViewMembers = lazy(() => import("./views/ViewMembers"));
+const ManageMembers = lazy(() => import("./views/ManageMembers"));
+const SuperAdminConsole = lazy(() => import("./views/SuperAdminConsole"));
+const AnalyticsDashboard = lazy(() => import("./views/AnalyticsDashboard"));
+
+function RouteLoading() {
+  return (
+    <main className="min-h-[50vh] p-6" role="status" aria-label="Loading page">
+      <div className="mb-6 h-8 w-56 animate-pulse rounded bg-slate-200" />
+      <div className="h-40 animate-pulse rounded-lg border bg-slate-100" />
+      <span className="sr-only">Loading page…</span>
+    </main>
+  );
+}
 
 const AdminOnly = ({ children }) => (
   <RequireRole allow={["administrator", "super_admin"]}>{children}</RequireRole>
@@ -116,16 +127,18 @@ function App() {
   return (
     <ToastProvider>
       <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/register-institution" element={<RegisterInstitution />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/*" element={<AppShell />} />
-        </Routes>
+        <Suspense fallback={<RouteLoading />}>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/register-institution" element={<RegisterInstitution />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/*" element={<AppShell />} />
+          </Routes>
+        </Suspense>
       </Router>
     </ToastProvider>
   );

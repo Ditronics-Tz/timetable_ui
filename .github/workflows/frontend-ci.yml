@@ -25,8 +25,16 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Run tests, including the admin route RBAC integration test
+      - name: Run tests
         run: npm test -- --maxWorkers=2 --minWorkers=1
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Build production frontend
         run: npm run build
+        env:
+          VITE_API_URL: https://api.example.invalid/api
+
+      - name: Enforce entry bundle budget
+        run: npm run check:performance

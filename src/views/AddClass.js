@@ -10,6 +10,7 @@ import classService from "../services/classService";
 import courseService from "../services/courseService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
+import { getCachedLookup } from "../lib/lookupCache";
 
 const empty = {
   name: "",
@@ -31,9 +32,9 @@ export default function AddClass() {
 
   const loadCourses = useCallback(async () => {
     setCoursesLoading(true);
-    setCoursesError("");
+    setCoursesError('');
     try {
-      const data = await courseService.list({ limit: 100 });
+      const data = await getCachedLookup('courses:100', () => courseService.list({ limit: 100 }));
       setCourses(data.courses || []);
     } catch (err) {
       setCoursesError(extractApiError(err));
@@ -176,3 +177,5 @@ export default function AddClass() {
     </div>
   );
 }
+
+\n

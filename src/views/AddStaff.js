@@ -11,6 +11,7 @@ import staffService from "../services/staffService";
 import facultyService from "../services/facultyService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
+import { getCachedLookup } from "../lib/lookupCache";
 
 const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
@@ -39,9 +40,9 @@ export default function AddStaff() {
 
   const loadFaculties = useCallback(async () => {
     setFacultiesLoading(true);
-    setFacultiesError("");
+    setFacultiesError('');
     try {
-      const data = await facultyService.list({ limit: 100 });
+      const data = await getCachedLookup('faculties:100', () => facultyService.list({ limit: 100 }));
       setFaculties(data.faculties || []);
     } catch (err) {
       setFacultiesError(extractApiError(err));
@@ -250,3 +251,5 @@ export default function AddStaff() {
     </div>
   );
 }
+
+\n

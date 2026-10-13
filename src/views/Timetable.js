@@ -8,6 +8,7 @@ import GenerationSettingsPanel from "../components/GenerationSettingsPanel";
 import classService from "../services/classService";
 import timetableService from "../services/timetableService";
 import { extractApiError, extractSolverDetails } from "../lib/apiError";
+import { getCachedLookup } from "../lib/lookupCache";
 
 /**
  * Timetable generate + preview only.
@@ -23,8 +24,7 @@ export default function TimetableGenerator() {
   const [unsat, setUnsat] = useState([]);
 
   useEffect(() => {
-    classService
-      .list({ limit: 100 })
+    getCachedLookup("classes:100", () => classService.list({ limit: 100 }))
       .then((c) => setClasses(c.classes || []))
       .catch((e) => setError(extractApiError(e)));
   }, []);

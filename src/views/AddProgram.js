@@ -11,6 +11,7 @@ import courseService from "../services/courseService";
 import facultyService from "../services/facultyService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
+import { getCachedLookup } from "../lib/lookupCache";
 
 const empty = { name: "", faculty_id: "", description: "", level: "" };
 
@@ -26,9 +27,9 @@ export default function AddProgram() {
 
   const loadFaculties = useCallback(async () => {
     setFacultiesLoading(true);
-    setFacultiesError("");
+    setFacultiesError('');
     try {
-      const data = await facultyService.list({ limit: 100, offset: 0 });
+      const data = await getCachedLookup('faculties:100', () => facultyService.list({ limit: 100, offset: 0 }));
       setFaculties(data.faculties || []);
     } catch (err) {
       setFacultiesError(extractApiError(err));
@@ -152,3 +153,5 @@ export default function AddProgram() {
     </div>
   );
 }
+
+\n

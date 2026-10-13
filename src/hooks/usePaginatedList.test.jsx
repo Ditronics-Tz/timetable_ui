@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import usePaginatedList from "./usePaginatedList";
+import { invalidatePaginatedListCache } from "../lib/paginatedListCache";
 
 function ListProbe({ fetchFn }) {
   const { items, loading, error } = usePaginatedList(fetchFn, "rooms");
@@ -14,6 +15,8 @@ function ListProbe({ fetchFn }) {
 }
 
 describe("usePaginatedList loading lifecycle", () => {
+  afterEach(() => invalidatePaginatedListCache("rooms"));
+
   it("starts in loading state before the first request resolves", async () => {
     let resolveRequest;
     const fetchFn = vi.fn(

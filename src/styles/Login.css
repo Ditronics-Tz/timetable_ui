@@ -1,4 +1,17 @@
 /* Background and container styles */
+.auth-heading-enter {
+  animation: auth-heading-enter 500ms ease-out both;
+}
+
+@keyframes auth-heading-enter {
+  from { opacity: 0; transform: translateY(-50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-heading-enter { animation: none; }
+}
+
 .min-h-screen {
   background-image: linear-gradient(to bottom right, #1a1a1a, #000000);
   background-attachment: fixed;

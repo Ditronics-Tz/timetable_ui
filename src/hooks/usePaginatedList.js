@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { extractApiError } from "../lib/apiError";
+import {
+  getCachedList,
+  setCachedList,
+} from "../lib/paginatedListCache";
 
 /**
  * Shared list/pagination hook.
@@ -10,29 +14,36 @@ import { extractApiError } from "../lib/apiError";
 export function usePaginatedList(fetchFn, itemsKey, options = {}) {
   const pageSize = options.pageSize ?? 10;
   const autoLoad = options.autoLoad !== false;
+  const initialCache = getCachedList(itemsKey, pageSize, 0);
 
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => {
+    return initialCache?.items ?? [];
+  });
   const [limit, setLimit] = useState(pageSize);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(autoLoad);
   const [error, setError] = useState("");
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(() => initialCache?.hasMore ?? true);
 
   const load = useCallback(
     async (nextOffset = offset, nextLimit = limit) => {
       setLoading(true);
       setError("");
+      const cached = getCachedList(itemsKey, nextLimit, nextOffset);
+      if (cached) setItems(cached.items);
       try {
         const data = await fetchFn({ limit: nextLimit, offset: nextOffset });
         const list = data?.[itemsKey] ?? [];
-        setItems(Array.isArray(list) ? list : []);
+        const safeList = Array.isArray(list) ? list : [];
+        setItems(safeList);
+        setCachedList(itemsKey, nextLimit, nextOffset, safeList, safeList.length >= nextLimit);
         setOffset(nextOffset);
         setLimit(nextLimit);
         setHasMore(Array.isArray(list) && list.length >= nextLimit);
         return data;
       } catch (err) {
         setError(extractApiError(err));
-        setItems([]);
+        if (!cached) setItems([]);
         throw err;
       } finally {
         setLoading(false);
@@ -56,10 +67,13 @@ export function usePaginatedList(fetchFn, itemsKey, options = {}) {
 
   useEffect(() => {
     if (autoLoad) {
-      load(0, pageSize).catch(() => {});
+      const cache = getCachedList(itemsKey, pageSize, 0);
+      if (!cache?.fresh) {
+        load(0, pageSize).catch(() => {});
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [autoLoad, itemsKey, load, pageSize]);
 
   return {
     items,
