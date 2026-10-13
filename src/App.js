@@ -16,6 +16,7 @@ const AddClass = lazy(() => import("./views/AddClass"));
 const ViewClass = lazy(() => import("./views/ViewClass"));
 const ManageClass = lazy(() => import("./views/ManageClass"));
 const Register = lazy(() => import("./views/Auth/Register"));
+const RegisterInstitution = lazy(() => import("./views/Auth/RegisterInstitution"));
 const VerifyEmail = lazy(() => import("./views/Auth/VerifyEmail"));
 const ForgotPassword = lazy(() => import("./views/Auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("./views/Auth/ResetPassword"));
@@ -39,6 +40,11 @@ const ModuleAllocations = lazy(() => import("./views/ModuleAllocations"));
 const TimetableGenerator = lazy(() => import("./views/Timetable"));
 const SettingsPage = lazy(() => import("./views/Settings"));
 const MySchedule = lazy(() => import("./views/MySchedule"));
+const AddMembers = lazy(() => import("./views/AddMembers"));
+const ViewMembers = lazy(() => import("./views/ViewMembers"));
+const ManageMembers = lazy(() => import("./views/ManageMembers"));
+const SuperAdminConsole = lazy(() => import("./views/SuperAdminConsole"));
+const AnalyticsDashboard = lazy(() => import("./views/AnalyticsDashboard"));
 
 function RouteLoading() {
   return (
@@ -53,6 +59,9 @@ function RouteLoading() {
 const AdminOnly = ({ children }) => (
   <RequireRole allow={["administrator", "super_admin"]}>{children}</RequireRole>
 );
+const SuperAdminOnly = ({ children }) => (
+  <RequireRole allow={["super_admin"]}>{children}</RequireRole>
+);
 
 function AppShell() {
   return (
@@ -62,6 +71,15 @@ function AppShell() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/my-schedule" element={<MySchedule />} />
+          <Route path="/members/add" element={<AdminOnly><AddMembers /></AdminOnly>} />
+          <Route path="/members/view" element={<AdminOnly><ViewMembers /></AdminOnly>} />
+          <Route path="/members/manage" element={<AdminOnly><ManageMembers /></AdminOnly>} />
+          <Route path="/analytics" element={<AdminOnly><AnalyticsDashboard /></AdminOnly>} />
+          <Route path="/superadmin/institutions" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
+          <Route path="/superadmin/users" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
+          <Route path="/superadmin/stats" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
+          <Route path="/superadmin/generation-settings" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
+          <Route path="/superadmin/audit" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
 
           <Route path="/preview" element={<AdminOnly><Preview1 /></AdminOnly>} />
           <Route path="/course-preview" element={<AdminOnly><Preview1 initialMode="course" /></AdminOnly>} />
@@ -114,6 +132,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/register-institution" element={<RegisterInstitution />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />

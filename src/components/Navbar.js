@@ -19,7 +19,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { getCurrentUser, isAdmin } from "../lib/auth";
+import { getCurrentUser, getRole, isAdmin } from "../lib/auth";
 import authService from "../services/Authservice";
 
 function NavDropdown({ label, icon: Icon, base, expanded, setExpanded, activePage, items, collapsed }) {
@@ -70,6 +70,7 @@ export default function Navbar({
   const activePage = location.pathname.replace(/^\//, "");
   const user = getCurrentUser();
   const admin = isAdmin();
+  const superAdmin = getRole() === "super_admin";
 
   const [isRoomsExpanded, setIsRoomsExpanded] = useState(false);
   const [isModulesExpanded, setIsModulesExpanded] = useState(false);
@@ -269,6 +270,19 @@ export default function Navbar({
                 { to: "/allocations/view", label: "View Allocations" },
               ]}
             />
+
+            <Link to="/members/view" className={`sidebar-item ${activePage.startsWith("members") ? "is-active" : ""}`}>
+              <Users size={20} aria-hidden />
+              <span className="label">Members</span>
+            </Link>
+            <Link to="/analytics" className={`sidebar-item ${activePage === "analytics" ? "is-active" : ""}`}>
+              <FileSpreadsheet size={20} aria-hidden />
+              <span className="label">Analytics</span>
+            </Link>
+            {superAdmin && <Link to="/superadmin/institutions" className={`sidebar-item ${activePage.startsWith("superadmin") ? "is-active" : ""}`}>
+              <Building2 size={20} aria-hidden />
+              <span className="label">Super admin</span>
+            </Link>}
           </>
         )}
 
