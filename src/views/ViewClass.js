@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { Card } from "../components/ui/card";
 import DataTable from "../components/DataTable";
 import { Button } from "../components/ui/button";
+import PageHeader from "../components/PageHeader";
 import {
   Table,
   TableBody,
@@ -19,14 +20,21 @@ export default function ViewClass() {
     usePaginatedList(fetchFn, "classes");
 
   return (
-    <div className="p-6">
-      <Card className="p-6 space-y-4">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold">View Classes</h1>
+    <div className="space-y-6">
+      <PageHeader
+        title="View classes"
+        crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
+          { label: "Classes", to: "/classes/view" },
+          { label: "View" },
+        ]}
+        actions={
           <Button variant="outline" onClick={refetch}>
             Refresh
           </Button>
-        </div>
+        }
+      />
+      <Card className="p-6 space-y-4">
         <DataTable
           loading={loading}
           error={error}

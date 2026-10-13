@@ -6,7 +6,6 @@ import { Button } from "../components/ui/button";
 import authService from "../services/Authservice";
 import { extractApiError } from "../lib/apiError";
 import { getCurrentUser } from "../lib/auth";
-import "../styles/Settings.css";
 
 /**
  * Account settings — wired to real profile / change-password APIs.
@@ -72,7 +71,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="settings-page p-6 space-y-6">
+    <div className="min-h-screen bg-gray-50 p-6 space-y-6">
       <h1 className="text-3xl font-bold">Settings</h1>
       <p className="text-sm text-gray-500">
         Account settings for the signed-in user. Admin coordinator/role management

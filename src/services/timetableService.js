@@ -39,6 +39,10 @@ export const timetableService = {
     return api.get(`${base}/by-staff/${staffId}`).then((r) => r.data);
   },
 
+  getByCourse(courseId) {
+    return api.get(`${base}/by-course/${courseId}`).then((r) => r.data);
+  },
+
   getMyTimetable() {
     return api.get(`${base}/my`).then((r) => r.data);
   },

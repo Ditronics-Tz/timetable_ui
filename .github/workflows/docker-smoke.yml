@@ -1,0 +1,47 @@
+name: Frontend Docker smoke
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-serve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Build frontend image
+        run: docker build --build-arg VITE_API_URL=http://localhost:8080/api --tag sacas-ui:smoke .
+
+      - name: Verify root and deep routes are served by Nginx
+        shell: bash
+        run: |
+          docker run --detach --rm --name sacas-ui-smoke --publish 127.0.0.1:18080:80 sacas-ui:smoke
+          trap 'docker stop sacas-ui-smoke >/dev/null 2>&1 || true' EXIT
+
+          ready=false
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:18080/ >/dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" != true ]; then
+            echo "Frontend container did not become ready" >&2
+            exit 1
+          fi
+
+          for route in / /rooms/manage; do
+            body=$(curl --fail --silent "http://127.0.0.1:18080$route")
+            printf '%s' "$body" | grep -q '<div id="root"></div>' || {
+              echo "Expected SPA entry page at $route" >&2
+              exit 1
+            }
+            echo "PASS $route"
+          done

@@ -4,6 +4,7 @@ import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import PageHeader from "../components/PageHeader";
+import GenerationSettingsPanel from "../components/GenerationSettingsPanel";
 import classService from "../services/classService";
 import timetableService from "../services/timetableService";
 import { extractApiError, extractSolverDetails } from "../lib/apiError";
@@ -69,6 +70,8 @@ export default function TimetableGenerator() {
           </Button>
         }
       />
+
+      <GenerationSettingsPanel />
 
       <Card className="p-6 space-y-4 border shadow-sm max-w-3xl">
         {error && (
@@ -137,7 +140,9 @@ export default function TimetableGenerator() {
             </ul>
             {classId && (
               <Button asChild variant="link" className="px-0 h-auto">
-                <Link to={`/preview`}>View weekly grid</Link>
+                <Link to={`/preview?classId=${encodeURIComponent(classId)}`}>
+                  View weekly grid
+                </Link>
               </Button>
             )}
           </div>

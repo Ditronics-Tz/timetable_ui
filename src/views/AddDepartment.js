@@ -55,11 +55,12 @@ export default function AddDepartment() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <PageHeader
         title="Add department"
         subtitle="Maps to backend Faculty"
         crumbs={[
+          { label: "Dashboard", to: "/dashboard" },
           { label: "Departments", to: "/departments/view" },
           { label: "Add" },
         ]}

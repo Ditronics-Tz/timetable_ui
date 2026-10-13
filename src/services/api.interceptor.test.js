@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { clearAuth, setAuth, getToken } from "../lib/auth";
 
 // Test 401 handling via the same clearAuth path the interceptor uses
@@ -19,11 +19,16 @@ describe("401 auth clear behavior", () => {
 });
 
 describe("api module loads without localhost hardcode when VITE set", () => {
-  it("imports api client", async () => {
-    // In vitest, import.meta.env.DEV is true and VITE_API_URL may be set via .env
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it("uses the configured API URL", async () => {
+    vi.stubEnv("VITE_API_URL", "https://api.example.test/api/");
+    vi.resetModules();
     const mod = await import("./api");
     expect(mod.default).toBeDefined();
-    expect(typeof mod.baseURL).toBe("string");
-    expect(mod.baseURL.includes("/api") || mod.baseURL.startsWith("http")).toBe(true);
-  }, 15000);
+    expect(mod.baseURL).toBe("https://api.example.test/api");
+  }, 15_000);
 });
