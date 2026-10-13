@@ -155,6 +155,10 @@ export default function Login() {
             <Link to="/register" className="font-medium text-black hover:underline">
               Register
             </Link>
+            <span className="mx-2 text-gray-400">|</span>
+            <Link to="/register-institution" className="font-medium text-black hover:underline">
+              Register an institution
+            </Link>
           </div>
         </Card>
       </div>

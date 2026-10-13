@@ -38,9 +38,18 @@ import ModuleAllocations from "./views/ModuleAllocations";
 import TimetableGenerator from "./views/Timetable";
 import SettingsPage from "./views/Settings";
 import MySchedule from "./views/MySchedule";
+import RegisterInstitution from "./views/Auth/RegisterInstitution";
+import AddMembers from "./views/AddMembers";
+import ViewMembers from "./views/ViewMembers";
+import ManageMembers from "./views/ManageMembers";
+import SuperAdminConsole from "./views/SuperAdminConsole";
+import AnalyticsDashboard from "./views/AnalyticsDashboard";
 
 const AdminOnly = ({ children }) => (
   <RequireRole allow={["administrator", "super_admin"]}>{children}</RequireRole>
+);
+const SuperAdminOnly = ({ children }) => (
+  <RequireRole allow={["super_admin"]}>{children}</RequireRole>
 );
 
 function AppShell() {
@@ -51,6 +60,15 @@ function AppShell() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/my-schedule" element={<MySchedule />} />
+          <Route path="/members/add" element={<AdminOnly><AddMembers /></AdminOnly>} />
+          <Route path="/members/view" element={<AdminOnly><ViewMembers /></AdminOnly>} />
+          <Route path="/members/manage" element={<AdminOnly><ManageMembers /></AdminOnly>} />
+          <Route path="/analytics" element={<AdminOnly><AnalyticsDashboard /></AdminOnly>} />
+          <Route path="/superadmin/institutions" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
+          <Route path="/superadmin/users" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
+          <Route path="/superadmin/stats" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
+          <Route path="/superadmin/generation-settings" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
+          <Route path="/superadmin/audit" element={<SuperAdminOnly><SuperAdminConsole /></SuperAdminOnly>} />
 
           <Route path="/preview" element={<AdminOnly><Preview1 /></AdminOnly>} />
           <Route path="/course-preview" element={<AdminOnly><Preview1 initialMode="course" /></AdminOnly>} />
@@ -102,6 +120,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/register-institution" element={<RegisterInstitution />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
