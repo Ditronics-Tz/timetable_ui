@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import PageHeader from "../components/PageHeader";
+import ListState from "../components/ListState";
 import classService from "../services/classService";
 import courseService from "../services/courseService";
 import { extractApiError } from "../lib/apiError";
@@ -26,12 +27,25 @@ export default function AddClass() {
   const [form, setForm] = useState(empty);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [coursesError, setCoursesError] = useState("");
+
+  const loadCourses = useCallback(async () => {
+    setCoursesLoading(true);
+    setCoursesError('');
+    try {
+      const data = await getCachedLookup('courses:100', () => courseService.list({ limit: 100 }));
+      setCourses(data.courses || []);
+    } catch (err) {
+      setCoursesError(extractApiError(err));
+    } finally {
+      setCoursesLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    getCachedLookup("courses:100", () => courseService.list({ limit: 100 }))
-      .then((d) => setCourses(d.courses || []))
-      .catch((e) => setError(extractApiError(e)));
-  }, []);
+    loadCourses();
+  }, [loadCourses]);
 
   const save = async (addAnother) => {
     setLoading(true);
@@ -70,6 +84,13 @@ export default function AddClass() {
             {error}
           </div>
         )}
+        <ListState
+          loading={coursesLoading}
+          error={coursesError}
+          isEmpty={!coursesLoading && !coursesError && courses.length === 0}
+          emptyMessage="No programs are available. Add a program first."
+          onRetry={loadCourses}
+        />
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -92,6 +113,7 @@ export default function AddClass() {
             <select
               id="course_id"
               className="w-full border rounded-md h-10 px-2 bg-white"
+              disabled={coursesLoading || !!coursesError || courses.length === 0}
               required
               value={form.course_id}
               onChange={(e) => setForm({ ...form, course_id: e.target.value })}
@@ -140,10 +162,10 @@ export default function AddClass() {
             />
           </div>
           <div className="flex flex-wrap gap-2 pt-2">
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || coursesLoading || !!coursesError || courses.length === 0}>
               {loading ? "Saving…" : "Create class"}
             </Button>
-            <Button type="button" variant="outline" disabled={loading} onClick={() => save(true)}>
+            <Button type="button" variant="outline" disabled={loading || coursesLoading || !!coursesError || courses.length === 0} onClick={() => save(true)}>
               Save and add another
             </Button>
             <Button type="button" variant="ghost" onClick={() => navigate("/classes/view")}>
@@ -155,3 +177,5 @@ export default function AddClass() {
     </div>
   );
 }
+
+\n
