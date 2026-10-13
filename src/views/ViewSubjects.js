@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { Card } from "../components/ui/card";
+import DataTable from "../components/DataTable";
 import { Button } from "../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import subjectService from "../services/subjectService";
@@ -16,15 +17,20 @@ export default function ViewSubjects() {
           <h1 className="text-2xl font-bold">View Subjects</h1>
           <Button variant="outline" onClick={refetch}>Refresh</Button>
         </div>
-        {error && <div role="alert" className="text-red-600 text-sm">{error}</div>}
-        {loading ? <p>Loading...</p> : items.length === 0 ? <p className="text-gray-500">No subjects yet.</p> : (
+        <DataTable
+          loading={loading}
+          error={error}
+          isEmpty={items.length === 0}
+          emptyMessage="No subjects yet."
+          onRetry={refetch}
+        >
           <Table>
             <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Credit hours</TableHead></TableRow></TableHeader>
             <TableBody>{items.map((subject) => (
               <TableRow key={subject.id}><TableCell>{subject.name}</TableCell><TableCell>{subject.credit_hours}</TableCell></TableRow>
             ))}</TableBody>
           </Table>
-        )}
+        </DataTable>
         <div className="flex gap-2 justify-end">
           <Button variant="outline" disabled={offset <= 0} onClick={prevPage}>Previous</Button>
           <Button variant="outline" disabled={!hasMore} onClick={nextPage}>Next</Button>

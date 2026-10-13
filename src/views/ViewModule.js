@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { Card } from "../components/ui/card";
+import DataTable from "../components/DataTable";
 import { Button } from "../components/ui/button";
 import PageHeader from "../components/PageHeader";
 import {
@@ -34,12 +35,13 @@ export default function ViewModule() {
         }
       />
       <Card className="p-6 space-y-4">
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-        {loading ? (
-          <p>Loading...</p>
-        ) : items.length === 0 ? (
-          <p className="text-gray-500">No modules yet.</p>
-        ) : (
+        <DataTable
+          loading={loading}
+          error={error}
+          isEmpty={items.length === 0}
+          emptyMessage="No modules yet."
+          onRetry={refetch}
+        >
           <Table>
             <TableHeader>
               <TableRow>
@@ -64,7 +66,7 @@ export default function ViewModule() {
               ))}
             </TableBody>
           </Table>
-        )}
+        </DataTable>
         <div className="flex gap-2 justify-end">
           <Button variant="outline" disabled={offset <= 0} onClick={prevPage}>
             Previous
