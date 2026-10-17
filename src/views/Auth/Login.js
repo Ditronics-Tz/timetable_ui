@@ -154,6 +154,38 @@ export default function Login() {
               Register an institution
             </Link>
           </div>
+
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
+              Demo Accounts (Password: <code className="text-gray-800">password</code>)
+            </p>
+            <div className="grid grid-cols-1 gap-1.5">
+              {[
+                { label: "Super Admin", email: "admin@example.com", role: "super_admin" },
+                { label: "Institution Admin", email: "instadmin@sacas.local", role: "administrator" },
+                { label: "Academic Coordinator", email: "academic@sacas.local", role: "academic_coordinator" },
+                { label: "Exam Coordinator", email: "exam@sacas.local", role: "exam_coordinator" },
+                { label: "Lecturer (Staff)", email: "lecturer@sacas.local", role: "user" },
+              ].map((acc) => (
+                <button
+                  key={acc.email}
+                  type="button"
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: acc.email,
+                      password: "password",
+                    }));
+                    if (error) setError("");
+                  }}
+                  className="flex items-center justify-between px-2.5 py-1.5 text-xs rounded border border-gray-200 hover:bg-gray-100 text-left transition-colors"
+                >
+                  <span className="font-medium text-gray-800">{acc.label}</span>
+                  <span className="text-gray-500 font-mono">{acc.email}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </Card>
       </div>
     </div>

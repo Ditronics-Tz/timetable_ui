@@ -5,6 +5,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import PageHeader from "../components/PageHeader";
+import CsvImport from "../components/CsvImport";
 import { useToast } from "../components/Toast";
 import { extractApiError } from "../lib/apiError";
 import subjectService from "../services/subjectService";
@@ -39,6 +40,11 @@ export default function AddSubject() {
   return (
     <div className="space-y-4">
       <PageHeader title="Add subject" crumbs={[{ label: "Subjects", to: "/subjects/view" }, { label: "Add" }]} />
+      <CsvImport
+        entity="subjects"
+        columns={["name", "code", "credit_hours", "description"]}
+        sampleRow={["Communication Skills", "GS101", "3", "General communication skills"]}
+      />
       <Card className="p-6 max-w-2xl border shadow-sm space-y-4">
         {error && <div role="alert" className="rounded-md bg-red-50 border border-red-200 text-red-700 text-sm p-3">{error}</div>}
         <form onSubmit={(event) => { event.preventDefault(); save(); }} className="space-y-4">

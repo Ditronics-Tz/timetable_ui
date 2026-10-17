@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Checkbox } from "../components/ui/checkbox";
 import PageHeader from "../components/PageHeader";
+import CsvImport from "../components/CsvImport";
 import roomService from "../services/roomService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
@@ -73,6 +74,33 @@ export default function AddRooms() {
           { label: "Dashboard", to: "/dashboard" },
           { label: "Rooms", to: "/rooms/view" },
           { label: "Add" },
+        ]}
+      />
+      <CsvImport
+        entity="rooms"
+        columns={[
+          "name",
+          "capacity",
+          "building",
+          "room_no",
+          "room_type",
+          "projector",
+          "lab",
+          "ac",
+          "whiteboard",
+          "computers",
+        ]}
+        sampleRow={[
+          "Lab 101",
+          "50",
+          "Block A",
+          "101",
+          "computer_lab",
+          "true",
+          "true",
+          "true",
+          "true",
+          "40",
         ]}
       />
       <Card className="p-6 max-w-2xl border shadow-sm space-y-4">

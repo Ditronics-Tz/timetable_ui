@@ -291,7 +291,7 @@ export default function Register() {
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 space-y-2">
               <Link 
                 to="/login" 
                 className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300"
@@ -300,6 +300,14 @@ export default function Register() {
                 Sign in
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Link>
+              <div className="flex flex-wrap justify-between gap-2 pt-2 text-xs text-gray-600">
+                <Link to="/register-institution" className="underline hover:text-gray-900">
+                  Register an institution
+                </Link>
+                <Link to="/accept-invitation" className="underline hover:text-gray-900">
+                  Accept an invitation
+                </Link>
+              </div>
             </div>
           </div>
         </Card>

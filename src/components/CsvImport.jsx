@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+import importService from "../services/importService";
+import { extractApiError } from "../lib/apiError";
 
 function parseCsv(text) {
   const rows = [];
@@ -43,12 +45,30 @@ function downloadText(name, content, type = "text/csv;charset=utf-8") {
   URL.revokeObjectURL(url);
 }
 
+function normalizeColumns(columns = []) {
+  return columns.map((col, idx) => {
+    if (typeof col === "string") {
+      const label =
+        col.charAt(0).toUpperCase() + col.slice(1).replaceAll("_", " ");
+      return {
+        key: col,
+        label,
+        required: idx === 0 || col === "name" || col === "email",
+      };
+    }
+    return col;
+  });
+}
+
 /** CSV upload with row validation, review, confirmation, and error report hooks. */
 export default function CsvImport({
-  columns,
-  templateName = "import-template.csv",
+  entity,
+  columns = [],
+  sampleRow,
+  templateName,
   onDryRun,
   onConfirm,
+  onSuccess,
 }) {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState([]);
@@ -56,7 +76,31 @@ export default function CsvImport({
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const template = columns.map((column) => column.key).join(",");
+  const normalizedColumns = useMemo(
+    () => normalizeColumns(columns),
+    [columns]
+  );
+
+  const resolvedTemplateName =
+    templateName || (entity ? `${entity}-template.csv` : "import-template.csv");
+
+  const template = useMemo(() => {
+    const headerLine = normalizedColumns.map((column) => column.key).join(",");
+    if (Array.isArray(sampleRow) && sampleRow.length > 0) {
+      return `${headerLine}\n${sampleRow.join(",")}`;
+    }
+    return headerLine;
+  }, [normalizedColumns, sampleRow]);
+
+  const effectiveConfirm =
+    onConfirm ||
+    (entity
+      ? async (mappedRows) => {
+          const result = await importService.importCsv(entity, mappedRows);
+          onSuccess?.(result);
+          return result;
+        }
+      : null);
 
   const selectFile = async (event) => {
     const file = event.target.files?.[0];
@@ -68,21 +112,40 @@ export default function CsvImport({
     setBusy(true);
     try {
       const parsed = parseCsv(await file.text());
-      if (parsed.length < 2) throw new Error("Add a header row and at least one data row.");
+      if (parsed.length < 2)
+        throw new Error("Add a header row and at least one data row.");
       const headers = parsed[0].map((header) => header.trim());
-      const missingHeaders = columns.filter((column) => !headers.includes(column.key));
+      const missingHeaders = normalizedColumns.filter(
+        (column) => column.required !== false && !headers.includes(column.key)
+      );
       if (missingHeaders.length) {
-        throw new Error(`Missing required columns: ${missingHeaders.map((item) => item.key).join(", ")}`);
+        throw new Error(
+          `Missing required columns: ${missingHeaders
+            .map((item) => item.key)
+            .join(", ")}`
+        );
       }
 
       const mapped = parsed.slice(1).map((values, index) => ({
         rowNumber: index + 2,
-        values: Object.fromEntries(headers.map((header, columnIndex) => [header, values[columnIndex] ?? ""])),
+        values: Object.fromEntries(
+          headers.map((header, columnIndex) => [
+            header,
+            values[columnIndex] ?? "",
+          ])
+        ),
       }));
       let validationErrors = mapped.flatMap(({ rowNumber, values }) =>
-        columns
-          .filter((column) => column.required && !String(values[column.key] ?? "").trim())
-          .map((column) => ({ row: rowNumber, field: column.key, message: `${column.label} is required.` }))
+        normalizedColumns
+          .filter(
+            (column) =>
+              column.required && !String(values[column.key] ?? "").trim()
+          )
+          .map((column) => ({
+            row: rowNumber,
+            field: column.key,
+            message: `${column.label} is required.`,
+          }))
       );
 
       if (onDryRun) {
@@ -91,9 +154,17 @@ export default function CsvImport({
       }
       setRows(mapped);
       setErrors(validationErrors);
-      setMessage(validationErrors.length ? "Review the row errors before importing." : `${mapped.length} rows are ready to import.`);
+      setMessage(
+        validationErrors.length
+          ? "Review the row errors before importing."
+          : `${mapped.length} rows are ready to import.`
+      );
     } catch (error) {
-      setMessage(error?.message || "The CSV file could not be read.");
+      setMessage(
+        extractApiError(error) ||
+          error?.message ||
+          "The CSV file could not be read."
+      );
     } finally {
       setBusy(false);
       event.target.value = "";
@@ -101,15 +172,21 @@ export default function CsvImport({
   };
 
   const confirmImport = async () => {
-    if (!rows.length || errors.length || !onConfirm) return;
+    if (!rows.length || errors.length || !effectiveConfirm) return;
     setBusy(true);
     setMessage("");
     try {
-      const result = await onConfirm(rows);
-      setMessage(result?.message || `${rows.length} rows imported successfully.`);
+      const result = await effectiveConfirm(rows);
+      setMessage(
+        result?.message || `${rows.length} rows imported successfully.`
+      );
       setRows([]);
     } catch (error) {
-      setMessage(error?.message || "The import could not be completed.");
+      setMessage(
+        extractApiError(error) ||
+          error?.message ||
+          "The import could not be completed."
+      );
     } finally {
       setBusy(false);
     }
@@ -117,7 +194,12 @@ export default function CsvImport({
 
   return (
     <div className="space-y-3">
-      <Button type="button" variant="outline" onClick={() => setOpen((value) => !value)} aria-expanded={open}>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+      >
         {open ? "Close CSV import" : "Upload CSV"}
       </Button>
       {open && (
@@ -125,24 +207,65 @@ export default function CsvImport({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="font-semibold">Import from CSV</h2>
-              <p className="text-sm text-slate-600">Download a template, select a file, review row errors, then confirm.</p>
+              <p className="text-sm text-slate-600">
+                Download a template, select a file, review row errors, then
+                confirm.
+              </p>
             </div>
-            <Button type="button" variant="outline" onClick={() => downloadText(templateName, `${template}\n`)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                downloadText(resolvedTemplateName, `${template}\n`)
+              }
+            >
               Download template
             </Button>
           </div>
           <label className="block space-y-2 text-sm font-medium">
             CSV file
-            <input type="file" accept=".csv,text/csv" onChange={selectFile} disabled={busy} className="block w-full rounded-md border p-2" />
+            <input
+              type="file"
+              accept=".csv,text/csv"
+              onChange={selectFile}
+              disabled={busy}
+              className="block w-full rounded-md border p-2"
+            />
           </label>
-          {message && <p className="text-sm" role="status">{message}</p>}
+          {message && (
+            <p className="text-sm" role="status">
+              {message}
+            </p>
+          )}
           {errors.length > 0 && (
             <div className="space-y-2" role="alert">
-              <h3 className="text-sm font-semibold text-red-700">Rows to fix ({errors.length})</h3>
+              <h3 className="text-sm font-semibold text-red-700">
+                Rows to fix ({errors.length})
+              </h3>
               <ul className="list-disc space-y-1 pl-5 text-sm text-red-700">
-                {errors.map((error, index) => <li key={`${error.row}-${error.field}-${index}`}>Row {error.row}, {error.field}: {error.message}</li>)}
+                {errors.map((error, index) => (
+                  <li key={`${error.row}-${error.field}-${index}`}>
+                    Row {error.row}, {error.field}: {error.message}
+                  </li>
+                ))}
               </ul>
-              <Button type="button" variant="outline" onClick={() => downloadText("import-errors.csv", `row,field,message\n${errors.map((error) => `${error.row},${error.field},"${String(error.message).replaceAll('"', '""')}"`).join("\n")}\n`)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  downloadText(
+                    "import-errors.csv",
+                    `row,field,message\n${errors
+                      .map(
+                        (error) =>
+                          `${error.row},${error.field},"${String(
+                            error.message
+                          ).replaceAll('"', '""')}"`
+                      )
+                      .join("\n")}\n`
+                  )
+                }
+              >
                 Download error report
               </Button>
             </div>
@@ -151,12 +274,38 @@ export default function CsvImport({
             <div className="space-y-3">
               <div className="overflow-x-auto rounded border">
                 <table className="min-w-full text-left text-sm">
-                  <thead className="bg-slate-50"><tr>{columns.map((column) => <th key={column.key} className="px-3 py-2">{column.label}</th>)}</tr></thead>
-                  <tbody>{rows.slice(0, 5).map((row) => <tr key={row.rowNumber} className="border-t">{columns.map((column) => <td key={column.key} className="px-3 py-2">{row.values[column.key]}</td>)}</tr>)}</tbody>
+                  <thead className="bg-slate-50">
+                    <tr>
+                      {normalizedColumns.map((column) => (
+                        <th key={column.key} className="px-3 py-2">
+                          {column.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.slice(0, 5).map((row) => (
+                      <tr key={row.rowNumber} className="border-t">
+                        {normalizedColumns.map((column) => (
+                          <td key={column.key} className="px-3 py-2">
+                            {row.values[column.key]}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </div>
-              {rows.length > 5 && <p className="text-xs text-slate-500">Showing the first 5 of {rows.length} rows.</p>}
-              <Button type="button" onClick={confirmImport} disabled={busy || errors.length > 0 || !onConfirm}>
+              {rows.length > 5 && (
+                <p className="text-xs text-slate-500">
+                  Showing the first 5 of {rows.length} rows.
+                </p>
+              )}
+              <Button
+                type="button"
+                onClick={confirmImport}
+                disabled={busy || errors.length > 0 || !effectiveConfirm}
+              >
                 {busy ? "Working…" : "Confirm import"}
               </Button>
             </div>

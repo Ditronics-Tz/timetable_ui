@@ -2,6 +2,33 @@ import api from "./api";
 
 const base = "/protected/timetable";
 
+export function buildIcalContent(entries = [], calendarName = "SACAS Timetable") {
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//SACAS//Timetable//EN",
+    `X-WR-CALNAME:${calendarName}`,
+  ];
+  entries.forEach((entry, index) => {
+    const title =
+      entry.module?.name ||
+      entry.subject?.name ||
+      `Module ${entry.module_id || entry.subject_id || index + 1}`;
+    const room = entry.room?.name || `Room ${entry.room_id || ""}`;
+    const staff = entry.staff?.name || `Staff ${entry.staff_id || ""}`;
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:sacas-${entry.id || index + 1}@sacas.local`,
+      `SUMMARY:${title} (${entry.day || ""} ${entry.start_time || ""})`,
+      `LOCATION:${room}`,
+      `DESCRIPTION:Lecturer: ${staff}\\nDay: ${entry.day || ""}\\nTime: ${entry.start_time || ""}-${entry.end_time || ""}`,
+      "END:VEVENT"
+    );
+  });
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n");
+}
+
 export const timetableService = {
   generate(classId) {
     return api
@@ -43,8 +70,43 @@ export const timetableService = {
     return api.get(`${base}/by-course/${courseId}`).then((r) => r.data);
   },
 
+  getByRoom(roomId) {
+    return api.get(`${base}/by-room/${roomId}`).then((r) => r.data);
+  },
+
   getMyTimetable() {
     return api.get(`${base}/my`).then((r) => r.data);
+  },
+
+  validateTimetable(params = {}) {
+    return api.get(`${base}/validate`, { params }).then((r) => r.data);
+  },
+
+  publishClassTimetable(classId) {
+    return api.post(`${base}/class/${classId}/publish`).then((r) => r.data);
+  },
+
+  approveClassTimetable(classId) {
+    return api.post(`${base}/class/${classId}/approve`).then((r) => r.data);
+  },
+
+  unpublishClassTimetable(classId) {
+    return api.post(`${base}/class/${classId}/unpublish`).then((r) => r.data);
+  },
+
+  createShareLink(classId) {
+    return api.post(`${base}/class/${classId}/share`).then((r) => r.data);
+  },
+
+  getPublicTimetable(token) {
+    return api
+      .get(`/public/timetable/${encodeURIComponent(token)}`)
+      .then((r) => r.data);
+  },
+
+  exportIcalUrl(params = {}) {
+    const search = new URLSearchParams(params).toString();
+    return `${base}/export/ical${search ? `?${search}` : ""}`;
   },
 };
 

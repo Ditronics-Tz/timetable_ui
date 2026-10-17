@@ -91,6 +91,16 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+let lastApiError = null;
+
+export function getLastApiError() {
+  return lastApiError;
+}
+
+export function clearLastApiError() {
+  lastApiError = null;
+}
+
 api.interceptors.response.use(
   (response) => {
     const method = String(response.config?.method || "get").toLowerCase();
@@ -112,6 +122,13 @@ api.interceptors.response.use(
     const status = error?.response?.status;
     const message = extractApiError(error);
     error.normalized = { status, message };
+    lastApiError = {
+      status: status || 0,
+      message,
+      url: error?.config?.url || "",
+      method: String(error?.config?.method || "get").toUpperCase(),
+      timestamp: new Date().toISOString(),
+    };
 
     // One retry after refreshing CSRF if server says token required
     const original = error.config;
@@ -147,3 +164,4 @@ api.interceptors.response.use(
 
 export default api;
 export { baseURL };
+

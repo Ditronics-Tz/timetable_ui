@@ -43,7 +43,7 @@ export default defineConfig({
           if (/\/node_modules\/(react-router|react-router-dom|@remix-run\/router)\//.test(id)) {
             return "router-vendor";
           }
-          if (/\/node_modules\/(?:@radix-ui|cmdk|react-day-picker)\//.test(id)) {
+          if (/\/node_modules\/(?:@radix-ui|cmdk|react-day-picker|lucide-react)\//.test(id)) {
             return "ui-vendor";
           }
           if (/\/node_modules\/(?:recharts|d3-[^/]+)\//.test(id)) {

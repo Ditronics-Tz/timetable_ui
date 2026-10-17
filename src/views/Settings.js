@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Card } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/button";
 import authService from "../services/Authservice";
 import { extractApiError } from "../lib/apiError";
-import { getCurrentUser } from "../lib/auth";
+import { can, getCurrentUser, getInstitution } from "../lib/auth";
 
 /**
  * Account settings — wired to real profile / change-password APIs.
@@ -18,6 +19,7 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [pw, setPw] = useState({ current_password: "", new_password: "", confirm: "" });
   const [saving, setSaving] = useState(false);
+  const institution = getInstitution();
 
   useEffect(() => {
     let cancelled = false;
@@ -72,11 +74,19 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 space-y-6">
-      <h1 className="text-3xl font-bold">Settings</h1>
-      <p className="text-sm text-gray-500">
-        Account settings for the signed-in user. Admin coordinator/role management
-        is not implemented as a separate product surface (use user admin APIs).
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-bold">Settings</h1>
+          <p className="text-sm text-gray-500">
+            Account settings for the signed-in user.
+          </p>
+        </div>
+        {can("institution:manage") && (
+          <Button asChild variant="outline">
+            <Link to="/institution/settings">Institution &amp; Schedule Settings</Link>
+          </Button>
+        )}
+      </div>
 
       {error && <div className="p-3 bg-red-50 text-red-700 rounded text-sm">{error}</div>}
       {message && <div className="p-3 bg-green-50 text-green-800 rounded text-sm">{message}</div>}
@@ -101,6 +111,12 @@ export default function SettingsPage() {
               <dt className="text-gray-500">Role</dt>
               <dd className="font-medium">{profile?.role || "—"}</dd>
             </div>
+            {institution?.name && (
+              <div>
+                <dt className="text-gray-500">Institution</dt>
+                <dd className="font-medium">{institution.name}</dd>
+              </div>
+            )}
           </dl>
         )}
       </Card>
@@ -147,3 +163,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

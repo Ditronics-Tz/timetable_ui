@@ -4,73 +4,44 @@ import { Card } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import PageHeader from "../components/PageHeader";
+import TimetableGrid from "../components/TimetableGrid";
 import classService from "../services/classService";
 import courseService from "../services/courseService";
 import staffService from "../services/staffService";
-import timetableService from "../services/timetableService";
+import roomService from "../services/roomService";
+import timetableService, { buildIcalContent } from "../services/timetableService";
 import { extractApiError } from "../lib/apiError";
 import { getCachedLookup } from "../lib/lookupCache";
 
-const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday"];
-const SLOTS = ["08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
-
-function cellLabel(entry) {
-  if (!entry) return "";
-  const subject =
-    entry.module?.name ||
-    entry.subject?.name ||
-    `M${entry.module_id || entry.subject_id}`;
-  const staff = entry.staff?.name || `S${entry.staff_id}`;
-  const room = entry.room?.name || `R${entry.room_id}`;
-  return `${subject}\n${staff}\n${room}`;
+function downloadBlob(filename, content, mimeType) {
+  if (typeof URL === "undefined" || !URL.createObjectURL) return;
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
-function TimetableGrid({ entries, label }) {
-  const grid = useMemo(() => {
-    const map = {};
-    for (const entry of entries) {
-      map[`${entry.day}|${entry.start_time}`] = entry;
-    }
-    return map;
-  }, [entries]);
-
-  return (
-    <table
-      aria-label={label}
-      className="w-full border-collapse text-xs md:text-sm"
-    >
-      <thead>
-        <tr>
-          <th className="border p-2 bg-gray-100">Time</th>
-          {DAYS.map((day) => (
-            <th key={day} className="border p-2 bg-gray-100 capitalize">
-              {day}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {SLOTS.map((slot) => (
-          <tr key={slot}>
-            <td className="border p-2 font-medium whitespace-nowrap">{slot}</td>
-            {DAYS.map((day) => {
-              const entry = grid[`${day}|${slot}`];
-              return (
-                <td
-                  key={day}
-                  className={`border p-2 align-top whitespace-pre-line ${
-                    entry ? "bg-blue-50" : ""
-                  }`}
-                >
-                  {cellLabel(entry)}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+function entriesToCsv(entries = []) {
+  const header = "Day,Start Time,End Time,Module/Subject,Lecturer,Room,Class";
+  const rows = entries.map((e) => {
+    const mod = e.module?.name || e.subject?.name || e.module_id || e.subject_id || "";
+    const staff = e.staff?.name || e.staff_id || "";
+    const room = e.room?.name || e.room_id || "";
+    const cls = e.class?.name || e.class_id || "";
+    return [
+      e.day || "",
+      e.start_time || "",
+      e.end_time || "",
+      `"${String(mod).replaceAll('"', '""')}"`,
+      `"${String(staff).replaceAll('"', '""')}"`,
+      `"${String(room).replaceAll('"', '""')}"`,
+      `"${String(cls).replaceAll('"', '""')}"`,
+    ].join(",");
+  });
+  return [header, ...rows].join("\n");
 }
 
 export default function Preview1({ initialMode = "class" }) {
@@ -79,16 +50,19 @@ export default function Preview1({ initialMode = "class" }) {
   const [classes, setClasses] = useState([]);
   const [courses, setCourses] = useState([]);
   const [staffList, setStaffList] = useState([]);
-  const [mode, setMode] = useState(initialMode); // class | staff | course | my
+  const [rooms, setRooms] = useState([]);
+  const [mode, setMode] = useState(initialMode); // class | staff | course | room | my
   const [classId, setClassId] = useState("");
   const [courseId, setCourseId] = useState("");
   const [staffId, setStaffId] = useState("");
+  const [roomId, setRoomId] = useState("");
   const [entries, setEntries] = useState([]);
   const [error, setError] = useState("");
   const [courseError, setCourseError] = useState("");
   const [coursesLoading, setCoursesLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [classesLoaded, setClassesLoaded] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   useEffect(() => {
     Promise.all([
@@ -108,7 +82,7 @@ export default function Preview1({ initialMode = "class" }) {
     setCourseError("");
     try {
       const courseData = await courseService.list({ limit: 100 });
-      setCourses(courseData.courses || []);
+      setCourses(courseData?.courses || []);
     } catch (e) {
       setCourseError(extractApiError(e));
     } finally {
@@ -120,15 +94,31 @@ export default function Preview1({ initialMode = "class" }) {
     loadCourses();
   }, [loadCourses]);
 
+  useEffect(() => {
+    if (mode !== "room" || rooms.length > 0) return;
+    roomService
+      .list?.({ limit: 100 })
+      ?.then((data) => setRooms(data?.rooms || []))
+      .catch(() => {});
+  }, [mode, rooms.length]);
+
   const load = useCallback(
-    async ({ mode: selectedMode, classId: selectedClassId, staffId: selectedStaffId, courseId: selectedCourseId } = {}) => {
+    async ({
+      mode: selectedMode,
+      classId: selectedClassId,
+      staffId: selectedStaffId,
+      courseId: selectedCourseId,
+      roomId: selectedRoomId,
+    } = {}) => {
       const activeMode = selectedMode ?? mode;
       const activeClassId = selectedClassId ?? classId;
       const activeStaffId = selectedStaffId ?? staffId;
       const activeCourseId = selectedCourseId ?? courseId;
+      const activeRoomId = selectedRoomId ?? roomId;
 
       setLoading(true);
       setError("");
+      setShareUrl("");
 
       try {
         let data;
@@ -139,6 +129,8 @@ export default function Preview1({ initialMode = "class" }) {
           data = await timetableService.getByStaff(Number(activeStaffId));
         } else if (activeMode === "course") {
           data = await timetableService.getByCourse(Number(activeCourseId));
+        } else if (activeMode === "room") {
+          data = await timetableService.getByRoom(Number(activeRoomId));
         } else {
           data = await timetableService.getMyTimetable();
         }
@@ -151,7 +143,7 @@ export default function Preview1({ initialMode = "class" }) {
         setLoading(false);
       }
     },
-    [classId, courseId, mode, staffId]
+    [classId, courseId, mode, roomId, staffId]
   );
 
   useEffect(() => {
@@ -175,7 +167,10 @@ export default function Preview1({ initialMode = "class" }) {
       if (!groups.has(id)) groups.set(id, []);
       groups.get(id).push(entry);
     }
-    return Array.from(groups, ([id, classEntries]) => ({ id, entries: classEntries }));
+    return Array.from(groups, ([id, classEntries]) => ({
+      id,
+      entries: classEntries,
+    }));
   }, [entries]);
 
   const loadDisabled =
@@ -186,7 +181,24 @@ export default function Preview1({ initialMode = "class" }) {
         ? !staffId
         : mode === "course"
           ? !courseId || coursesLoading || !!courseError
-          : false);
+          : mode === "room"
+            ? !roomId
+            : false);
+
+  const handleShareLink = async () => {
+    if (!classId) return;
+    try {
+      const res = await timetableService.createShareLink?.(Number(classId));
+      const token = res?.token || `class-${classId}`;
+      const origin =
+        typeof window !== "undefined" ? window.location.origin : "";
+      setShareUrl(`${origin}/public/timetable/${token}`);
+    } catch {
+      const origin =
+        typeof window !== "undefined" ? window.location.origin : "";
+      setShareUrl(`${origin}/public/timetable/class-${classId}`);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -199,8 +211,7 @@ export default function Preview1({ initialMode = "class" }) {
         ]}
       />
       <Card className="p-6 space-y-4 overflow-auto">
-
-        <div className="flex flex-wrap gap-3 items-end">
+        <div className="flex flex-wrap gap-3 items-end print:hidden">
           <div>
             <Label htmlFor="preview_mode">View by</Label>
 
@@ -212,11 +223,13 @@ export default function Preview1({ initialMode = "class" }) {
                 setMode(e.target.value);
                 setEntries([]);
                 setError("");
+                setShareUrl("");
               }}
             >
               <option value="class">Class</option>
               <option value="staff">Staff</option>
               <option value="course">Course</option>
+              <option value="room">Room</option>
               <option value="my">My Timetable</option>
             </select>
           </div>
@@ -265,7 +278,9 @@ export default function Preview1({ initialMode = "class" }) {
               <select
                 id="preview_course_id"
                 className="border rounded h-10 px-2 block min-w-[200px]"
-                disabled={coursesLoading || !!courseError || courses.length === 0}
+                disabled={
+                  coursesLoading || !!courseError || courses.length === 0
+                }
                 value={courseId}
                 onChange={(e) => setCourseId(e.target.value)}
               >
@@ -280,15 +295,96 @@ export default function Preview1({ initialMode = "class" }) {
                 <p className="mt-1 text-sm text-gray-500">Loading courses…</p>
               )}
               {!coursesLoading && !courseError && courses.length === 0 && (
-                <p className="mt-1 text-sm text-gray-500">No courses available.</p>
+                <p className="mt-1 text-sm text-gray-500">
+                  No courses available.
+                </p>
               )}
+            </div>
+          ) : mode === "room" ? (
+            <div>
+              <Label htmlFor="preview_room_id">Room</Label>
+              <select
+                id="preview_room_id"
+                className="border rounded h-10 px-2 block min-w-[200px]"
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value)}
+              >
+                <option value="">Select</option>
+                {rooms.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name}
+                  </option>
+                ))}
+              </select>
             </div>
           ) : null}
 
           <Button onClick={() => load()} disabled={loadDisabled}>
             {loading ? "Loading..." : "Load schedule"}
           </Button>
+
+          {entries.length > 0 && (
+            <div className="flex flex-wrap gap-2 ml-auto">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => window.print?.()}
+              >
+                Print / PDF
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  downloadBlob(
+                    "timetable.csv",
+                    entriesToCsv(entries),
+                    "text/csv;charset=utf-8"
+                  )
+                }
+              >
+                Export CSV
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  downloadBlob(
+                    "timetable.ics",
+                    buildIcalContent(entries),
+                    "text/calendar;charset=utf-8"
+                  )
+                }
+              >
+                Export iCal
+              </Button>
+              {mode === "class" && classId && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleShareLink}
+                >
+                  Share public link
+                </Button>
+              )}
+            </div>
+          )}
         </div>
+
+        {shareUrl && (
+          <div
+            role="status"
+            className="rounded-md border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900 flex flex-wrap items-center justify-between gap-2 print:hidden"
+          >
+            <span>
+              Public student link: <a href={shareUrl} className="underline font-mono">{shareUrl}</a>
+            </span>
+          </div>
+        )}
 
         {(error || (mode === "course" && courseError)) && (
           <div role="alert" className="text-red-600 text-sm">
@@ -313,17 +409,24 @@ export default function Preview1({ initialMode = "class" }) {
                 classes.find((item) => String(item.id) === id)?.name;
               return (
                 <section key={id} className="space-y-2">
-                  <h2 className="text-lg font-semibold">{className || `Class ${id}`}</h2>
+                  <h2 className="text-lg font-semibold">
+                    {className || `Class ${id}`}
+                  </h2>
                   <TimetableGrid
                     entries={classEntries}
                     label={`Timetable for ${className || `class ${id}`}`}
+                    showLegend
                   />
                 </section>
               );
             })}
           </div>
         ) : (
-          <TimetableGrid entries={entries} label="Timetable schedule" />
+          <TimetableGrid
+            entries={entries}
+            label="Timetable schedule"
+            showLegend={entries.length > 0}
+          />
         )}
 
         {!loading && entries.length === 0 && (

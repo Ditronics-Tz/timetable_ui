@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Checkbox } from "../components/ui/checkbox";
 import PageHeader from "../components/PageHeader";
+import CsvImport from "../components/CsvImport";
 import ListState from "../components/ListState";
 import staffService from "../services/staffService";
 import facultyService from "../services/facultyService";
@@ -101,6 +102,35 @@ export default function AddStaff() {
           { label: "Dashboard", to: "/dashboard" },
           { label: "Staff", to: "/staff/view" },
           { label: "Add" },
+        ]}
+      />
+      <CsvImport
+        entity="staff"
+        columns={[
+          "name",
+          "email",
+          "faculty_name",
+          "max_hours",
+          "title",
+          "staff_type",
+          "phone_number",
+          "rfid_id",
+          "unavailable_days",
+          "preferred_start",
+          "modules",
+        ]}
+        sampleRow={[
+          "Dr. Asha Mwakalinga",
+          "asha@sacas.ac.tz",
+          "Faculty of Computing",
+          "24",
+          "Dr.",
+          "full_time",
+          "+255712000111",
+          "RFID-001",
+          "friday",
+          "08:00",
+          "CS201",
         ]}
       />
       <Card className="p-6 max-w-2xl border shadow-sm space-y-4">
@@ -250,6 +280,4 @@ export default function AddStaff() {
       </Card>
     </div>
   );
-}
-
-\n
+}

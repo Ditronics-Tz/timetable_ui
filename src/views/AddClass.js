@@ -5,6 +5,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import PageHeader from "../components/PageHeader";
+import CsvImport from "../components/CsvImport";
 import ListState from "../components/ListState";
 import classService from "../services/classService";
 import courseService from "../services/courseService";
@@ -76,6 +77,27 @@ export default function AddClass() {
           { label: "Dashboard", to: "/dashboard" },
           { label: "Classes", to: "/classes/view" },
           { label: "Add" },
+        ]}
+      />
+      <CsvImport
+        entity="classes"
+        columns={[
+          "name",
+          "course_name",
+          "year",
+          "semester",
+          "academic_year",
+          "number_of_students",
+          "program",
+        ]}
+        sampleRow={[
+          "BIT Y2 Group A",
+          "BSc in Information Technology",
+          "2",
+          "1",
+          "2026/27",
+          "45",
+          "Full-time",
         ]}
       />
       <Card className="p-6 max-w-2xl border shadow-sm space-y-4">
@@ -176,6 +198,4 @@ export default function AddClass() {
       </Card>
     </div>
   );
-}
-
-\n
+}

@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import PageHeader from "../components/PageHeader";
+import CsvImport from "../components/CsvImport";
 import facultyService from "../services/facultyService";
 import { extractApiError } from "../lib/apiError";
 import { useToast } from "../components/Toast";
@@ -63,6 +64,17 @@ export default function AddDepartment() {
           { label: "Dashboard", to: "/dashboard" },
           { label: "Departments", to: "/departments/view" },
           { label: "Add" },
+        ]}
+      />
+      <CsvImport
+        entity="faculties"
+        columns={["name", "description", "hod_name", "hod_phone", "hod_email"]}
+        sampleRow={[
+          "Faculty of Computing",
+          "ICT and Software Engineering",
+          "Dr. Asha Mushi",
+          "+255712000001",
+          "hod.ict@sacas.ac.tz",
         ]}
       />
       <Card className="p-6 max-w-2xl border shadow-sm space-y-4">

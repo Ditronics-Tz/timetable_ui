@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import PageHeader from "../components/PageHeader";
+import CsvImport from "../components/CsvImport";
 import ListState from "../components/ListState";
 import courseService from "../services/courseService";
 import facultyService from "../services/facultyService";
@@ -72,6 +73,11 @@ export default function AddProgram() {
           { label: "Programs", to: "/programs/view" },
           { label: "Add" },
         ]}
+      />
+      <CsvImport
+        entity="courses"
+        columns={["name", "faculty_name", "code", "duration_years"]}
+        sampleRow={["BSc in Information Technology", "Faculty of Computing", "BIT", "3"]}
       />
       <Card className="p-6 max-w-2xl border shadow-sm space-y-4">
         {error && (
@@ -152,6 +158,4 @@ export default function AddProgram() {
       </Card>
     </div>
   );
-}
-
-\n
+}

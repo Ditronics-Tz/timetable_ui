@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Label } from "../components/ui/label";
 import { Checkbox } from "../components/ui/checkbox";
 import PageHeader from "../components/PageHeader";
+import CsvImport from "../components/CsvImport";
 import ListState from "../components/ListState";
 import moduleService from "../services/moduleService";
 import courseService from "../services/courseService";
@@ -92,6 +93,29 @@ export default function AddModule() {
           { label: "Dashboard", to: "/dashboard" },
           { label: "Modules", to: "/modules/view" },
           { label: "Add" },
+        ]}
+      />
+      <CsvImport
+        entity="modules"
+        columns={[
+          "name",
+          "code",
+          "course_name",
+          "credit_hours",
+          "type",
+          "semester",
+          "nta_level",
+          "requires_lab",
+        ]}
+        sampleRow={[
+          "Algorithms",
+          "CS201",
+          "BSc in Information Technology",
+          "3",
+          "core",
+          "1",
+          "6",
+          "true",
         ]}
       />
       <Card className="p-6 max-w-2xl border shadow-sm space-y-4">
@@ -229,6 +253,4 @@ export default function AddModule() {
       </Card>
     </div>
   );
-}
-
-\n
+}
